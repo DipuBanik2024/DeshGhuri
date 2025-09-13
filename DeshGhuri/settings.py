@@ -37,6 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'accounts.apps.AccountsConfig',
+    'destinations.apps.DestinationsConfig',
+    'guides.apps.GuidesConfig',
+    'helpline.apps.HelplineConfig',
+    'hotels.apps.HotelsConfig',
+    'main.apps.MainConfig',
+    'packages.apps.PackagesConfig',
+
 ]
 
 MIDDLEWARE = [
@@ -54,7 +62,7 @@ ROOT_URLCONF = 'DeshGhuri.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'template'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

@@ -17,6 +17,28 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from hotels.views import hotels_info
+from main import views as main_views
+from accounts import views as a_views
+from destinations import views as d_views
+from helpline import views as h_views
+from guides import views as g_views
+from hotels import views as hotels_views
+from packages import views as p_views
 urlpatterns = [
     path('admin/', admin.site.urls),
+    #main
+    path('',main_views.home,name='home'),
+    #accounts
+    path('login',a_views.login,name='login'),
+    #destinations
+    path('destinations_info',d_views.destinations_info,name='destinations_info'),
+    #helpline
+    path('help_center',h_views.help_center,name='help_center'),
+    #guides
+    path('guides_info',g_views.guides_info,name='guides_info'),
+    #hotels
+    path('hotels_info',hotels_views.hotels_info,name="hotels_info"),
+    #packages
+    path('packages_info',p_views.packages_info,name='packages_info'),
 ]
