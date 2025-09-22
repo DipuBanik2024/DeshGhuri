@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Hotel Manager Dashboard{% endblock %}
+
+{% block content %}
+<h2>Hotel Manager Dashboard</h2>
+<a href="{% url 'hotel_create' %}">Add Hotel</a>
+<h3>Your Hotels:</h3>
+<ul>
+    {% for hotel in hotels %}
+        <li>
+            {{ hotel.name }} |
+            <a href="{% url 'hotel_edit' hotel.pk %}">Edit</a> |
+            <a href="{% url 'hotel_delete' hotel.pk %}">Delete</a>
+        </li>
+    {% empty %}
+        <li>No hotels yet.</li>
+    {% endfor %}
+</ul>
+<h3>Bookings for your Hotels:</h3>
+<ul>
+    {% for booking in bookings %}
+        <li>{{ booking.tourist.username }} booked {{ booking.hotel.name }} on {{ booking.date }}</li>
+    {% empty %}
+        <li>No bookings yet.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

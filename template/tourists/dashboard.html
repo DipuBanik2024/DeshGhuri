@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Tourist Dashboard{% endblock %}
+{% block content %}
+<h3>Your Bookings</h3>
+
+{% if bookings %}
+  <ul class="list-group">
+    {% for b in bookings %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          {% if b.hotel %}
+            <strong>Hotel:</strong> {{ b.hotel.name }}
+          {% elif b.guide %}
+            <strong>Guide:</strong> {{ b.guide.user.get_full_name|default:b.guide.user.username }}
+          {% endif %}
+          <div><small>{{ b.date }}</small></div>
+          <div><small>{{ b.notes }}</small></div>
+        </div>
+        <div>
+          {% if b.confirmed %}
+            <span class="badge bg-success">Confirmed</span>
+          {% else %}
+            <span class="badge bg-secondary">Pending</span>
+          {% endif %}
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No bookings yet. <a href="{% url 'booking_create' %}">Create one</a></p>
+{% endif %}
+{% endblock %}

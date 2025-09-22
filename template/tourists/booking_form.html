@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Create Booking{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-7">
+    <h3 class="mb-3">Create Booking</h3>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      <div class="mb-3">
+        <label class="form-label">Hotel (optional)</label>
+        {{ form.hotel|as_widget(attrs={"class":"form-select"}) }}
+        {{ form.hotel.errors }}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Guide (optional)</label>
+        {{ form.guide|as_widget(attrs={"class":"form-select"}) }}
+        {{ form.guide.errors }}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Date</label>
+        {{ form.date|as_widget(attrs={"class":"form-control", "type":"date"}) }}
+        {{ form.date.errors }}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Notes</label>
+        {{ form.notes|as_widget(attrs={"class":"form-control", "rows":"3"}) }}
+      </div>
+
+      <button class="btn btn-primary">Create Booking</button>
+      <a class="btn btn-link" href="{% url 'dashboard' %}">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Welcome, {{ request.user.username }}</h2>
+    <p>This is the default Dashboard.</p>
+    <p>If you don’t have a role, please contact support.</p>
+</div>
+{% endblock %}

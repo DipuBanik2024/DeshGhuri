@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<h1>Guide_info</h1>
-</body>
-</html>
+<h1>All Guides</h1>
+
+<ul>
+  {% for guide in guides %}
+    <li>{{ guide.name }} - {{ guide.experience }} years experience</li>
+  {% empty %}
+    <li>No guides available.</li>
+  {% endfor %}
+</ul>

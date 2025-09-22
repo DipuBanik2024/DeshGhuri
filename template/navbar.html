@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deshghuri Navbar</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #3A8799; /* Screenshot er moto blue-green */
+      padding: 15px 50px;
+    }
+
+    /* Logo */
+    .logo {
+      font-family: "Brush Script MT", cursive;
+      font-size: 34px;  /* bigger */
+      font-style: italic;
+      color: white;
+      text-decoration: none;
+    }
+
+    /* Menu */
+    .menu {
+      display: flex;
+      align-items: center;
+      gap: 20px; /* spacing between items */
+    }
+
+    .menu a {
+      text-decoration: none;
+      color: white;
+      font-size: 20px; /* bigger */
+      font-weight: 600;
+    }
+
+    .menu a:hover {
+      text-decoration: underline;
+    }
+
+    /* Buttons */
+    .buttons {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .buttons a {
+      text-decoration: none;
+      padding: 10px 24px;
+      border: 2px solid #000000;
+      border-radius: 30px;
+      color: white;
+      font-size: 18px; /* bigger */
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .buttons a:hover {
+      background-color: white;
+      color: #3A8799;
+    }
+
+    /* Profile image */
+    .profile-img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid white;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <!-- Logo -->
+    <a href="{% url 'home' %}" class="logo">Deshghuri</a>
+
+    <!-- Menu Items + Buttons -->
+    <div class="menu">
+      {% if user.is_authenticated %}
+          {% if user.role == "tourist" %}
+            <!-- Tourist Menu -->
+            <a href="#">Destination</a>
+            <a href="#">Hotels</a>
+            <a href="#">Guides</a>
+            <a href="#">Packages</a>
+
+            <div class="buttons">
+              <a href="#">
+                <img src="#" alt="Profile" class="profile-img">
+              </a>
+              <a href="{% url 'logout' %}">Logout</a>
+            </div>
+
+          {% elif user.role == "guide" %}
+            <!-- Guide Menu -->
+            <a href="#">Booking Info</a>
+            <a href="#">Post Guide</a>
+            <div class="buttons">
+              <a href="{% url 'logout' %}">Logout</a>
+            </div>
+
+          {% elif user.role == "hotel_manager" %}
+            <!-- Hotel Manager Menu -->
+            <a href="#">Booking Info</a>
+            <a href="#">Post Hotel Details</a>
+            <div class="buttons">
+              <a href="{% url 'logout' %}">Logout</a>
+            </div>
+          {% endif %}
+
+      {% else %}
+        <!-- Not logged in -->
+        <a href="#">Destination</a>
+        <a href="#">Hotels</a>
+        <a href="#">Guides</a>
+        <a href="#">Packages</a>
+
+        <div class="buttons">
+          <a href="{% url 'signup' %}">Sign up</a>
+          <a href="{% url 'login' %}">Log in</a>
+        </div>
+      {% endif %}
+    </div>
+  </nav>
+</body>
+</html>

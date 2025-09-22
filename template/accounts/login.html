@@ -1,10 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<h1>Login</h1>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Login — DeshGhuri{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-5">
+    <h2 class="mb-3">Login</h2>
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label">Username or Email</label>
+        <input name="identifier" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" name="password" class="form-control" required>
+      </div>
+      <button class="btn btn-primary">Login</button>
+      <a class="btn btn-link" href="{% url 'signup' %}">Create account</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

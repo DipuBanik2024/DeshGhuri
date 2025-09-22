@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Tourist Dashboard{% endblock %}
+
+{% block content %}
+<h2>Tourist Dashboard</h2>
+<a href="{% url 'booking_create' %}">Create Booking</a>
+<h3>Your Bookings:</h3>
+<ul>
+    {% for booking in bookings %}
+        <li>
+            {% if booking.hotel %}
+                Hotel: {{ booking.hotel.name }} on {{ booking.date }}
+            {% elif booking.guide %}
+                Guide: {{ booking.guide.user.username }} on {{ booking.date }}
+            {% endif %}
+        </li>
+    {% empty %}
+        <li>No bookings yet.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

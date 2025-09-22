@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Welcome, {{ request.user.username }} (Hotel Manager)</h2>
+    <p>This is your Hotel Manager Dashboard.</p>
+
+    <ul>
+        <li><a href="#">Manage Hotel Listings</a></li>
+        <li><a href="#">View Bookings</a></li>
+        <li><a href="#">Add New Offers</a></li>
+    </ul>
+</div>
+{% endblock %}

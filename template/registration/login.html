@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Login - Deshghuri{% endblock %}
+
+{% block content %}
+<h2>Login</h2>
+<form method="post">
+    {% csrf_token %}
+    <p>
+        <label>Email or Username:</label><br>
+        <input type="text" name="identifier" required>
+    </p>
+    <p>
+        <label>Password:</label><br>
+        <input type="password" name="password" required>
+    </p>
+    <button type="submit">Login</button>
+</form>
+{% endblock %}

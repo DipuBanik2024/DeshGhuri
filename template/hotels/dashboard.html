@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Hotel Manager Dashboard{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>My Hotels</h3>
+  <a class="btn btn-primary" href="{% url 'hotel_create' %}">Add Hotel</a>
+</div>
+
+{% if hotels %}
+  <div class="row">
+    {% for hotel in hotels %}
+      <div class="col-md-6 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ hotel.name }}</h5>
+            <p class="card-text">{{ hotel.address }}</p>
+            <p class="card-text"><small>{{ hotel.phone }}</small></p>
+            <a class="btn btn-sm btn-outline-primary" href="{% url 'hotel_edit' hotel.pk %}">Edit</a>
+            <a class="btn btn-sm btn-outline-danger" href="{% url 'hotel_delete' hotel.pk %}">Delete</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p>No hotels found. Add one.</p>
+{% endif %}
+
+<h5>Bookings</h5>
+{% if bookings %}
+  <ul class="list-group">
+    {% for b in bookings %}
+      <li class="list-group-item">
+        <strong>{{ b.tourist.get_full_name|default:b.tourist.username }}</strong> — {{ b.date }}
+        <div><small>{{ b.notes }}</small></div>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No bookings yet.</p>
+{% endif %}
+{% endblock %}
