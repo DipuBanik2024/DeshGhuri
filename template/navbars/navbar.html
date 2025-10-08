@@ -1,0 +1,21 @@
+
+{%load static %}
+<nav class="flex justify-between items-center bg-deshblue px-12 py-4">
+    <!-- Logo -->
+    <a href="#" class="text-white italic text-3xl font-script">Deshghuri</a>
+
+    <!-- Menu + Buttons -->
+    <div class="flex items-center gap-9">
+      <a href="{%url 'home' %}" class="text-white text-lg font-semibold hover:underline">Home</a>
+      <a href="#" class="text-white text-lg font-semibold hover:underline">Destination</a>
+      <a href="#" class="text-white text-lg font-semibold hover:underline">Hotels</a>
+      <a href="#" class="text-white text-lg font-semibold hover:underline">Guides</a>
+      <a href="#" class="text-white text-lg font-semibold hover:underline">Packages</a>
+
+      <!-- Buttons -->
+      <div class="flex gap-4">
+        <a href="{% url 'signup' %}" class="px-6 py-2 rounded-full border-2 border-white text-white font-semibold text-lg hover:bg-white hover:text-deshblue transition">Sign up</a>
+        <a href="{% url 'login' %}" class="px-6 py-2 rounded-full border-2 border-white text-white font-semibold text-lg hover:bg-white hover:text-deshblue transition">Log in</a>
+      </div>
+    </div>
+  </nav>

@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 # Build paths inside the project
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,8 +22,10 @@ INSTALLED_APPS = [
     'guides.apps.GuidesConfig',
     'helpline.apps.HelplineConfig',
     'hotels.apps.HotelsConfig',
+    'tourists.apps.TouristsConfig',
     'main.apps.MainConfig',
     'packages.apps.PackagesConfig',
+    'widget_tweaks',
 ]
 
 # Custom user model
@@ -57,6 +60,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'accounts.context_processors.user_role',
             ],
         },
     },
@@ -89,6 +93,9 @@ USE_TZ = True
 # Static files
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]   # create this folder if it doesn't exist
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 # Email backend (development)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

@@ -1,28 +1,224 @@
 {% extends "base.html" %}
-{% block title %}Edit Profile — Guide{% endblock %}
+{% load static %}
+
+{% block title %}Edit Profile - TravelGuide{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-6">
-    <h3 class="mb-3">Edit Guide Profile</h3>
-    <form method="post">
-      {% csrf_token %}
-      {{ form.non_field_errors }}
-      <div class="mb-3">
-        <label class="form-label">Phone</label>
-        {{ form.phone|as_widget(attrs={"class":"form-control"}) }}
-        {{ form.phone.errors }}
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Experience (years)</label>
-        {{ form.experience_years|as_widget(attrs={"class":"form-control"}) }}
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Bio</label>
-        {{ form.bio|as_widget(attrs={"class":"form-control", "rows":"4"}) }}
-      </div>
-      <button class="btn btn-primary">Save</button>
-      <a class="btn btn-link" href="{% url 'guide_dashboard' %}">Cancel</a>
-    </form>
-  </div>
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <!-- Form Header -->
+        <div class="bg-gradient-to-r from-blue-500 to-indigo-600 px-6 py-4">
+            <div class="flex items-center justify-between">
+                <h2 class="text-2xl font-bold text-white">Edit Your Profile</h2>
+                <a href="{% url 'guide_profile' %}" class="text-white hover:text-blue-200 transition">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Profile
+                </a>
+            </div>
+        </div>
+
+        <div class="p-6">
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+
+                <!-- Avatar Upload Section -->
+                <div class="border-b border-gray-200 pb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Profile Picture</h3>
+                    <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6">
+                        <!-- Current Avatar Preview -->
+                        <div class="relative">
+                            {% if guide_profile.avatar %}
+                                <img id="currentAvatar" src="{{ guide_profile.avatar.url }}" alt="Current Avatar"
+                                     class="w-24 h-24 rounded-full border-4 border-gray-200 object-cover shadow-md">
+                            {% else %}
+                                <div id="currentAvatar" class="w-24 h-24 rounded-full border-4 border-gray-200 bg-gray-100 flex items-center justify-center shadow-md">
+                                    <i class="fas fa-user text-gray-400 text-2xl"></i>
+                                </div>
+                            {% endif %}
+                            <div id="avatarPreview" class="hidden absolute inset-0 w-24 h-24 rounded-full border-4 border-blue-500 bg-cover bg-center shadow-lg"></div>
+                        </div>
+
+                        <!-- Avatar Upload Controls -->
+                        <div class="flex-1">
+                            <label for="id_avatar" class="block text-sm font-medium text-gray-700 mb-2">Upload new photo</label>
+                            <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+                                <input type="file" id="id_avatar" name="avatar" accept="image/*"
+                                       class="hidden" onchange="previewAvatar(this)">
+                                <button type="button" onclick="document.getElementById('id_avatar').click()"
+                                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition inline-flex items-center justify-center">
+                                    <i class="fas fa-camera mr-2"></i>Choose Image
+                                </button>
+                                {% if guide_profile.avatar %}
+                                <button type="button" onclick="removeAvatar()"
+                                        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition inline-flex items-center justify-center">
+                                    <i class="fas fa-trash mr-2"></i>Remove
+                                </button>
+                                {% endif %}
+                            </div>
+                            <p class="text-sm text-gray-500 mt-2">JPG, PNG or WebP. Max 5MB.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Fields Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Left Column -->
+                    <div class="space-y-4">
+                        <!-- Phone -->
+                        <div>
+                            <label for="id_phone" class="block text-sm font-medium text-gray-700 mb-1">
+                                Phone Number
+                            </label>
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                                <p class="text-red-500 text-sm mt-1">{{ form.phone.errors|striptags }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Experience Years -->
+                        <div>
+                            <label for="id_experience_years" class="block text-sm font-medium text-gray-700 mb-1">
+                                Years of Experience
+                            </label>
+                            {{ form.experience_years }}
+                            {% if form.experience_years.errors %}
+                                <p class="text-red-500 text-sm mt-1">{{ form.experience_years.errors|striptags }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Languages -->
+                        <div>
+                            <label for="id_languages" class="block text-sm font-medium text-gray-700 mb-1">
+                                Languages You Speak
+                            </label>
+                            {{ form.languages }}
+                            <p class="text-sm text-gray-500 mt-1">Separate languages with commas (e.g., English, Spanish, French)</p>
+                            {% if form.languages.errors %}
+                                <p class="text-red-500 text-sm mt-1">{{ form.languages.errors|striptags }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="space-y-4">
+                        <!-- Bio -->
+                        <div>
+                            <label for="id_bio" class="block text-sm font-medium text-gray-700 mb-1">
+                                About You
+                            </label>
+                            {{ form.bio }}
+                            {% if form.bio.errors %}
+                                <p class="text-red-500 text-sm mt-1">{{ form.bio.errors|striptags }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Address -->
+                        <div>
+                            <label for="id_address" class="block text-sm font-medium text-gray-700 mb-1">
+                                Address
+                            </label>
+                            {{ form.address }}
+                            {% if form.address.errors %}
+                                <p class="text-red-500 text-sm mt-1">{{ form.address.errors|striptags }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="flex flex-col sm:flex-row justify-between space-y-3 sm:space-y-0 sm:space-x-4 pt-6 border-t border-gray-200">
+                    <a href="{% url 'guide_profile' %}" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium transition text-center">
+                        Cancel
+                    </a>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition inline-flex items-center justify-center">
+                        <i class="fas fa-save mr-2"></i>Save Changes
+                    </button>
+                </div>
+            </form>
+
+            <!-- Messages -->
+            {% if messages %}
+            <div class="mt-6 space-y-2">
+                {% for message in messages %}
+                <div class="p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-blue-100 text-blue-700{% endif %}">
+                    <i class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}info-circle{% endif %} mr-2"></i>
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
 </div>
+
+<script>
+    // Avatar preview functionality
+    function previewAvatar(input) {
+        const preview = document.getElementById('avatarPreview');
+        const current = document.getElementById('currentAvatar');
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                preview.style.backgroundImage = `url(${e.target.result})`;
+                preview.classList.remove('hidden');
+                current.classList.add('hidden');
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // Remove avatar functionality
+    function removeAvatar() {
+        // This would need backend support to actually remove the file
+        // For now, just reset the preview
+        const preview = document.getElementById('avatarPreview');
+        const current = document.getElementById('currentAvatar');
+        const fileInput = document.getElementById('id_avatar');
+
+        preview.classList.add('hidden');
+        current.classList.remove('hidden');
+        fileInput.value = '';
+
+        // Show message about avatar removal
+        alert('Avatar will be removed when you save changes.');
+    }
+
+    // Add Tailwind classes to form inputs
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add consistent styling to all form inputs
+        const inputs = document.querySelectorAll('input, textarea, select');
+        inputs.forEach(input => {
+            if (!input.classList.contains('form-control')) {
+                input.classList.add('w-full', 'px-3', 'py-2', 'border', 'border-gray-300', 'rounded-lg', 'focus:outline-none', 'focus:ring-2', 'focus:ring-blue-500', 'focus:border-transparent');
+            }
+        });
+
+        // Special styling for file input if needed
+        const fileInput = document.getElementById('id_avatar');
+        if (fileInput) {
+            fileInput.classList.add('hidden');
+        }
+    });
+</script>
+
+<style>
+    /* Ensure textareas have proper height */
+    textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    /* Style for number input */
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
 {% endblock %}

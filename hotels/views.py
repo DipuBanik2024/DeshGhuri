@@ -12,7 +12,7 @@ def hotel_dashboard(request):
     hotels = Hotel.objects.filter(owner=request.user)
     # Bookings can be accessed via related_name in Booking model if needed
     bookings = request.user.booking_set.all()  # Assuming Booking model has hotel field pointing to Hotel
-    return render(request, "hotels/dashboard.html", {"hotels": hotels, "bookings": bookings})
+    return render(request, "hotels/guide_dashboard.html", {"hotels": hotels, "bookings": bookings})
 
 @login_required
 @role_required(['hotel_manager'])

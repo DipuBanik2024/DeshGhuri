@@ -1,10 +1,121 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<h1>Help Center</h1>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}Help Center{% endblock %}
+
+{% block content %}
+<style>
+  .help-container {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 40px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .help-container h1 {
+    font-size: 36px;
+    color: #1e88e5; /* DeshGhuri primary color */
+    margin-bottom: 30px;
+    text-align: center;
+  }
+
+  .faq-section {
+    margin-bottom: 30px;
+  }
+
+  .faq-section h2 {
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 5px;
+  }
+
+  .faq {
+    margin-bottom: 20px;
+  }
+
+  .faq h3 {
+    font-size: 18px;
+    color: #1565c0; /* DeshGhuri accent */
+    margin-bottom: 8px;
+  }
+
+  .faq p {
+    font-size: 15px;
+    color: #555;
+    line-height: 1.6;
+  }
+
+  .contact-box {
+    background-color: #e3f2fd;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    margin-top: 40px;
+  }
+
+  .contact-box h3 {
+    color: #1e88e5;
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  .contact-box p {
+    font-size: 15px;
+    color: #333;
+  }
+
+  .contact-box a {
+    color: #1565c0;
+    text-decoration: underline;
+  }
+</style>
+
+<div class="help-container">
+  <h1>Help Center</h1>
+
+  <div class="faq-section">
+    <h2>General Questions</h2>
+    <div class="faq">
+      <h3>What is DeshGhuri?</h3>
+      <p>DeshGhuri is your travel companion platform, helping you explore destinations, find local guides, and plan unforgettable trips.</p>
+    </div>
+    <div class="faq">
+      <h3>Do I need an account to explore destinations?</h3>
+      <p>No, you can browse destinations freely. Creating an account allows you to save favorites and book tours.</p>
+    </div>
+  </div>
+
+  <div class="faq-section">
+    <h2>For Travelers</h2>
+    <div class="faq">
+      <h3>How do I find local guides?</h3>
+      <p>Go to our “Find Guides” page, enter your destination, and we’ll show verified guides available in that area.</p>
+    </div>
+    <div class="faq">
+      <h3>Can I book tours online?</h3>
+      <p>Yes, you can browse and book tours directly through our platform with secure payment options.</p>
+    </div>
+  </div>
+
+  <div class="faq-section">
+    <h2>For Guides</h2>
+    <div class="faq">
+      <h3>How can I join DeshGhuri as a guide?</h3>
+      <p>Create a guide profile, submit your credentials, and start receiving booking requests from travelers.</p>
+    </div>
+    <div class="faq">
+      <h3>Is there a verification process?</h3>
+      <p>Yes, guides are verified for identity, experience, and reviews to ensure traveler safety and quality service.</p>
+    </div>
+  </div>
+
+  <div class="contact-box">
+    <h3>Still Need Help?</h3>
+    <p>Email us at <strong>support@deshghuri.com</strong> or reach out via our <a href="#">Contact Form</a>.</p>
+  </div>
+</div>
+{% endblock %}

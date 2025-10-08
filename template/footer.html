@@ -3,171 +3,95 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Deshghuri footer</title>
-  <!-- ================= FOOTER CSS ================= -->
-<style>
-  .footer {
-    background-color: #0E1623;
-    color: #cfcfcf;
-    padding: 40px 60px 20px 60px;
-    font-family: Arial, sans-serif;
-  }
-
-  .footer-container {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    margin-bottom: 25px;
-  }
-
-  .footer-column {
-    width: 22%;
-    min-width: 200px;
-    margin-bottom: 20px;
-  }
-
-  .footer-column h2 {
-    color: white;
-    font-size: 24px;
-    margin-bottom: 12px;
-  }
-
-  .footer-column h3 {
-    color: white;
-    font-size: 18px;
-    margin-bottom: 12px;
-  }
-
-  .footer-column p {
-    font-size: 14px;
-    line-height: 22px;
-  }
-
-  .footer-column ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .footer-column ul li {
-    margin-bottom: 8px;
-  }
-
-  .footer-column ul li a {
-    color: #cfcfcf;
-    text-decoration: none;
-    font-size: 14px;
-  }
-
-  .footer-column ul li a:hover {
-    color: white;
-  }
-
-  .social-icons a {
-    margin-right: 12px;
-    font-size: 18px;
-    color: #cfcfcf;
-    text-decoration: none;
-  }
-
-  .social-icons a:hover {
-    color: white;
-  }
-
-  .newsletter input {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 8px;
-    border: none;
-    border-radius: 4px;
-    box-sizing: border-box; /* Ensure padding included in width */
-    height: 40px;
-  }
-
-  .newsletter button {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 8px;
-    border: none;
-    border-radius: 4px;
-    background-color: #2563eb;
-    color: white;
-    cursor: pointer;
-    font-weight: bold;
-    box-sizing: border-box; /* Ensure padding included in width */
-    height: 40px;
-  }
-
-  .newsletter button:hover {
-    background-color: #1d4ed8;
-  }
-
-  .footer-bottom {
-    border-top: 1px solid #2c3b4d;
-    padding-top: 15px;
-    text-align: center;
-    font-size: 13px;
-    color: #a0a0a0;
-  }
-</style>
+  <title>Deshghuri Footer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            deshblue: "#3A8799",
+            deshdark: "#0E1623"
+          },
+          fontFamily: {
+            script: ['"Brush Script MT"', 'cursive']
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Font Awesome for social icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-<body>
-  <footer class="footer">
-  <div class="footer-container">
-    <!-- Column 1 -->
-    <div class="footer-column">
-      <h2>DeshGhuri</h2>
-      <p>Your trusted partner for unforgettable travel experiences around the world.</p>
-      <div class="social-icons">
-        <a href="#"><i class="fab fa-facebook-f"></i></a>
-        <a href="#"><i class="fab fa-twitter"></i></a>
-        <a href="#"><i class="fab fa-instagram"></i></a>
-        <a href="#"><i class="fab fa-youtube"></i></a>
+<body class="bg-gray-100">
+
+ <!-- footer.html -->
+<footer class="bg-deshdark text-gray-300 mt-auto">
+  <div class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
+    <!-- Company Info -->
+    <div>
+      <h2 class="text-white text-2xl font-semibold mb-3">DeshGhuri</h2>
+      <p class="text-sm leading-7">Your trusted partner for unforgettable travel experiences around the world.</p>
+      <div class="mt-4 flex gap-4 text-lg">
+        <a href="#" class="hover:text-white"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="hover:text-white"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="hover:text-white"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="hover:text-white"><i class="fab fa-youtube"></i></a>
       </div>
     </div>
 
-    <!-- Column 2 -->
-    <div class="footer-column">
-      <h3>Services</h3>
-      <ul>
-        <li><a href="#">Hotel Booking</a></li>
-        <li><a href="#">Tour Guides</a></li>
-        <li><a href="#">Travel Packages</a></li>
+    <!-- Services -->
+    <div>
+      <h3 class="text-white text-lg font-semibold mb-3">Services</h3>
+      <ul class="space-y-2 text-sm">
+        <li><a href="#" class="hover:text-white">Hotel Booking</a></li>
+        <li><a href="#" class="hover:text-white">Tour Guides</a></li>
+        <li><a href="#" class="hover:text-white">Travel Packages</a></li>
       </ul>
     </div>
 
-    <!-- Column 3 -->
-    <div class="footer-column">
-      <h3>Support</h3>
-      <ul>
-        <li><a href="#">Help Center</a></li>
-        <li><a href="#">Contact Us</a></li>
-        <li><a href="#">Terms of Service</a></li>
-        <li><a href="#">Privacy Policy</a></li>
-        <li><a href="#">Cancellation</a></li>
+    <!-- Support -->
+    <div>
+      <h3 class="text-white text-lg font-semibold mb-3">Support</h3>
+      <ul class="space-y-2 text-sm">
+        <li><a href="#" class="hover:text-white">Help Center</a></li>
+        <li><a href="#" class="hover:text-white">Contact Us</a></li>
+        <li><a href="#" class="hover:text-white">Terms of Service</a></li>
+        <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
+        <li><a href="#" class="hover:text-white">Cancellation</a></li>
       </ul>
     </div>
 
-    <!-- Column 4 -->
-    <div class="footer-column">
-      <h3>Newsletter</h3>
-      <p>Get the latest travel deals and destination guides.</p>
-      <form class="newsletter">
-        <input type="email" placeholder="Enter your email" required>
-        <button type="submit">Subscribe</button>
+    <!-- Newsletter -->
+    {% if request.path != '/signup/' and request.path != '/login/' %}
+    <div>
+      <h3 class="text-white text-lg font-semibold mb-3">Newsletter</h3>
+      <p class="text-sm leading-7 mb-3">Get the latest travel deals and destination guides.</p>
+      <form class="space-y-3">
+        <input type="email" placeholder="Enter your email" required class="w-full h-10 px-3 rounded-md border-none outline-none bg-gray-800 text-white"/>
+        <button type="submit" class="w-full h-10 rounded-md font-semibold bg-blue-600 hover:bg-blue-700 text-white">Subscribe</button>
       </form>
     </div>
+
+    <script>
+      const newsletterForm = document.querySelector('footer form');
+      if(newsletterForm){
+        newsletterForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const email = this.querySelector('input[type="email"]').value;
+          alert(`Thank you for subscribing with ${email}! You'll receive our latest travel deals soon.`);
+          this.reset();
+        });
+      }
+    </script>
+    {% endif %}
   </div>
 
-  <!-- Footer bottom -->
-  <div class="footer-bottom">
-    <p>support@deshghuri.com | +1 (555) 123-4567 | Dhaka, Bangladesh</p>
-    <p>© 2025 DeshGhuri. All rights reserved.</p>
+  <!-- Footer Bottom -->
+  <div class="border-t border-gray-700 text-center py-4 text-sm text-gray-400 max-w-7xl mx-auto px-6">
+    <p>support@deshghuri.com | +1 (559) 123-4567 | Dhaka, Bangladesh</p>
+    <p class="mt-1">© 2025 DeshGhuri. All rights reserved.</p>
   </div>
 </footer>
-<!-- Font Awesome for social icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </body>
 </html>
-
-
-

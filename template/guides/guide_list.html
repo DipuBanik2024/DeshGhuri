@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-6xl mx-auto px-6 py-10">
+  <h2 class="text-3xl font-bold text-center mb-8 text-blue-700">Available Guides</h2>
+  <div class="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6">
+    {% for guide in guides %}
+    <div class="bg-white shadow-lg rounded-2xl p-6 hover:shadow-2xl transition">
+      <h3 class="text-xl font-semibold text-gray-800">{{ guide.user.get_full_name|default:guide.user.username }}</h3>
+      <p class="text-sm text-gray-600 mt-2">📞 {{ guide.phone }}</p>
+      <p class="text-sm text-gray-600">Experience: {{ guide.experience_years }} years</p>
+      <p class="text-gray-700 mt-3 line-clamp-3">{{ guide.bio|truncatewords:20 }}</p>
+      <a href="{% url 'guide_detail' guide.id %}"
+         class="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded-xl shadow hover:bg-blue-700 transition">
+         View Profile
+      </a>
+    </div>
+    {% empty %}
+    <p class="text-gray-500 col-span-full text-center">No guides available yet.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

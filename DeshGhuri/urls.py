@@ -16,6 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from . import settings
+from django.conf.urls.static import static
 from django.urls import path, include
 
 from hotels.views import hotels_info
@@ -26,6 +28,7 @@ from helpline import views as h_views
 from guides import views as g_views
 from hotels import views as hotels_views
 from packages import views as p_views
+from tourists import views as t_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),  # accounts app routes
@@ -34,8 +37,6 @@ urlpatterns = [
 
     #helpline
     path('help_center',h_views.help_center,name='help_center'),
-    #guides
-    path('guides_info',g_views.guides_info,name='guides_info'),
     #hotels
     path('hotels_info',hotels_views.hotels_info,name="hotels_info"),
     #packages
@@ -45,4 +46,5 @@ urlpatterns = [
     path('guides/', include('guides.urls')),
     path('hotels/', include('hotels.urls')),
     path('destinations/', include('destinations.urls')),
-]
+    path('tourists/', include('tourists.urls')),
+] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
