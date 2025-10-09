@@ -1,8 +1,0 @@
-<!-- detail.html -->
-<h1>{{ destination.name }}</h1>
-<p>{{ destination.description }}</p>
-<p>{{ destination.location }}</p>
-{% if destination.image %}
-  <img src="{{ destination.image.url }}" alt="{{ destination.name }}" width="300">
-{% endif %}
-<a href="{% url 'destination_list' %}">Back to list</a>

@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    body {
+        background-color: #f8f9fa;
+        color: #333;
+        line-height: 1.6;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Header Section */
+    .header-top {
+        text-align: center;
+        margin-bottom: 10px;
+        padding: 20px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .header-top h1 {
+        font-size: 2.5rem;
+        margin: 0;
+    }
+
+    .header-subtitle {
+        text-align: center;
+        font-size: 1.1rem;
+        color: #555;
+        margin: 10px 0 30px 0;
+    }
+
+    /* Filter Section */
+    .filter-row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 30px;
+    }
+
+    .filter-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .filter-tab {
+        padding: 10px 20px;
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+
+    .filter-tab:hover {
+        background-color: #f0f0f0;
+    }
+
+    .filter-tab.active {
+        background-color: #1e5799;
+        color: white;
+        border-color: #1e5799;
+    }
+
+    .search-bar {
+        position: relative;
+        margin-left: 15px;
+    }
+
+    .search-bar input {
+        padding: 10px 35px 10px 15px;
+        border: 1px solid #ccc;
+        border-radius: 30px;
+        font-size: 0.95rem;
+        width: 200px;
+        outline: none;
+        transition: all 0.2s ease;
+    }
+
+    .search-bar input:focus {
+        border-color: #1e5799;
+        box-shadow: 0 0 4px rgba(30, 87, 153, 0.3);
+    }
+
+    .search-bar i {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #aaa;
+    }
+
+    /* Destination Cards */
+    .destination-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+    }
+
+    .destination-card {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background-color: white;
+    }
+
+    .destination-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+    }
+
+    .card-image {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .card-content {
+        padding: 20px;
+    }
+
+    .card-content h3 {
+        margin-bottom: 8px;
+        color: #1e5799;
+        font-size: 1.4rem;
+    }
+
+    .card-content p {
+        color: #666;
+        margin-bottom: 15px;
+        font-size: 0.95rem;
+    }
+
+    .destination-tag {
+        display: inline-block;
+        padding: 5px 12px;
+        background-color: #e9f0fa;
+        color: #1e5799;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .destination-card:hover .destination-tag {
+        background-color: #1e5799;
+        color: white;
+    }
+
+    /* Add space below cards so they don’t touch footer */
+    .container {
+        padding-bottom: 50px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .filter-row {
+            flex-direction: column;
+            align-items: center;
+        }
+        .search-bar {
+            margin-left: 0;
+            margin-top: 10px;
+            width: 100%;
+        }
+        .search-bar input {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .destination-grid {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+    }
+</style>
+
+<div class="container">
+    <!-- Header -->
+    <div class="header-top">
+        <h1>Explore Top Destinations</h1>
+        <p class="header-subtitle">Discover the most beautiful places in Bangladesh</p>
+    </div>
+
+    <!-- Filter Tabs + Search Bar -->
+    <div class="filter-section">
+        <div class="filter-row">
+            <!-- Filter Tabs -->
+            <div class="filter-tabs">
+                <div class="filter-tab active" data-type="all">All</div>
+                <div class="filter-tab" data-type="cultural">Cultural</div>
+                <div class="filter-tab" data-type="natural">Natural</div>
+                <div class="filter-tab" data-type="adventure">Adventure</div>
+                <div class="filter-tab" data-type="historical">Historical</div>
+            </div>
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search by Division...">
+                <i class="fa fa-search"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Destination Cards -->
+    <div class="destination-grid">
+        {% for dest in destinations %}
+        <div class="destination-card"
+             data-type="{{ dest.type|lower }}"
+             data-division="{{ dest.division|lower }}">
+            <a href="{% url 'destination_detail' dest.pk %}" style="text-decoration:none; color:inherit;">
+                <img src="{{ dest.main_image.url }}" alt="{{ dest.name }}" class="card-image">
+                <div class="card-content">
+                    <h3>{{ dest.name }}</h3>
+                    <p>{{ dest.short_description|default:dest.division }}</p>
+                    <span class="destination-tag">{{ dest.type }}</span>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabs = document.querySelectorAll('.filter-tab');
+        const cards = document.querySelectorAll('.destination-card');
+        const searchInput = document.getElementById('searchInput');
+
+        function filterCards() {
+            const activeType = document.querySelector('.filter-tab.active').getAttribute('data-type').toLowerCase();
+            const searchValue = searchInput.value.toLowerCase();
+
+            cards.forEach(card => {
+                const cardType = card.getAttribute('data-type').toLowerCase();
+                const cardDivision = card.getAttribute('data-division').toLowerCase();
+                const matchesType = (activeType === 'all' || cardType === activeType);
+                const matchesDivision = cardDivision.includes(searchValue);
+                card.style.display = (matchesType && matchesDivision) ? 'block' : 'none';
+            });
+        }
+
+        // Event listeners
+        tabs.forEach(tab => tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            filterCards();
+        }));
+
+        searchInput.addEventListener('input', filterCards);
+    });
+</script>
+
+{% endblock %}

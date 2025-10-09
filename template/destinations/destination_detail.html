@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width:1200px; margin:20px auto; padding-bottom:50px;">
+
+  <!-- Top Section: Main image + Details -->
+  <div style="display:flex; flex-wrap:wrap; gap:20px;">
+    <!-- Left: Main Image -->
+    <div style="flex:1; min-width:300px;">
+      <img src="{{ destination.main_image.url }}" style="width:100%; border-radius:10px;">
+    </div>
+
+    <!-- Right: Info -->
+    <div style="flex:1; min-width:300px;">
+      <h2 style="margin-bottom:10px; color:black; font-size:32px;"><b>{{ destination.name }}</b></h2>
+      <p style="margin-bottom:15px;"><b>Division:</b> {{ destination.division }}</p>
+      <p style="margin-bottom:15px;"><b>Type:</b> {{ destination.type }}</p>
+      <p style="margin-bottom:15px;"><b>Best time to visit:</b> {{ destination.best_time }}</p>
+      <p><b>Description:</b><br> {{ destination.description }}</p>
+    </div>
+  </div>
+
+  <!-- Extra Images Section -->
+  <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:30px;">
+    {% if destination.extra_image1 %}
+      <img src="{{ destination.extra_image1.url }}" style="width:100%; border-radius:8px;">
+    {% endif %}
+    {% if destination.extra_image2 %}
+      <img src="{{ destination.extra_image2.url }}" style="width:100%; border-radius:8px;">
+    {% endif %}
+    {% if destination.extra_image3 %}
+      <img src="{{ destination.extra_image3.url }}" style="width:100%; border-radius:8px;">
+    {% endif %}
+    {% if destination.extra_image4 %}
+      <img src="{{ destination.extra_image4.url }}" style="width:100%; border-radius:8px;">
+    {% endif %}
+    {% if destination.extra_image5 %}
+      <img src="{{ destination.extra_image5.url }}" style="width:100%; border-radius:8px;">
+    {% endif %}
+    {% if destination.extra_image6 %}
+      <img src="{{ destination.extra_image6.url }}" style="width:100%; border-radius:8px;">
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

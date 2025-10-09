@@ -40,11 +40,11 @@ urlpatterns = [
     #hotels
     path('hotels_info',hotels_views.hotels_info,name="hotels_info"),
     #packages
-    path('packages_info',p_views.packages_info,name='packages_info'),
 
     path('accounts/', include('accounts.urls')),
     path('guides/', include('guides.urls')),
     path('hotels/', include('hotels.urls')),
+    path('packages/', include('packages.urls')),
     path('destinations/', include('destinations.urls')),
     path('tourists/', include('tourists.urls')),
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

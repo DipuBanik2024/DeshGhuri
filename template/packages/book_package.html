@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="flex justify-center items-start bg-gray-50 py-10 px-4">
+  <div class="w-full max-w-md bg-white rounded-xl shadow-md">
+
+    <!-- Header -->
+    <div class="bg-gray-100 text-center py-3 border-b">
+      <h4 class="text-lg font-bold text-blue-600">Book Your Tour</h4>
+    </div>
+
+    <!-- Body -->
+    <div class="p-4">
+      <form method="POST" class="space-y-3">
+        {% csrf_token %}
+
+        <!-- People Count -->
+        <div>
+          <label for="{{ form.people_count.id_for_label }}" class="block font-medium text-gray-700 mb-1">
+            {{ form.people_count.label }}
+          </label>
+          {{ form.people_count }}
+          {% if form.people_count.errors %}
+            <p class="text-red-500 text-sm mt-1">{{ form.people_count.errors }}</p>
+          {% endif %}
+        </div>
+
+        <!-- Tour Date -->
+        <div>
+          <label for="{{ form.tour_date.id_for_label }}" class="block font-medium text-gray-700 mb-1">
+            {{ form.tour_date.label }}
+          </label>
+          {{ form.tour_date }}
+          {% if form.tour_date.errors %}
+            <p class="text-red-500 text-sm mt-1">{{ form.tour_date.errors }}</p>
+          {% endif %}
+        </div>
+
+        <!-- Mobile Number -->
+        <div>
+          <label for="{{ form.mobile_number.id_for_label }}" class="block font-medium text-gray-700 mb-1">
+            {{ form.mobile_number.label }}
+          </label>
+          {{ form.mobile_number }}
+          {% if form.mobile_number.errors %}
+            <p class="text-red-500 text-sm mt-1">{{ form.mobile_number.errors }}</p>
+          {% endif %}
+        </div>
+
+        <!-- Submit Button -->
+        <div>
+          <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg shadow hover:bg-blue-700 transition">
+            Confirm Booking
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  input, select {
+    @apply w-full border border-gray-300 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400;
+  }
+</style>
+{% endblock %}

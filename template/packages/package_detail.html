@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto mt-10 p-6 bg-white rounded-2xl shadow-lg">
+
+  <!-- Image + Details -->
+  <div class="grid md:grid-cols-2 gap-8 items-start">
+    <!-- Left: Image -->
+    <div>
+      <img src="{{ package.image.url }}" alt="{{ package.destination_name }}" class="w-full h-auto rounded-xl shadow-md">
+    </div>
+
+    <!-- Right: Details -->
+    <div>
+      <h2 class="text-3xl font-bold text-gray-800 mb-4">{{ package.destination_name }}</h2>
+      <p class="text-gray-700 mb-2"><span class="font-semibold">Description:</span> {{ package.description|linebreaksbr }}</p>
+      <p class="text-gray-700 mb-1"><span class="font-semibold">Days:</span> {{ package.days }}</p>
+      <p class="text-gray-700 mb-1"><span class="font-semibold">People Limit:</span> {{ package.people_limit }}</p>
+      <p class="text-gray-700 mb-4"><span class="font-semibold">Price:</span> <span class="text-blue-600 font-bold">৳{{ package.price }} BDT</span></p>
+
+      {% if user.is_authenticated %}
+        <a href="{% url 'book_package' package.pk %}" class="inline-block bg-blue-600 text-white px-5 py-2.5 rounded-lg shadow hover:bg-blue-700 transition">Book This Package</a>
+      {% else %}
+        <p class="text-red-600 font-medium">Please login to book this package.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Itinerary -->
+  <div class="mt-10">
+    <h3 class="text-2xl font-semibold mb-4 text-gray-800">Itinerary</h3>
+    {% for day in itinerary_days %}
+      <div class="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-3 mb-2 text-gray-800">{{ day }}</div>
+    {% empty %}
+      <p class="text-gray-600">No itinerary available.</p>
+    {% endfor %}
+  </div>
+
+  <!-- Included / Excluded -->
+  <div class="grid md:grid-cols-2 gap-8 mt-10">
+    <!-- Included -->
+    <div>
+      <h4 class="text-xl font-semibold mb-3 text-gray-800">Included Services</h4>
+      {% for item in included_services_list %}
+        <div class="bg-green-50 border-l-4 border-green-500 rounded-lg p-2 mb-2">✅ {{ item }}</div>
+      {% empty %}
+        <p class="text-gray-600">No services listed.</p>
+      {% endfor %}
+    </div>
+
+    <!-- Excluded -->
+    <div>
+      <h4 class="text-xl font-semibold mb-3 text-gray-800">Exclusions</h4>
+      {% for item in exclusions_list %}
+        <div class="bg-red-50 border-l-4 border-red-500 rounded-lg p-2 mb-2">❌ {{ item }}</div>
+      {% empty %}
+        <p class="text-gray-600">No exclusions listed.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Important Notes -->
+  {% if package.important_notes %}
+    <div class="mt-8 bg-yellow-50 border-l-4 border-yellow-500 rounded-lg p-4">
+      <p class="font-semibold text-yellow-800">Important Notes:</p>
+      <p class="text-gray-700 mt-1">{{ package.important_notes|linebreaksbr }}</p>
+    </div>
+  {% endif %}
+
+  <!-- Divider -->
+  <hr class="my-10 border-gray-300">
+
+  <!-- Reviews Section -->
+  <div>
+    <h3 class="text-2xl font-semibold mb-4 text-gray-800">Reviews (Total: {{ reviews|length }})</h3>
+    <div id="reviews-container">
+      {% for review in reviews %}
+        <div class="review-item bg-gray-50 border border-gray-200 rounded-xl p-4 mb-3 {% if forloop.counter > 5 %}hidden{% endif %}">
+          <p class="font-semibold text-gray-800">{{ review.tourist.username }}</p>
+          <p class="text-yellow-600 font-medium">⭐ {{ review.rating }}/5</p>
+          <p class="text-gray-700 mt-2">{{ review.comment|linebreaksbr }}</p>
+        </div>
+      {% empty %}
+        <p class="text-gray-600">No reviews yet.</p>
+      {% endfor %}
+    </div>
+
+    {% if reviews|length > 5 %}
+      <button id="load-more-btn" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">See More Reviews</button>
+    {% endif %}
+  </div>
+
+  <!-- Add Review Form -->
+  {% if user.is_authenticated %}
+    <div class="mt-10">
+      <h4 class="text-xl font-semibold mb-3 text-gray-800">Add a Review</h4>
+      <form method="POST" action="{% url 'add_review' package.pk %}" class="space-y-4">
+        {% csrf_token %}
+        <div>
+          <label class="block font-medium text-gray-700 mb-1">Rating (1-5):</label>
+          <input type="number" name="rating" min="1" max="5" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+        </div>
+        <div>
+          <textarea name="comment" rows="4" placeholder="Write your review..." class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required></textarea>
+        </div>
+        <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">Submit Review</button>
+      </form>
+    </div>
+  {% else %}
+    <p class="text-gray-600 mt-6">Login to write a review.</p>
+  {% endif %}
+</div>
+
+<!-- Load more JS -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('load-more-btn');
+    if (!btn) return;
+    const items = document.querySelectorAll('.review-item');
+    let visible = 5;
+
+    btn.addEventListener('click', () => {
+      for (let i = visible; i < visible + 5 && i < items.length; i++) {
+        items[i].classList.remove('hidden');
+      }
+      visible += 5;
+      if (visible >= items.length) btn.classList.add('hidden');
+    });
+  });
+</script>
+{% endblock %}
