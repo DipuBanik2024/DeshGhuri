@@ -6,8 +6,53 @@ from .models import GuideProfile, TourRequest, Tour, Earning
 from .forms import GuideProfileForm, TourRequestForm
 from accounts.utils import role_required
 from django.contrib.auth import get_user_model
+from django.template.defaulttags import register  # Add this import
 
 User = get_user_model()
+
+
+# Add template filters at the top (after imports)
+@register.filter
+def split(value, key):
+    """Split string by delimiter"""
+    return value.split(key) if value else []
+
+
+@register.filter
+def strip(value):
+    """Strip whitespace from string"""
+    return value.strip() if value else ''
+
+
+# --------------------------
+# PUBLIC GUIDE LIST (Tourist view) - UPDATED VERSION
+# --------------------------
+def guide_list(request):
+    guides = GuideProfile.objects.select_related("user").filter(is_completed=True)
+
+    # Calculate stats for the template
+    verified_guides_count = guides.filter(is_verified=True).count()
+
+    # Calculate average experience
+    total_experience = sum(guide.experience_years for guide in guides)
+    avg_experience = round(total_experience / len(guides)) if guides else 0
+
+    # Count unique languages
+    all_languages = set()
+    for guide in guides:
+        if guide.languages:
+            languages = [lang.strip() for lang in guide.languages.split(',')]
+            all_languages.update(languages)
+    total_languages = len(all_languages)
+
+    context = {
+        'guides': guides,
+        'verified_guides_count': verified_guides_count,
+        'avg_experience': avg_experience,
+        'total_languages': total_languages,
+    }
+
+    return render(request, "guides/guide_list.html", context)
 
 
 # --------------------------
@@ -138,14 +183,6 @@ def earnings(request):
 @role_required(['guide'])
 def guide_messages(request):
     return render(request, "guides/messages.html")
-
-
-# --------------------------
-# PUBLIC GUIDE LIST (Tourist view)
-# --------------------------
-def guide_list(request):
-    guides = GuideProfile.objects.select_related("user").all()
-    return render(request, "guides/guide_list.html", {"guides": guides})
 
 
 # --------------------------

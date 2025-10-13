@@ -4,6 +4,7 @@ from . import views as g_views
 urlpatterns = [
     path('dashboard/', g_views.guide_dashboard, name='guide_dashboard'),
     path("profile/", g_views.guide_profile, name="guide_profile"),
+   # path('guide/<int:guide_id>/',g_views.guide_profile, name='guide_profile'),
     path('edit_profile/', g_views.edit_guide_profile, name='edit_profile'),
     path("tour_requests/", g_views.tour_requests, name="tour_requests"),
     path("guides/", g_views.guide_list, name="guide_list"),

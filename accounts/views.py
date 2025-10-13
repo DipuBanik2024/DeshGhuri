@@ -74,7 +74,7 @@ def dashboard_view(request):
         elif request.user.role == 'tourist':
             return render(request, "tourists/tourist_dashboard.html")
         elif request.user.role == 'hotel_manager':
-            return render(request, "accounts/hotel_dashboard.html")
+            return render(request, "hotels/hotel_dashboard.html")
 
     # Fallback dashboard (default)
     return render(request, "accounts/guide_dashboard.html")

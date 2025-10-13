@@ -1,22 +1,500 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Expert Tour Guides - Find Your Perfect Guide | TourGuide{% endblock %}
+
 {% block content %}
-<div class="max-w-6xl mx-auto px-6 py-10">
-  <h2 class="text-3xl font-bold text-center mb-8 text-blue-700">Available Guides</h2>
-  <div class="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6">
-    {% for guide in guides %}
-    <div class="bg-white shadow-lg rounded-2xl p-6 hover:shadow-2xl transition">
-      <h3 class="text-xl font-semibold text-gray-800">{{ guide.user.get_full_name|default:guide.user.username }}</h3>
-      <p class="text-sm text-gray-600 mt-2">📞 {{ guide.phone }}</p>
-      <p class="text-sm text-gray-600">Experience: {{ guide.experience_years }} years</p>
-      <p class="text-gray-700 mt-3 line-clamp-3">{{ guide.bio|truncatewords:20 }}</p>
-      <a href="{% url 'guide_detail' guide.id %}"
-         class="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded-xl shadow hover:bg-blue-700 transition">
-         View Profile
-      </a>
+<div x-data="guideList()" class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30">
+    <!-- Main Hero Section -->
+    <div class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="py-8">
+                <div class="text-center mb-8">
+                    <h1 class="text-4xl font-bold bg-gradient-to-r from-gray-900 to-blue-600 bg-clip-text text-transparent mb-3">
+                        Find Your Expert Guide
+                    </h1>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                        Connect with verified local guides who will transform your travel experience
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
-    {% empty %}
-    <p class="text-gray-500 col-span-full text-center">No guides available yet.</p>
-    {% endfor %}
-  </div>
+
+    <!-- Main Content with Sidebar Layout -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- Fixed Filters Sidebar -->
+            <div class="lg:w-64 flex-shrink-0">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sticky top-24">
+                    <h3 class="text-base font-semibold text-gray-900 mb-3">Filters</h3>
+
+                    <!-- Search with Button -->
+                    <div class="mb-4">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Search</label>
+                        <div class="flex gap-2">
+                            <div class="relative flex-1">
+                                <input
+                                    x-model="search"
+                                    type="text"
+                                    placeholder="Name, location..."
+                                    class="w-full pl-8 pr-3 py-1.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                    @keyup.enter="filterGuides()"
+                                >
+                                <i class="fas fa-search absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 text-xs"></i>
+                            </div>
+                            <button @click="filterGuides()" class="px-3 py-1.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="mb-4">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Location</label>
+                        <input
+                            x-model="filters.location"
+                            type="text"
+                            placeholder="City, country..."
+                            class="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                            @input="filterGuides()"
+                        >
+                    </div>
+
+                    <!-- Experience -->
+                    <div class="mb-4">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Experience</label>
+                        <select x-model="filters.experience" class="w-full px-2 py-1.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 text-sm" @change="filterGuides()">
+                            <option value="">Any Experience</option>
+                            <option value="1">1+ Years</option>
+                            <option value="3">3+ Years</option>
+                            <option value="5">5+ Years</option>
+                        </select>
+                    </div>
+
+                    <!-- Rating -->
+                    <div class="mb-4">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Min Rating</label>
+                        <select x-model="filters.rating" class="w-full px-2 py-1.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 text-sm" @change="filterGuides()">
+                            <option value="0">Any Rating</option>
+                            <option value="3">3+ Stars</option>
+                            <option value="4">4+ Stars</option>
+                            <option value="4.5">4.5+ Stars</option>
+                        </select>
+                    </div>
+
+                    <!-- Languages -->
+                    <div class="mb-4">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Languages</label>
+                        <select x-model="filters.language" class="w-full px-2 py-1.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 text-sm" @change="filterGuides()">
+                            <option value="">All Languages</option>
+                            <option value="english">English</option>
+                            <option value="spanish">Spanish</option>
+                            <option value="french">French</option>
+                        </select>
+                    </div>
+
+                    <!-- Verification -->
+                    <div class="mb-4">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Verification</label>
+                        <select x-model="filters.verified" class="w-full px-2 py-1.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 text-sm" @change="filterGuides()">
+                            <option value="">All Guides</option>
+                            <option value="verified">Verified Only</option>
+                        </select>
+                    </div>
+
+                    <!-- Sort By -->
+                    <div class="mb-4">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Sort By</label>
+                        <select x-model="sortBy" class="w-full px-2 py-1.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 text-sm" @change="sortGuides()">
+                            <option value="rating">Highest Rated</option>
+                            <option value="experience">Most Experienced</option>
+                            <option value="name">Name A-Z</option>
+                        </select>
+                    </div>
+
+                    <!-- Clear Filters -->
+                    <button @click="clearFilters()" class="w-full bg-gray-100 text-gray-700 py-1.5 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm mb-3">
+                        Clear All
+                    </button>
+
+                    <!-- Results Count -->
+                    <div class="pt-3 border-t border-gray-200">
+                        <p class="text-xs text-gray-600 text-center">
+                            <span x-text="filteredGuidesCount"></span> guides found
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="flex-1 min-w-0">
+                <!-- Compact Stats Cards -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+                    <div class="bg-white rounded-lg p-3 shadow-sm border border-gray-100">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-medium text-gray-600">Total</p>
+                                <p class="text-lg font-bold text-gray-900">{{ guides|length }}</p>
+                            </div>
+                            <div class="p-1.5 bg-blue-500/10 rounded">
+                                <i class="fas fa-users text-blue-600 text-sm"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg p-3 shadow-sm border border-gray-100">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-medium text-gray-600">Verified</p>
+                                <p class="text-lg font-bold text-gray-900">{{ verified_guides_count }}</p>
+                            </div>
+                            <div class="p-1.5 bg-green-500/10 rounded">
+                                <i class="fas fa-shield-alt text-green-600 text-sm"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg p-3 shadow-sm border border-gray-100">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-medium text-gray-600">Languages</p>
+                                <p class="text-lg font-bold text-gray-900">{{ total_languages }}+</p>
+                            </div>
+                            <div class="p-1.5 bg-purple-500/10 rounded">
+                                <i class="fas fa-globe-americas text-purple-600 text-sm"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg p-3 shadow-sm border border-gray-100">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-medium text-gray-600">Experience</p>
+                                <p class="text-lg font-bold text-gray-900">{{ avg_experience }} yrs</p>
+                            </div>
+                            <div class="p-1.5 bg-orange-500/10 rounded">
+                                <i class="fas fa-award text-orange-600 text-sm"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guide Cards Header -->
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900">Professional Guides</h2>
+                        <p class="text-gray-600 text-sm mt-1">Expert local guides ready to enhance your journey</p>
+                    </div>
+                </div>
+
+                <!-- Enhanced Guide Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5" id="guides-container">
+                    {% for guide in guides %}
+                    <div class="guide-card group bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 hover:border-blue-200 overflow-hidden hover:-translate-y-1"
+                         data-name="{{ guide.user.get_full_name|default:guide.user.username|lower }}"
+                         data-location="{{ guide.address|default:''|lower }}"
+                         data-bio="{{ guide.bio|default:''|lower }}"
+                         data-languages="{{ guide.languages|default:''|lower }}"
+                         data-experience="{{ guide.experience_years }}"
+                         data-rating="{{ guide.average_rating }}"
+                         data-verified="{{ guide.is_verified }}">
+
+                        <!-- Elegant Card Header with Gradient Overlay -->
+                        <div class="relative">
+                            {% if guide.avatar %}
+                                <img src="{{ guide.avatar.url }}" alt="{{ guide.user.get_full_name }}"
+                                     class="w-full h-40 object-cover group-hover:scale-110 transition-transform duration-700">
+                            {% else %}
+                                <div class="w-full h-40 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center relative overflow-hidden">
+                                    <div class="absolute inset-0 bg-black/10"></div>
+                                    <i class="fas fa-user text-white text-3xl opacity-90 relative z-10"></i>
+                                </div>
+                            {% endif %}
+
+                            <!-- Gradient Overlay -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                            <!-- Premium Badges -->
+                            <div class="absolute top-3 right-3 flex flex-col space-y-2">
+                                {% if guide.is_verified %}
+                                <div class="bg-gradient-to-r from-green-400 to-emerald-500 text-white px-3 py-1.5 rounded-full text-xs font-semibold flex items-center shadow-lg backdrop-blur-sm">
+                                    <i class="fas fa-shield-check mr-1.5"></i>
+                                    Verified
+                                </div>
+                                {% endif %}
+
+                                {% if guide.experience_years >= 5 %}
+                                <div class="bg-gradient-to-r from-amber-400 to-orange-500 text-white px-3 py-1.5 rounded-full text-xs font-semibold flex items-center shadow-lg backdrop-blur-sm">
+                                    <i class="fas fa-crown mr-1.5"></i>
+                                    Expert
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Floating Avatar with Glow Effect -->
+                            <div class="absolute -bottom-6 left-4">
+                                <div class="relative">
+                                    <div class="absolute inset-0 bg-blue-400 rounded-xl blur-sm group-hover:blur-md transition-all duration-500 opacity-50 group-hover:opacity-70"></div>
+                                    {% if guide.avatar %}
+                                        <img src="{{ guide.avatar.url }}" alt="{{ guide.user.get_full_name }}"
+                                             class="w-14 h-14 rounded-xl border-4 border-white shadow-xl object-cover relative z-10">
+                                    {% else %}
+                                        <div class="w-14 h-14 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl border-4 border-white shadow-xl flex items-center justify-center text-white font-bold text-base relative z-10">
+                                            {{ guide.user.get_full_name|default:guide.user.username|first|upper }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Enhanced Card Content -->
+                        <div class="pt-8 px-4 pb-4">
+                            <!-- Name and Location -->
+                            <div class="mb-4">
+                                <h3 class="font-bold text-gray-900 text-lg mb-2 group-hover:text-blue-600 transition-colors duration-300">
+                                    {{ guide.user.get_full_name|default:guide.user.username }}
+                                </h3>
+                                <div class="flex items-center text-gray-600 text-sm">
+                                    <i class="fas fa-map-marker-alt mr-2 text-blue-500"></i>
+                                    <span class="truncate">{{ guide.address|default:"Available Worldwide" }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Key Metrics - Experience LEFT & Rating RIGHT -->
+                            <div class="flex items-center justify-between mb-4 p-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-100">
+                                <!-- Experience - LEFT SIDE -->
+                                <div class="text-center">
+                                    <div class="flex items-center justify-center text-orange-500 mb-1">
+                                        <i class="fas fa-briefcase text-sm mr-1.5"></i>
+                                    </div>
+                                    <div class="text-xs text-gray-600 font-medium">Experience</div>
+                                    <div class="text-sm font-bold text-gray-900">{{ guide.experience_years }}+ years</div>
+                                </div>
+
+                                <!-- Divider -->
+                                <div class="w-px h-8 bg-blue-200 mx-2"></div>
+
+                                <!-- Rating - RIGHT SIDE -->
+                                <div class="text-center">
+                                    <div class="flex items-center justify-center text-amber-500 mb-1">
+                                        {% for i in "12345" %}
+                                            {% if forloop.counter <= guide.average_rating %}
+                                                <i class="fas fa-star text-xs mx-0.5"></i>
+                                            {% else %}
+                                                <i class="far fa-star text-xs mx-0.5"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <div class="text-xs text-gray-600 font-medium">Rating</div>
+                                    <div class="text-sm font-bold text-gray-900">{{ guide.average_rating }}/5</div>
+                                </div>
+                            </div>
+
+                            <!-- Languages with Colorful Tags -->
+                            {% if guide.languages %}
+                            <div class="mb-4">
+                                <div class="flex flex-wrap gap-2">
+                                    {% for lang in guide.languages|split:","|slice:":3" %}
+                                    <span class="bg-gradient-to-r from-blue-100 to-blue-50 text-blue-700 px-3 py-1.5 rounded-full text-xs font-semibold border border-blue-200 shadow-sm hover:shadow transition-all duration-300 hover:scale-105">
+                                        {{ lang|strip }}
+                                    </span>
+                                    {% endfor %}
+                                    {% if guide.languages|split:","|length > 3 %}
+                                    <span class="bg-gradient-to-r from-gray-100 to-gray-50 text-gray-600 px-3 py-1.5 rounded-full text-xs font-semibold border border-gray-200">
+                                        +{{ guide.languages|split:","|length|add:"-3" }}
+                                    </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <!-- Enhanced CTA Button -->
+                            <div class="pt-3 border-t border-gray-100">
+                                <a href="{% url 'guide_detail' guide.id %}"
+                                   class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-500 shadow-lg hover:shadow-xl font-semibold text-sm text-center block group relative overflow-hidden">
+                                    <span class="relative z-10 group-hover:scale-105 transition-transform duration-300">
+                                        View Full Profile
+                                    </span>
+                                    <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-700 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-span-full text-center py-12">
+                        <div class="max-w-md mx-auto">
+                            <div class="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-users text-blue-500 text-2xl"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-600 mb-2">No Guides Available</h3>
+                            <p class="text-gray-500 text-sm mb-4">We're working on adding more expert guides to our platform.</p>
+                            <button class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 font-semibold text-sm shadow-lg hover:shadow-xl">
+                                Notify Me
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Enhanced Load More -->
+                <div class="text-center mt-12">
+                    <button class="bg-gradient-to-r from-white to-gray-50 text-gray-700 border border-gray-300 px-8 py-3 rounded-xl hover:from-gray-50 hover:to-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl font-semibold text-sm group">
+                        <span class="group-hover:scale-105 transition-transform duration-300 inline-block">
+                            Load More Guides
+                        </span>
+                        <i class="fas fa-chevron-down ml-2 text-xs group-hover:translate-y-1 transition-transform duration-300"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function guideList() {
+    return {
+        search: '',
+        sortBy: 'rating',
+        filters: {
+            location: '',
+            experience: '',
+            rating: '0',
+            language: '',
+            verified: ''
+        },
+        filteredGuidesCount: {{ guides|length }},
+
+        init() {
+            this.filterGuides();
+        },
+
+        filterGuides() {
+            const searchTerm = this.search.toLowerCase();
+            const locationTerm = this.filters.location.toLowerCase();
+            const minExperience = this.filters.experience ? parseInt(this.filters.experience) : 0;
+            const minRating = parseFloat(this.filters.rating) || 0;
+            const languageFilter = this.filters.language.toLowerCase();
+            const verifiedOnly = this.filters.verified === 'verified';
+
+            const cards = document.querySelectorAll('.guide-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const name = card.dataset.name;
+                const location = card.dataset.location;
+                const bio = card.dataset.bio;
+                const languages = card.dataset.languages;
+                const experience = parseInt(card.dataset.experience);
+                const rating = parseFloat(card.dataset.rating);
+                const verified = card.dataset.verified === 'True';
+
+                // Check search term
+                const matchesSearch = !searchTerm ||
+                    name.includes(searchTerm) ||
+                    bio.includes(searchTerm) ||
+                    languages.includes(searchTerm);
+
+                // Check location
+                const matchesLocation = !locationTerm || location.includes(locationTerm);
+
+                // Check experience
+                const matchesExperience = minExperience === 0 || experience >= minExperience;
+
+                // Check rating
+                const matchesRating = rating >= minRating;
+
+                // Check language
+                const matchesLanguage = !languageFilter || languages.includes(languageFilter);
+
+                // Check verification
+                const matchesVerification = !verifiedOnly || verified;
+
+                // Show card if all conditions are met
+                const shouldShow = matchesSearch && matchesLocation && matchesExperience &&
+                                 matchesRating && matchesLanguage && matchesVerification;
+
+                if (shouldShow) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                    card.classList.add('animate-fade-in');
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            this.filteredGuidesCount = visibleCount;
+        },
+
+        sortGuides() {
+            const container = document.getElementById('guides-container');
+            const cards = Array.from(document.querySelectorAll('.guide-card[style*="display: block"]'));
+
+            cards.sort((a, b) => {
+                switch(this.sortBy) {
+                    case 'rating':
+                        return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
+                    case 'experience':
+                        return parseInt(b.dataset.experience) - parseInt(a.dataset.experience);
+                    case 'name':
+                        return a.dataset.name.localeCompare(b.dataset.name);
+                    default:
+                        return 0;
+                }
+            });
+
+            // Reorder cards in container
+            cards.forEach(card => container.appendChild(card));
+        },
+
+        clearFilters() {
+            this.search = '';
+            this.filters = {
+                location: '',
+                experience: '',
+                rating: '0',
+                language: '',
+                verified: ''
+            };
+            this.filterGuides();
+        }
+    }
+}
+</script>
+
+<style>
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.4s ease-out;
+}
+
+.sticky {
+    position: sticky;
+    top: 6rem;
+}
+
+.truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Smooth hover effects */
+.guide-card {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+</style>
 {% endblock %}
