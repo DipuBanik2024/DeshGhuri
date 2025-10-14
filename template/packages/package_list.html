@@ -46,15 +46,14 @@
     /* ======= Package Cards ======= */
     .packages-container {
         padding: 40px;
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(3, 380px); /* 3 কার্ড প্রতি রো */
+        justify-content: center; /* ফাঁকা জায়গা দুই পাশে */
         gap: 30px;
-        justify-content: center;
     }
 
     .card {
         width: 100%;
-        max-width: 380px;
         background: white;
         border-radius: 16px;
         overflow: hidden;
@@ -156,13 +155,17 @@
         box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
     }
 
-    @media (max-width: 480px) {
+    /* ======= Responsive ======= */
+    @media (max-width: 1200px) {
         .packages-container {
-            flex-direction: column;
-            align-items: center;
+            grid-template-columns: repeat(2, 380px);
         }
-        .card {
-            max-width: 100%;
+    }
+
+    @media (max-width: 800px) {
+        .packages-container {
+            grid-template-columns: 1fr; /* full width এক কার্ড */
+            justify-content: center;
         }
     }
 </style>
