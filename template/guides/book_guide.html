@@ -1,0 +1,284 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Book {{ guide.user.get_full_name }} - TourGuide{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <a href="{% url 'guide_detail' guide.id %}" class="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to Guide Profile
+            </a>
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">Book Your Tour</h1>
+            <p class="text-xl text-gray-600">Complete the form below to book {{ guide.user.get_full_name|default:guide.user.username }}</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column - Guide Info -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sticky top-6">
+                    <!-- Guide Card -->
+                    <div class="text-center mb-6">
+                        {% if guide.avatar %}
+                            <img src="{{ guide.avatar.url }}" alt="{{ guide.user.get_full_name }}" 
+                                 class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-blue-200 object-cover">
+                        {% else %}
+                            <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center text-white font-bold text-2xl">
+                                {{ guide.user.get_full_name|default:guide.user.username|first|upper }}
+                            </div>
+                        {% endif %}
+                        <h3 class="text-xl font-bold text-gray-900">{{ guide.user.get_full_name|default:guide.user.username }}</h3>
+                        <p class="text-gray-600">Professional Tour Guide</p>
+                        <div class="flex items-center justify-center mt-2">
+                            <div class="flex text-amber-500 mr-2">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= guide.average_rating %}
+                                        <i class="fas fa-star text-sm"></i>
+                                    {% else %}
+                                        <i class="far fa-star text-sm"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <span class="text-sm text-gray-600">({{ guide.average_rating }})</span>
+                        </div>
+                    </div>
+
+                    <!-- Guide Stats -->
+                    <div class="space-y-3 border-t border-gray-200 pt-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Experience</span>
+                            <span class="font-semibold text-gray-900">{{ guide.experience_years }}+ years</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Languages</span>
+                            <span class="font-semibold text-gray-900">{{ total_languages }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Completed Tours</span>
+                            <span class="font-semibold text-gray-900">{{ completed_tours }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Trust Badges -->
+                    <div class="mt-6 space-y-3">
+                        {% if guide.is_verified %}
+                        <div class="flex items-center text-green-600">
+                            <i class="fas fa-shield-check mr-3"></i>
+                            <span class="text-sm font-semibold">Verified Guide</span>
+                        </div>
+                        {% endif %}
+                        <div class="flex items-center text-blue-600">
+                            <i class="fas fa-star mr-3"></i>
+                            <span class="text-sm font-semibold">{{ review_count }} Reviews</span>
+                        </div>
+                        <div class="flex items-center text-purple-600">
+                            <i class="fas fa-bolt mr-3"></i>
+                            <span class="text-sm font-semibold">Quick Response</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Booking Form -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Tour Details</h2>
+                    
+                    <form method="POST" class="space-y-6">
+                        {% csrf_token %}
+                        
+                        <!-- Destination -->
+                        <div>
+                            <label for="destination" class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-map-marker-alt text-blue-500 mr-2"></i>
+                                Destination
+                            </label>
+                            <input type="text" name="destination" id="destination" 
+                                   value="{{ form.destination.value|default:'' }}"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   placeholder="Where would you like to go?"
+                                   required>
+                            {% if form.destination.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ form.destination.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Date -->
+                        <div>
+                            <label for="date" class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-calendar text-blue-500 mr-2"></i>
+                                Tour Date
+                            </label>
+                            <input type="date" name="date" id="date" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   required>
+                            {% if form.date.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ form.date.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Number of Travelers & Duration -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="number_of_travelers" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-users text-blue-500 mr-2"></i>
+                                    Number of Travelers
+                                </label>
+                                <input type="number" name="number_of_travelers" id="number_of_travelers" 
+                                       min="1" max="20" value="1"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                       required>
+                                {% if form.number_of_travelers.errors %}
+                                <p class="text-red-500 text-sm mt-1">{{ form.number_of_travelers.errors.0 }}</p>
+                                {% endif %}
+                            </div>
+
+                            <div>
+                                <label for="duration_hours" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    <i class="fas fa-clock text-blue-500 mr-2"></i>
+                                    Tour Duration
+                                </label>
+                                <select name="duration_hours" id="duration_hours" 
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                                    <option value="">Select duration</option>
+                                    <option value="2">2 hours (Quick tour)</option>
+                                    <option value="4" selected>4 hours (Half day)</option>
+                                    <option value="8">8 hours (Full day)</option>
+                                    <option value="12">12 hours (Full day+)</option>
+                                </select>
+                                {% if form.duration_hours.errors %}
+                                <p class="text-red-500 text-sm mt-1">{{ form.duration_hours.errors.0 }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Places to Explore -->
+                        <div>
+                            <label for="places_to_explore" class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-binoculars text-blue-500 mr-2"></i>
+                                Places to Explore
+                            </label>
+                            <input type="text" name="places_to_explore" id="places_to_explore" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   placeholder="Specific places, landmarks, or activities you're interested in...">
+                            {% if form.places_to_explore.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ form.places_to_explore.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Price -->
+                        <div>
+                            <label for="price" class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-tag text-blue-500 mr-2"></i>
+                                Proposed Price (BDT)
+                            </label>
+                            <input type="number" name="price" id="price" step="0.01" min="0"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   placeholder="Enter your proposed budget">
+                            {% if form.price.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ form.price.errors.0 }}</p>
+                            {% endif %}
+                            <p class="text-sm text-gray-500 mt-1">Leave empty if you'd like the guide to propose a price</p>
+                        </div>
+
+                        <!-- Notes -->
+                        <div>
+                            <label for="notes" class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-edit text-blue-500 mr-2"></i>
+                                Special Requests & Notes
+                            </label>
+                            <textarea name="notes" id="notes" rows="4"
+                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                      placeholder="Any special requirements, dietary restrictions, accessibility needs, or additional notes for the guide..."></textarea>
+                            {% if form.notes.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ form.notes.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex space-x-4 pt-6">
+                            <a href="{% url 'guide_detail' guide.id %}" 
+                               class="flex-1 bg-gray-300 text-gray-700 py-4 rounded-xl font-semibold hover:bg-gray-400 transition-all duration-300 text-center">
+                                <i class="fas fa-times mr-2"></i>
+                                Cancel
+                            </a>
+                            <button type="submit" 
+                                    class="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-xl font-semibold hover:shadow-lg transition-all duration-300">
+                                <i class="fas fa-paper-plane mr-2"></i>
+                                Send Booking Request
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Booking Tips -->
+                <div class="mt-6 bg-blue-50 rounded-2xl p-6 border border-blue-200">
+                    <h3 class="text-lg font-semibold text-blue-900 mb-3 flex items-center">
+                        <i class="fas fa-lightbulb text-blue-500 mr-2"></i>
+                        Booking Tips
+                    </h3>
+                    <ul class="text-blue-800 space-y-2 text-sm">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mr-2 mt-1 flex-shrink-0"></i>
+                            <span>Be specific about your interests to get the best personalized experience</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mr-2 mt-1 flex-shrink-0"></i>
+                            <span>Mention any dietary restrictions or accessibility needs in advance</span>
+                        </li>
+                        <li class="fas fa-check-circle text-green-500 mr-2 mt-1 flex-shrink-0"></i>
+                            <span>The guide will respond to your request within 24 hours</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mr-2 mt-1 flex-shrink-0"></i>
+                            <span>You can discuss and adjust the final price with the guide</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    const dateInput = document.getElementById('date');
+    if (dateInput) {
+        dateInput.min = today;
+    }
+
+    // Auto-calculate price suggestion based on duration and travelers
+    const durationSelect = document.getElementById('duration_hours');
+    const travelersInput = document.getElementById('number_of_travelers');
+    const priceInput = document.getElementById('price');
+
+    function calculatePriceSuggestion() {
+        const duration = parseInt(durationSelect.value) || 4;
+        const travelers = parseInt(travelersInput.value) || 1;
+        
+        // Base rate: 500 BDT per hour + 200 BDT per traveler
+        const suggestedPrice = (duration * 500) + (travelers * 200);
+        
+        // Only suggest if price field is empty
+        if (!priceInput.value) {
+            priceInput.placeholder = `Suggested: ৳${suggestedPrice} (adjust as needed)`;
+        }
+    }
+
+    if (durationSelect && travelersInput && priceInput) {
+        durationSelect.addEventListener('change', calculatePriceSuggestion);
+        travelersInput.addEventListener('input', calculatePriceSuggestion);
+        
+        // Calculate initial suggestion
+        calculatePriceSuggestion();
+    }
+});
+</script>
+{% endblock %}

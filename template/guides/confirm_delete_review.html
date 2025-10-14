@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Review - {{ guide.user.get_full_name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
+    <!-- Header -->
+    <div class="text-center mb-6">
+        <div class="mx-auto w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+            </svg>
+        </div>
+        <h1 class="text-2xl font-bold text-red-600 mb-2">Delete Review</h1>
+        <p class="text-gray-600">This action cannot be undone.</p>
+    </div>
+    
+    <!-- Review Preview -->
+    <div class="bg-gray-50 p-4 rounded-lg mb-6">
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="font-semibold text-gray-800">Review for {{ guide.user.get_full_name }}</h3>
+            <div class="flex items-center">
+                {% for i in "12345" %}
+                    <span class="text-lg {% if forloop.counter <= review.rating %}text-yellow-400{% else %}text-gray-300{% endif %}">★</span>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="text-sm text-gray-600 space-y-2">
+            <p><strong>Rating:</strong> {{ review.rating }}/5</p>
+            <p><strong>Submitted:</strong> {{ review.created_at|date:"F j, Y" }}</p>
+            <div class="mt-2">
+                <p class="font-medium text-gray-700 mb-1">Your comment:</p>
+                <p class="bg-white p-3 rounded border text-gray-600">"{{ review.comment }}"</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Warning Message -->
+    <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+        <div class="flex">
+            <svg class="w-5 h-5 text-red-400 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+            </svg>
+            <div>
+                <p class="text-sm text-red-700">
+                    <strong>Warning:</strong> Once deleted, your review and rating will be permanently removed from the guide's profile.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Form -->
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        
+        <div class="flex space-x-3">
+            <button type="submit" class="flex-1 bg-red-600 text-white px-4 py-3 rounded-lg hover:bg-red-700 transition-colors font-medium">
+                Yes, Delete Review
+            </button>
+            <a href="{% url 'guide_detail' guide.id %}" class="flex-1 bg-gray-300 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-400 transition-colors font-medium text-center">
+                Cancel
+            </a>
+        </div>
+        
+        <p class="text-xs text-gray-500 text-center">
+            You can always write a new review later if you change your mind.
+        </p>
+    </form>
+</div>
+{% endblock %}
