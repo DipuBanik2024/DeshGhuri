@@ -3,60 +3,141 @@
 {% block title %}Login — DeshGhuri{% endblock %}
 
 {% block content %}
-<section class="flex items-center justify-center min-h-screen bg-white pb-6">
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto px-4">
+<section class="min-h-screen bg-gray-100 flex items-center justify-center py-8 px-4">
+  <div class="w-full max-w-5xl mx-auto">
 
-    <!-- Left Side (Form) -->
-    <div class="flex flex-col justify-center">
-      <h2 class="text-2xl font-bold mb-2">Welcome Back</h2>
-      <p class="text-gray-600 mb-6">Sign in to your account</p>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
-      <!-- Error messages -->
-      {% if messages %}
-        {% for message in messages %}
-          <div class="bg-red-100 text-red-700 px-4 py-2 rounded mb-4">
-            {{ message }}
+
+      <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 p-8 w-full max-w-md relative overflow-hidden">
+
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-gradient-to-br from-cyan-200 to-cyan-400 rounded-full opacity-20 blur-xl"></div>
+        <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-gradient-to-br from-blue-200 to-blue-400 rounded-full opacity-20 blur-xl"></div>
+
+        <div class="relative z-10">
+
+          <div class="text-center mb-8">
+            <div class="w-16 h-16 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-2xl shadow-lg shadow-cyan-500/25 flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-lock-open text-2xl text-white"></i>
+            </div>
+            <h1 class="text-3xl font-bold bg-gradient-to-br from-gray-800 to-gray-600 bg-clip-text text-transparent mb-3">
+              Welcome Back
+            </h1>
+            <p class="text-gray-500 text-base">Sign in to your DeshGhuri account</p>
           </div>
-        {% endfor %}
-      {% endif %}
 
-      <form method="post" class="space-y-4">
-        {% csrf_token %}
 
-        <!-- Username / Email -->
-        <div>
-          <label for="identifier" class="block text-sm font-medium text-gray-700 mb-1">Username or Email</label>
-          <input type="text" name="identifier" id="identifier" class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-cyan-500" required>
+          {% if messages %}
+            {% for message in messages %}
+              <div class="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-center gap-3 text-sm shadow-sm">
+                <i class="fas fa-exclamation-triangle text-red-500"></i>
+                <span class="font-medium">{{ message }}</span>
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          <form method="post" class="space-y-6" novalidate>
+            {% csrf_token %}
+
+
+            <div class="group">
+              <label for="identifier" class="block text-sm font-semibold text-gray-700 mb-3">
+                <i class="fas fa-user-circle text-cyan-500 mr-2"></i>
+                Username
+                <span class="text-red-400 ml-1">*</span>
+              </label>
+              <div class="relative">
+                <input type="text" name="identifier" id="identifier"
+                       class="w-full px-5 py-4 bg-white/50 border-2 border-gray-200 rounded-2xl focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-300 text-base placeholder-gray-400 shadow-sm hover:shadow-md"
+                       placeholder="Enter your username" required>
+                <div class="absolute right-4 top-1/2 transform -translate-y-1/2">
+                  <i class="fas fa-user text-cyan-400 group-focus-within:text-cyan-500 transition-colors duration-300"></i>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="group">
+              <label for="password" class="block text-sm font-semibold text-gray-700 mb-3">
+                <i class="fas fa-key text-cyan-500 mr-2"></i>
+                Password
+                <span class="text-red-400 ml-1">*</span>
+              </label>
+              <div class="relative">
+                <input type="password" name="password" id="password"
+                       class="w-full px-5 py-4 bg-white/50 border-2 border-gray-200 rounded-2xl focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100 transition-all duration-300 text-base placeholder-gray-400 shadow-sm hover:shadow-md"
+                       placeholder="Enter your password" required>
+                <div class="absolute right-4 top-1/2 transform -translate-y-1/2">
+                  <i class="text-cyan-400 group-focus-within:text-cyan-500 transition-colors duration-300"></i>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="flex items-center justify-between">
+              <label class="flex items-center gap-3 cursor-pointer group">
+                <div class="relative">
+                  <input type="checkbox" name="remember_me" id="remember_me"
+                         class="h-5 w-5 text-cyan-500 border-2 border-gray-300 rounded-lg focus:ring-4 focus:ring-cyan-100 transition-all duration-300 peer">
+                  <div class="absolute inset-0 bg-cyan-500 rounded-lg scale-0 peer-checked:scale-100 transition-transform duration-300"></div>
+                  <i class="fas fa-check absolute inset-0 text-white text-xs flex items-center justify-center scale-0 peer-checked:scale-100 transition-transform duration-300"></i>
+                </div>
+                <span class="text-sm text-gray-600 font-medium group-hover:text-gray-700 transition-colors duration-300">
+                  Remember me
+                </span>
+              </label>
+
+            </div>
+
+
+            <button type="submit"
+                    class="w-full bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-cyan-500/30 hover:shadow-xl hover:shadow-cyan-500/40 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 text-base group">
+              <i class="fas fa-sign-in-alt group-hover:scale-110 transition-transform duration-300"></i>
+              Sign In to Your Account
+            </button>
+
+            <div class="text-center pt-6 border-t border-gray-200/50">
+              <p class="text-gray-500 text-sm">
+                Don't have an account?
+                <a href="{% url 'signup' %}"
+                   class="font-bold text-cyan-500 hover:text-cyan-600 ml-2 transition-colors duration-300 hover:underline">
+                  Create Account
+                  <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                </a>
+              </p>
+            </div>
+          </form>
         </div>
+      </div>
 
-        <!-- Password -->
-        <div>
-          <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-          <input type="password" name="password" id="password" class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-cyan-500" required>
+
+      <div class="flex justify-center items-center">
+        <div class="relative group w-full max-w-lg">
+
+          <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-3xl shadow-2xl transform rotate-1 group-hover:rotate-0 transition-transform duration-500"></div>
+          <div class="absolute inset-0 bg-white/90 rounded-3xl shadow-xl"></div>
+
+          <div class="relative rounded-3xl overflow-hidden">
+            <img src="{% static 'images/signup_image.png' %}"
+                 alt="Welcome to DeshGhuri"
+                 class="w-full h-[650px] object-cover transform group-hover:scale-105 transition-transform duration-700">
+
+
+            <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+
+            <div class="absolute top-6 left-6 bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-lg transform -translate-x-2 group-hover:translate-x-0 transition-transform duration-500">
+              <div class="flex items-center gap-3">
+                <div class="w-3 h-3 bg-cyan-400 rounded-full animate-pulse"></div>
+                <span class="text-sm font-semibold text-gray-700">Secure Login</span>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <!-- Remember Me -->
-        <div class="flex items-center">
-          <input type="checkbox" name="remember_me" id="remember_me" class="h-4 w-4 text-cyan-500 border-gray-300 rounded">
-          <label for="remember_me" class="ml-2 text-sm text-gray-600">Remember me</label>
-        </div>
-
-        <!-- Login Button -->
-        <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white py-2 rounded-md">Login</button>
-
-        <!-- Sign Up Link -->
-        <p class="text-center text-sm text-gray-600 mt-4">
-          Don't have an account?
-          <a href="{% url 'signup' %}" class="text-cyan-500 font-medium">Sign Up</a>
-        </p>
-      </form>
     </div>
-
-    <!-- Right Side (Image) -->
-    <div class="flex justify-center items-center md:pl-10">
-      <img src="{% static 'images/signup_image.png' %}" alt="Login illustration" class="rounded-xl shadow-md max-h-[500px]">
-    </div>
-
   </div>
 </section>
+
 {% endblock %}
