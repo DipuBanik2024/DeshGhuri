@@ -3,6 +3,7 @@ from django.contrib.auth import login as auth_login, authenticate, logout as aut
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from .forms import CustomUserCreationForm
+from guides.models import GuideProfile
 
 User = get_user_model()
 
@@ -67,14 +68,12 @@ def dashboard_view(request):
     if not request.user.is_authenticated:
         return redirect('login')
 
-    # Role-wise dashboard rendering
     if hasattr(request.user, 'role'):
         if request.user.role == 'guide':
-            return render(request, "guides/guide_dashboard.html")
+            return redirect('guide_dashboard')
         elif request.user.role == 'tourist':
-            return render(request, "tourists/tourist_dashboard.html")
+            return redirect('tourist_home')
         elif request.user.role == 'hotel_manager':
-            return render(request, "hotels/hotel_dashboard.html")
+            return redirect('hotel_dashboard')
 
-    # Fallback dashboard (default)
-    return render(request, "accounts/guide_dashboard.html")
+    return redirect('guide_dashboard')

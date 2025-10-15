@@ -4,7 +4,7 @@
 {% block title %}Expert Tour Guides - Find Your Perfect Guide | TourGuide{% endblock %}
 
 {% block content %}
-<div x-data="guideList()" class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30">
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30">
     <!-- Main Hero Section -->
     <div class="bg-white border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -29,43 +29,37 @@
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sticky top-24">
                     <h3 class="text-base font-semibold text-gray-900 mb-3">Filters</h3>
 
-                    <!-- Search with Button -->
+                    <!-- Search -->
                     <div class="mb-4">
                         <label class="block text-xs font-medium text-gray-700 mb-1">Search</label>
-                        <div class="flex gap-2">
-                            <div class="relative flex-1">
-                                <input
-                                    x-model="search"
-                                    type="text"
-                                    placeholder="Name, location..."
-                                    class="w-full pl-8 pr-3 py-1.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                                    @keyup.enter="filterGuides()"
-                                >
-                                <i class="fas fa-search absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 text-xs"></i>
-                            </div>
-                            <button @click="filterGuides()" class="px-3 py-1.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm">
-                                <i class="fas fa-search"></i>
-                            </button>
+                        <div class="relative">
+                            <input
+                                id="searchInput"
+                                type="text"
+                                placeholder="Name, location..."
+                                class="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                            >
+                            <i class="fas fa-search absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400 text-xs"></i>
                         </div>
                     </div>
 
                     <!-- Location -->
                     <div class="mb-4">
                         <label class="block text-xs font-medium text-gray-700 mb-1">Location</label>
-                        <input
-                            x-model="filters.location"
-                            type="text"
-                            placeholder="City, country..."
-                            class="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                            @input="filterGuides()"
-                        >
+                        <select id="locationFilter" class="w-full px-2 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 text-sm">
+                            <option value="all">All Locations</option>
+                            <option value="europe">Europe</option>
+                            <option value="asia">Asia</option>
+                            <option value="americas">Americas</option>
+                            <option value="africa">Africa</option>
+                        </select>
                     </div>
 
                     <!-- Experience -->
                     <div class="mb-4">
                         <label class="block text-xs font-medium text-gray-700 mb-1">Experience</label>
-                        <select x-model="filters.experience" class="w-full px-2 py-1.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 text-sm" @change="filterGuides()">
-                            <option value="">Any Experience</option>
+                        <select id="experienceFilter" class="w-full px-2 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 text-sm">
+                            <option value="all">Any Experience</option>
                             <option value="1">1+ Years</option>
                             <option value="3">3+ Years</option>
                             <option value="5">5+ Years</option>
@@ -75,7 +69,7 @@
                     <!-- Rating -->
                     <div class="mb-4">
                         <label class="block text-xs font-medium text-gray-700 mb-1">Min Rating</label>
-                        <select x-model="filters.rating" class="w-full px-2 py-1.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 text-sm" @change="filterGuides()">
+                        <select id="ratingFilter" class="w-full px-2 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 text-sm">
                             <option value="0">Any Rating</option>
                             <option value="3">3+ Stars</option>
                             <option value="4">4+ Stars</option>
@@ -86,8 +80,8 @@
                     <!-- Languages -->
                     <div class="mb-4">
                         <label class="block text-xs font-medium text-gray-700 mb-1">Languages</label>
-                        <select x-model="filters.language" class="w-full px-2 py-1.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 text-sm" @change="filterGuides()">
-                            <option value="">All Languages</option>
+                        <select id="languageFilter" class="w-full px-2 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 text-sm">
+                            <option value="all">All Languages</option>
                             <option value="english">English</option>
                             <option value="spanish">Spanish</option>
                             <option value="french">French</option>
@@ -97,31 +91,21 @@
                     <!-- Verification -->
                     <div class="mb-4">
                         <label class="block text-xs font-medium text-gray-700 mb-1">Verification</label>
-                        <select x-model="filters.verified" class="w-full px-2 py-1.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 text-sm" @change="filterGuides()">
-                            <option value="">All Guides</option>
+                        <select id="verificationFilter" class="w-full px-2 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 text-sm">
+                            <option value="all">All Guides</option>
                             <option value="verified">Verified Only</option>
                         </select>
                     </div>
 
-                    <!-- Sort By -->
-                    <div class="mb-4">
-                        <label class="block text-xs font-medium text-gray-700 mb-1">Sort By</label>
-                        <select x-model="sortBy" class="w-full px-2 py-1.5 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 text-sm" @change="sortGuides()">
-                            <option value="rating">Highest Rated</option>
-                            <option value="experience">Most Experienced</option>
-                            <option value="name">Name A-Z</option>
-                        </select>
-                    </div>
-
                     <!-- Clear Filters -->
-                    <button @click="clearFilters()" class="w-full bg-gray-100 text-gray-700 py-1.5 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm mb-3">
+                    <button id="clearFilters" class="w-full bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm mb-3">
                         Clear All
                     </button>
 
                     <!-- Results Count -->
                     <div class="pt-3 border-t border-gray-200">
                         <p class="text-xs text-gray-600 text-center">
-                            <span x-text="filteredGuidesCount"></span> guides found
+                            <span id="resultsCount">{{ guides|length }}</span> guides found
                         </p>
                     </div>
                 </div>
@@ -188,59 +172,54 @@
                     </div>
                 </div>
 
-                <!-- Enhanced Guide Cards Grid -->
+                <!-- Enhanced Guide Cards Grid - SHORTENED VERSION -->
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5" id="guides-container">
                     {% for guide in guides %}
-                    <div class="guide-card group bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 hover:border-blue-200 overflow-hidden hover:-translate-y-1"
+                    <div class="guide-card group bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-blue-200 overflow-hidden hover:-translate-y-1"
                          data-name="{{ guide.user.get_full_name|default:guide.user.username|lower }}"
                          data-location="{{ guide.address|default:''|lower }}"
                          data-bio="{{ guide.bio|default:''|lower }}"
                          data-languages="{{ guide.languages|default:''|lower }}"
                          data-experience="{{ guide.experience_years }}"
                          data-rating="{{ guide.average_rating }}"
-                         data-verified="{{ guide.is_verified }}">
+                         data-verified="{{ guide.is_verified }}"
+                         data-region="{{ guide.region|default:'all'|lower }}">
 
-                        <!-- Elegant Card Header with Gradient Overlay -->
+                        <!-- Compact Card Header -->
                         <div class="relative">
                             {% if guide.avatar %}
                                 <img src="{{ guide.avatar.url }}" alt="{{ guide.user.get_full_name }}"
-                                     class="w-full h-40 object-cover group-hover:scale-110 transition-transform duration-700">
+                                     class="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-500">
                             {% else %}
-                                <div class="w-full h-40 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center relative overflow-hidden">
-                                    <div class="absolute inset-0 bg-black/10"></div>
-                                    <i class="fas fa-user text-white text-3xl opacity-90 relative z-10"></i>
+                                <div class="w-full h-32 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                                    <i class="fas fa-user text-white text-2xl"></i>
                                 </div>
                             {% endif %}
 
-                            <!-- Gradient Overlay -->
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                            <!-- Premium Badges -->
-                            <div class="absolute top-3 right-3 flex flex-col space-y-2">
+                            <!-- Badges - More Compact -->
+                            <div class="absolute top-2 right-2 flex flex-col space-y-1">
                                 {% if guide.is_verified %}
-                                <div class="bg-gradient-to-r from-green-400 to-emerald-500 text-white px-3 py-1.5 rounded-full text-xs font-semibold flex items-center shadow-lg backdrop-blur-sm">
-                                    <i class="fas fa-shield-check mr-1.5"></i>
+                                <div class="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center shadow-sm">
+                                    <i class="fas fa-shield-check mr-1"></i>
                                     Verified
                                 </div>
                                 {% endif %}
-
                                 {% if guide.experience_years >= 5 %}
-                                <div class="bg-gradient-to-r from-amber-400 to-orange-500 text-white px-3 py-1.5 rounded-full text-xs font-semibold flex items-center shadow-lg backdrop-blur-sm">
-                                    <i class="fas fa-crown mr-1.5"></i>
+                                <div class="bg-amber-500 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center shadow-sm">
+                                    <i class="fas fa-crown mr-1"></i>
                                     Expert
                                 </div>
                                 {% endif %}
                             </div>
 
-                            <!-- Floating Avatar with Glow Effect -->
-                            <div class="absolute -bottom-6 left-4">
+                            <!-- Smaller Avatar -->
+                            <div class="absolute -bottom-4 left-3">
                                 <div class="relative">
-                                    <div class="absolute inset-0 bg-blue-400 rounded-xl blur-sm group-hover:blur-md transition-all duration-500 opacity-50 group-hover:opacity-70"></div>
                                     {% if guide.avatar %}
                                         <img src="{{ guide.avatar.url }}" alt="{{ guide.user.get_full_name }}"
-                                             class="w-14 h-14 rounded-xl border-4 border-white shadow-xl object-cover relative z-10">
+                                             class="w-10 h-10 rounded-lg border-2 border-white shadow-md object-cover">
                                     {% else %}
-                                        <div class="w-14 h-14 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl border-4 border-white shadow-xl flex items-center justify-center text-white font-bold text-base relative z-10">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg border-2 border-white shadow-md flex items-center justify-center text-white font-bold text-sm">
                                             {{ guide.user.get_full_name|default:guide.user.username|first|upper }}
                                         </div>
                                     {% endif %}
@@ -248,35 +227,35 @@
                             </div>
                         </div>
 
-                        <!-- Enhanced Card Content -->
-                        <div class="pt-8 px-4 pb-4">
-                            <!-- Name and Location -->
-                            <div class="mb-4">
-                                <h3 class="font-bold text-gray-900 text-lg mb-2 group-hover:text-blue-600 transition-colors duration-300">
+                        <!-- Compact Card Content -->
+                        <div class="pt-6 px-3 pb-3">
+                            <!-- Name and Location - Compact -->
+                            <div class="mb-3">
+                                <h3 class="font-bold text-gray-900 text-base mb-1 group-hover:text-blue-600 transition-colors duration-300">
                                     {{ guide.user.get_full_name|default:guide.user.username }}
                                 </h3>
-                                <div class="flex items-center text-gray-600 text-sm">
-                                    <i class="fas fa-map-marker-alt mr-2 text-blue-500"></i>
+                                <div class="flex items-center text-gray-600 text-xs">
+                                    <i class="fas fa-map-marker-alt mr-1 text-blue-500 text-xs"></i>
                                     <span class="truncate">{{ guide.address|default:"Available Worldwide" }}</span>
                                 </div>
                             </div>
 
-                            <!-- Key Metrics - Experience LEFT & Rating RIGHT -->
-                            <div class="flex items-center justify-between mb-4 p-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-100">
-                                <!-- Experience - LEFT SIDE -->
-                                <div class="text-center">
+                            <!-- Compact Stats Row -->
+                            <div class="flex items-center justify-between mb-3 p-2 bg-blue-50 rounded-lg border border-blue-100">
+                                <!-- Experience -->
+                                <div class="text-center flex-1">
                                     <div class="flex items-center justify-center text-orange-500 mb-1">
-                                        <i class="fas fa-briefcase text-sm mr-1.5"></i>
+                                        <i class="fas fa-briefcase text-xs"></i>
                                     </div>
-                                    <div class="text-xs text-gray-600 font-medium">Experience</div>
-                                    <div class="text-sm font-bold text-gray-900">{{ guide.experience_years }}+ years</div>
+                                    <div class="text-xs text-gray-600 font-medium">Exp</div>
+                                    <div class="text-xs font-bold text-gray-900">{{ guide.experience_years }}+ yrs</div>
                                 </div>
 
                                 <!-- Divider -->
-                                <div class="w-px h-8 bg-blue-200 mx-2"></div>
+                                <div class="w-px h-6 bg-blue-200 mx-1"></div>
 
-                                <!-- Rating - RIGHT SIDE -->
-                                <div class="text-center">
+                                <!-- Rating -->
+                                <div class="text-center flex-1">
                                     <div class="flex items-center justify-center text-amber-500 mb-1">
                                         {% for i in "12345" %}
                                             {% if forloop.counter <= guide.average_rating %}
@@ -287,36 +266,33 @@
                                         {% endfor %}
                                     </div>
                                     <div class="text-xs text-gray-600 font-medium">Rating</div>
-                                    <div class="text-sm font-bold text-gray-900">{{ guide.average_rating }}/5</div>
+                                    <div class="text-xs font-bold text-gray-900">{{ guide.average_rating }}</div>
                                 </div>
                             </div>
 
-                            <!-- Languages with Colorful Tags -->
+                            <!-- Languages - Compact -->
                             {% if guide.languages %}
-                            <div class="mb-4">
-                                <div class="flex flex-wrap gap-2">
-                                    {% for lang in guide.languages|split:","|slice:":3" %}
-                                    <span class="bg-gradient-to-r from-blue-100 to-blue-50 text-blue-700 px-3 py-1.5 rounded-full text-xs font-semibold border border-blue-200 shadow-sm hover:shadow transition-all duration-300 hover:scale-105">
+                            <div class="mb-3">
+                                <div class="flex flex-wrap gap-1">
+                                    {% for lang in guide.languages|split:","|slice:":2" %}
+                                    <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-medium border border-blue-200">
                                         {{ lang|strip }}
                                     </span>
                                     {% endfor %}
-                                    {% if guide.languages|split:","|length > 3 %}
-                                    <span class="bg-gradient-to-r from-gray-100 to-gray-50 text-gray-600 px-3 py-1.5 rounded-full text-xs font-semibold border border-gray-200">
-                                        +{{ guide.languages|split:","|length|add:"-3" }}
+                                    {% if guide.languages|split:","|length > 2 %}
+                                    <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs font-medium">
+                                        +{{ guide.languages|split:","|length|add:"-2" }}
                                     </span>
                                     {% endif %}
                                 </div>
                             </div>
                             {% endif %}
 
-                            <!-- Enhanced CTA Button -->
-                            <div class="pt-3 border-t border-gray-100">
+                            <!-- Compact CTA Button -->
+                            <div class="pt-2 border-t border-gray-100">
                                 <a href="{% url 'guide_detail' guide.id %}"
-                                   class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-500 shadow-lg hover:shadow-xl font-semibold text-sm text-center block group relative overflow-hidden">
-                                    <span class="relative z-10 group-hover:scale-105 transition-transform duration-300">
-                                        View Full Profile
-                                    </span>
-                                    <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-700 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                   class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-sm hover:shadow font-semibold text-xs text-center block">
+                                    View Profile
                                 </a>
                             </div>
                         </div>
@@ -350,151 +326,86 @@
         </div>
     </div>
 </div>
-{% endblock %}
 
-{% block extra_js %}
 <script>
-function guideList() {
-    return {
-        search: '',
-        sortBy: 'rating',
-        filters: {
-            location: '',
-            experience: '',
-            rating: '0',
-            language: '',
-            verified: ''
-        },
-        filteredGuidesCount: {{ guides|length }},
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const locationFilter = document.getElementById('locationFilter');
+        const experienceFilter = document.getElementById('experienceFilter');
+        const ratingFilter = document.getElementById('ratingFilter');
+        const languageFilter = document.getElementById('languageFilter');
+        const verificationFilter = document.getElementById('verificationFilter');
+        const clearFilters = document.getElementById('clearFilters');
+        const resultsCount = document.getElementById('resultsCount');
+        const cards = document.querySelectorAll('.guide-card');
 
-        init() {
-            this.filterGuides();
-        },
+        function filterGuides() {
+            const searchValue = searchInput.value.toLowerCase();
+            const locationValue = locationFilter.value;
+            const experienceValue = experienceFilter.value;
+            const ratingValue = parseFloat(ratingFilter.value);
+            const languageValue = languageFilter.value;
+            const verificationValue = verificationFilter.value;
 
-        filterGuides() {
-            const searchTerm = this.search.toLowerCase();
-            const locationTerm = this.filters.location.toLowerCase();
-            const minExperience = this.filters.experience ? parseInt(this.filters.experience) : 0;
-            const minRating = parseFloat(this.filters.rating) || 0;
-            const languageFilter = this.filters.language.toLowerCase();
-            const verifiedOnly = this.filters.verified === 'verified';
-
-            const cards = document.querySelectorAll('.guide-card');
             let visibleCount = 0;
 
             cards.forEach(card => {
-                const name = card.dataset.name;
-                const location = card.dataset.location;
-                const bio = card.dataset.bio;
-                const languages = card.dataset.languages;
-                const experience = parseInt(card.dataset.experience);
-                const rating = parseFloat(card.dataset.rating);
+                const name = card.dataset.name || '';
+                const location = card.dataset.location || '';
+                const bio = card.dataset.bio || '';
+                const languages = card.dataset.languages || '';
+                const experience = parseInt(card.dataset.experience) || 0;
+                const rating = parseFloat(card.dataset.rating) || 0;
                 const verified = card.dataset.verified === 'True';
+                const region = card.dataset.region || 'all';
 
-                // Check search term
-                const matchesSearch = !searchTerm ||
-                    name.includes(searchTerm) ||
-                    bio.includes(searchTerm) ||
-                    languages.includes(searchTerm);
+                // Check all filters
+                const matchesSearch = !searchValue ||
+                    name.includes(searchValue) ||
+                    location.includes(searchValue) ||
+                    bio.includes(searchValue) ||
+                    languages.includes(searchValue);
 
-                // Check location
-                const matchesLocation = !locationTerm || location.includes(locationTerm);
+                const matchesLocation = locationValue === 'all' || region === locationValue;
+                const matchesExperience = experienceValue === 'all' || experience >= parseInt(experienceValue);
+                const matchesRating = rating >= ratingValue;
+                const matchesLanguage = languageValue === 'all' || languages.includes(languageValue);
+                const matchesVerification = verificationValue === 'all' || verified;
 
-                // Check experience
-                const matchesExperience = minExperience === 0 || experience >= minExperience;
-
-                // Check rating
-                const matchesRating = rating >= minRating;
-
-                // Check language
-                const matchesLanguage = !languageFilter || languages.includes(languageFilter);
-
-                // Check verification
-                const matchesVerification = !verifiedOnly || verified;
-
-                // Show card if all conditions are met
                 const shouldShow = matchesSearch && matchesLocation && matchesExperience &&
                                  matchesRating && matchesLanguage && matchesVerification;
 
                 if (shouldShow) {
                     card.style.display = 'block';
                     visibleCount++;
-                    card.classList.add('animate-fade-in');
                 } else {
                     card.style.display = 'none';
                 }
             });
 
-            this.filteredGuidesCount = visibleCount;
-        },
-
-        sortGuides() {
-            const container = document.getElementById('guides-container');
-            const cards = Array.from(document.querySelectorAll('.guide-card[style*="display: block"]'));
-
-            cards.sort((a, b) => {
-                switch(this.sortBy) {
-                    case 'rating':
-                        return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
-                    case 'experience':
-                        return parseInt(b.dataset.experience) - parseInt(a.dataset.experience);
-                    case 'name':
-                        return a.dataset.name.localeCompare(b.dataset.name);
-                    default:
-                        return 0;
-                }
-            });
-
-            // Reorder cards in container
-            cards.forEach(card => container.appendChild(card));
-        },
-
-        clearFilters() {
-            this.search = '';
-            this.filters = {
-                location: '',
-                experience: '',
-                rating: '0',
-                language: '',
-                verified: ''
-            };
-            this.filterGuides();
+            resultsCount.textContent = visibleCount;
         }
-    }
-}
+
+        // Event listeners
+        searchInput.addEventListener('input', filterGuides);
+        locationFilter.addEventListener('change', filterGuides);
+        experienceFilter.addEventListener('change', filterGuides);
+        ratingFilter.addEventListener('change', filterGuides);
+        languageFilter.addEventListener('change', filterGuides);
+        verificationFilter.addEventListener('change', filterGuides);
+
+        clearFilters.addEventListener('click', function() {
+            searchInput.value = '';
+            locationFilter.value = 'all';
+            experienceFilter.value = 'all';
+            ratingFilter.value = '0';
+            languageFilter.value = 'all';
+            verificationFilter.value = 'all';
+            filterGuides();
+        });
+
+        // Initial filter
+        filterGuides();
+    });
 </script>
-
-<style>
-.line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-@keyframes fade-in {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.animate-fade-in {
-    animation: fade-in 0.4s ease-out;
-}
-
-.sticky {
-    position: sticky;
-    top: 6rem;
-}
-
-.truncate {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* Smooth hover effects */
-.guide-card {
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-</style>
 {% endblock %}

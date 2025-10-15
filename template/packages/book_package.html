@@ -1,67 +1,296 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
 
+{% block title %}Book {{ package.destination_name }} - TourGuide{% endblock %}
+
 {% block content %}
-<div class="flex justify-center items-start bg-gray-50 py-10 px-4">
-  <div class="w-full max-w-md bg-white rounded-xl shadow-md">
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <a href="{% url 'package_detail' package.id %}" class="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to Package Details
+            </a>
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">Book Your Package Tour</h1>
+            <p class="text-xl text-gray-600">Complete the form below to book {{ package.destination_name }}</p>
+        </div>
 
-    <!-- Header -->
-    <div class="bg-gray-100 text-center py-3 border-b">
-      <h4 class="text-lg font-bold text-blue-600">Book Your Tour</h4>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column - Package Info -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sticky top-6">
+                    <!-- Package Card -->
+                    <div class="text-center mb-6">
+                        {% if package.image %}
+                            <img src="{{ package.image.url }}" alt="{{ package.destination_name }}"
+                                 class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-blue-200 object-cover">
+                        {% else %}
+                            <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center text-white font-bold text-2xl">
+                                {{ package.destination_name|first|upper }}
+                            </div>
+                        {% endif %}
+                        <h3 class="text-xl font-bold text-gray-900">{{ package.destination_name }}</h3>
+                        <p class="text-gray-600">{{ package.days }} Day{% if package.days > 1 %}s{% endif %} Tour Package</p>
+                        <div class="flex items-center justify-center mt-2">
+                            <div class="flex text-amber-500 mr-2">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= package.average_rating %}
+                                        <i class="fas fa-star text-sm"></i>
+                                    {% else %}
+                                        <i class="far fa-star text-sm"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <span class="text-sm text-gray-600">({{ package.average_rating|default:"0" }})</span>
+                        </div>
+                    </div>
+
+                    <!-- Package Stats -->
+                    <div class="space-y-3 border-t border-gray-200 pt-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Duration</span>
+                            <span class="font-semibold text-gray-900">{{ package.days }} Day{% if package.days > 1 %}s{% endif %}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Max People</span>
+                            <span class="font-semibold text-gray-900">{{ package.people_limit }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Price per person</span>
+                            <span class="font-semibold text-gray-900">৳{{ package.price }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Price Calculation -->
+                    <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+                        <h4 class="font-semibold text-blue-900 mb-2">Price Estimate</h4>
+                        <div class="space-y-1 text-sm">
+                            <div class="flex justify-between">
+                                <span>Base price:</span>
+                                <span>৳<span id="base-price">{{ package.price }}</span></span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>People:</span>
+                                <span id="people-count">1</span>
+                            </div>
+                            <div class="border-t border-blue-200 pt-1 mt-1">
+                                <div class="flex justify-between font-semibold">
+                                    <span>Total:</span>
+                                    <span>৳<span id="total-price">{{ package.price }}</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Trust Badges -->
+                    <div class="mt-6 space-y-3">
+                        <div class="flex items-center text-green-600">
+                            <i class="fas fa-shield-check mr-3"></i>
+                            <span class="text-sm font-semibold">Secure Booking</span>
+                        </div>
+                        <div class="flex items-center text-blue-600">
+                            <i class="fas fa-star mr-3"></i>
+                            <span class="text-sm font-semibold">{{ package.review_count }} Reviews</span>
+                        </div>
+                        <div class="flex items-center text-purple-600">
+                            <i class="fas fa-bolt mr-3"></i>
+                            <span class="text-sm font-semibold">Instant Confirmation</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Booking Form -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Booking Details</h2>
+
+                    <!-- Messages -->
+                    {% if messages %}
+                    <div class="mb-6">
+                        {% for message in messages %}
+                        <div class="p-4 rounded-lg {% if message.tags == 'error' %}bg-red-50 text-red-700 border border-red-200{% else %}bg-green-50 text-green-700 border border-green-200{% endif %}">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <form method="POST" class="space-y-6">
+                        {% csrf_token %}
+
+                        <!-- Tour Date -->
+                        <div>
+                            <label for="id_tour_date" class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-calendar text-blue-500 mr-2"></i>
+                                Tour Date
+                            </label>
+                            <input type="date" name="tour_date" id="id_tour_date"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   required>
+                            {% if form.tour_date.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ form.tour_date.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Number of Travelers -->
+                        <div>
+                            <label for="id_people_count" class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-users text-blue-500 mr-2"></i>
+                                Number of Travelers
+                            </label>
+                            <input type="number" name="people_count" id="id_people_count"
+                                   min="1" max="{{ package.people_limit }}" value="1"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   required>
+                            {% if form.people_count.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ form.people_count.errors.0 }}</p>
+                            {% endif %}
+                            <p class="text-sm text-gray-500 mt-1">Maximum {{ package.people_limit }} people allowed</p>
+                        </div>
+
+                        <!-- Mobile Number -->
+                        <div>
+                            <label for="id_mobile_number" class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-phone text-blue-500 mr-2"></i>
+                                Mobile Number
+                            </label>
+                            <input type="text" name="mobile_number" id="id_mobile_number"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   placeholder="+8801234567890"
+                                   required>
+                            {% if form.mobile_number.errors %}
+                            <p class="text-red-500 text-sm mt-1">{{ form.mobile_number.errors.0 }}</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Booking Summary -->
+                        <div class="bg-gray-50 rounded-lg p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Booking Summary</h3>
+                            <div class="space-y-2">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Package:</span>
+                                    <span class="font-semibold">{{ package.destination_name }}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Duration:</span>
+                                    <span class="font-semibold">{{ package.days }} Day{% if package.days > 1 %}s{% endif %}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Travelers:</span>
+                                    <span class="font-semibold" id="summary-people">1</span>
+                                </div>
+                                <div class="flex justify-between text-lg font-bold text-blue-600 border-t border-gray-200 pt-2 mt-2">
+                                    <span>Total Amount:</span>
+                                    <span>৳<span id="summary-total">{{ package.price }}</span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex space-x-4 pt-6">
+                            <a href="{% url 'package_detail' package.id %}"
+                               class="flex-1 bg-gray-300 text-gray-700 py-4 rounded-xl font-semibold hover:bg-gray-400 transition-all duration-300 text-center">
+                                <i class="fas fa-times mr-2"></i>
+                                Cancel
+                            </a>
+                            <button type="submit"
+                                    class="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 rounded-xl font-semibold hover:shadow-lg transition-all duration-300">
+                                <i class="fas fa-paper-plane mr-2"></i>
+                                Confirm Booking
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Booking Tips -->
+                <div class="mt-6 bg-blue-50 rounded-2xl p-6 border border-blue-200">
+                    <h3 class="text-lg font-semibold text-blue-900 mb-3 flex items-center">
+                        <i class="fas fa-lightbulb text-blue-500 mr-2"></i>
+                        Booking Tips
+                    </h3>
+                    <ul class="text-blue-800 space-y-2 text-sm">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mr-2 mt-1 flex-shrink-0"></i>
+                            <span>Make sure your mobile number is correct for tour updates</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mr-2 mt-1 flex-shrink-0"></i>
+                            <span>Check the weather forecast for your tour date</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mr-2 mt-1 flex-shrink-0"></i>
+                            <span>You'll receive a confirmation email shortly</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mr-2 mt-1 flex-shrink-0"></i>
+                            <span>Contact us 24/7 if you have any questions</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <!-- Body -->
-    <div class="p-4">
-      <form method="POST" class="space-y-3">
-        {% csrf_token %}
-
-        <!-- People Count -->
-        <div>
-          <label for="{{ form.people_count.id_for_label }}" class="block font-medium text-gray-700 mb-1">
-            {{ form.people_count.label }}
-          </label>
-          {{ form.people_count }}
-          {% if form.people_count.errors %}
-            <p class="text-red-500 text-sm mt-1">{{ form.people_count.errors }}</p>
-          {% endif %}
-        </div>
-
-        <!-- Tour Date -->
-        <div>
-          <label for="{{ form.tour_date.id_for_label }}" class="block font-medium text-gray-700 mb-1">
-            {{ form.tour_date.label }}
-          </label>
-          {{ form.tour_date }}
-          {% if form.tour_date.errors %}
-            <p class="text-red-500 text-sm mt-1">{{ form.tour_date.errors }}</p>
-          {% endif %}
-        </div>
-
-        <!-- Mobile Number -->
-        <div>
-          <label for="{{ form.mobile_number.id_for_label }}" class="block font-medium text-gray-700 mb-1">
-            {{ form.mobile_number.label }}
-          </label>
-          {{ form.mobile_number }}
-          {% if form.mobile_number.errors %}
-            <p class="text-red-500 text-sm mt-1">{{ form.mobile_number.errors }}</p>
-          {% endif %}
-        </div>
-
-        <!-- Submit Button -->
-        <div>
-          <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg shadow hover:bg-blue-700 transition">
-            Confirm Booking
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
 </div>
+{% endblock %}
 
-<style>
-  input, select {
-    @apply w-full border border-gray-300 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400;
-  }
-</style>
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    const dateInput = document.getElementById('id_tour_date');
+    if (dateInput) {
+        dateInput.min = today;
+    }
+
+    // Price calculation
+    const basePrice = {{ package.price }};
+    const peopleInput = document.getElementById('id_people_count');
+    const maxPeople = {{ package.people_limit }};
+
+    const totalPriceElement = document.getElementById('total-price');
+    const summaryTotalElement = document.getElementById('summary-total');
+    const summaryPeopleElement = document.getElementById('summary-people');
+    const basePriceElement = document.getElementById('base-price');
+
+    function calculateTotalPrice() {
+        const peopleCount = parseInt(peopleInput.value) || 1;
+
+        // Validate max people
+        if (peopleCount > maxPeople) {
+            peopleInput.value = maxPeople;
+            return;
+        }
+
+        const totalPrice = basePrice * peopleCount;
+
+        // Update all price displays
+        totalPriceElement.textContent = totalPrice.toFixed(2);
+        summaryTotalElement.textContent = totalPrice.toFixed(2);
+        summaryPeopleElement.textContent = peopleCount;
+
+        // Update base price display (per person)
+        basePriceElement.textContent = basePrice.toFixed(2);
+    }
+
+    if (peopleInput) {
+        peopleInput.addEventListener('input', calculateTotalPrice);
+        peopleInput.addEventListener('change', calculateTotalPrice);
+
+        // Calculate initial price
+        calculateTotalPrice();
+    }
+
+    // Form submission loading state
+    const form = document.querySelector('form');
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    form.addEventListener('submit', function() {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+    });
+});
+</script>
 {% endblock %}

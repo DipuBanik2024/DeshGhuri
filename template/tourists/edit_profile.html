@@ -23,43 +23,67 @@
                 <!-- Profile Picture Upload Section -->
                 <div class="border-b border-gray-200 pb-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Profile Picture</h3>
-                    <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6">
-                        <!-- Current Profile Preview -->
-                        <div class="relative">
-                            {% if profile.profile_picture %}
-                                <img id="currentProfilePic" src="{{ profile.profile_picture.url }}" alt="Current Profile"
-                                     class="w-24 h-24 rounded-full border-4 border-gray-200 object-cover shadow-md">
-                            {% else %}
-                                <div id="currentProfilePic" class="w-24 h-24 rounded-full border-4 border-gray-200 bg-gray-100 flex items-center justify-center shadow-md">
-                                    <i class="fas fa-user text-gray-400 text-2xl"></i>
+                    <div class="flex flex-col md:flex-row items-start space-y-6 md:space-y-0 md:space-x-8">
+                        <!-- Profile Picture Preview Area -->
+                        <div class="flex flex-col items-center space-y-4">
+                            <div class="relative">
+                                <!-- Current Profile Picture -->
+                                <div id="currentProfilePic" class="{% if profile.profile_picture %}block{% else %}block{% endif %}">
+                                    {% if profile.profile_picture %}
+                                        <img src="{{ profile.profile_picture.url }}" alt="Current Profile"
+                                             class="w-40 h-40 rounded-full border-4 border-gray-200 object-cover shadow-md">
+                                    {% else %}
+                                        <div class="w-40 h-40 rounded-full border-4 border-gray-200 bg-gray-100 flex items-center justify-center shadow-md">
+                                            <i class="fas fa-user text-gray-400 text-4xl"></i>
+                                        </div>
+                                    {% endif %}
                                 </div>
-                            {% endif %}
-                            <div id="profilePreview" class="hidden absolute inset-0 w-24 h-24 rounded-full border-4 border-deshblue bg-cover bg-center shadow-lg"></div>
+
+                                <!-- New Profile Preview -->
+                                <div id="profilePreview" class="hidden w-40 h-40 rounded-full border-4 border-deshblue bg-cover bg-center shadow-lg"></div>
+                            </div>
+
+                            <!-- Preview Action Buttons - Compact and Professional -->
+                            <div id="previewActions" class="hidden flex flex-col space-y-3 w-full max-w-xs">
+                                <p class="text-sm text-green-600 font-medium text-center mb-2">New image selected</p>
+                                <div class="flex space-x-2 justify-center">
+                                    <button type="button" onclick="confirmPreview()"
+                                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-medium transition-all duration-200 shadow-sm hover:shadow-md hover:shadow-green-500/30 border border-green-500 text-sm flex items-center glow-hover">
+                                        <i class="fas fa-check mr-1 text-xs"></i>Use This
+                                    </button>
+                                    <button type="button" onclick="cancelPreview()"
+                                            class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded font-medium transition-all duration-200 shadow-sm hover:shadow-md hover:shadow-gray-500/20 border border-gray-400 text-sm flex items-center glow-hover">
+                                        <i class="fas fa-times mr-1 text-xs"></i>Cancel
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- Profile Upload Controls -->
-                        <div class="flex-1">
-                            <label for="id_profile_picture" class="block text-sm font-medium text-gray-700 mb-2">Upload new photo</label>
-                            <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
-                                <input type="file" id="id_profile_picture" name="profile_picture" accept="image/*"
-                                       class="hidden" onchange="previewProfilePic(this)">
-                                <button type="button" onclick="document.getElementById('id_profile_picture').click()"
-                                        class="bg-deshblue hover:bg-teal-700 text-white px-4 py-2 rounded-lg font-medium transition inline-flex items-center justify-center">
-                                    <i class="fas fa-camera mr-2"></i>Choose Image
-                                </button>
-                                {% if profile.profile_picture %}
-                                <button type="button" onclick="removeProfilePic()"
-                                        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition inline-flex items-center justify-center">
-                                    <i class="fas fa-trash mr-2"></i>Remove
-                                </button>
-                                {% endif %}
+                        <!-- Upload Controls - Shifted down -->
+                        <div class="flex-1 mt-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-3">Upload new photo</label>
+                            <div class="flex flex-col space-y-3">
+                                <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+                                    <input type="file" id="id_profile_picture" name="profile_picture" accept="image/*"
+                                           class="hidden" onchange="previewProfilePic(this)">
+                                    <button type="button" onclick="document.getElementById('id_profile_picture').click()"
+                                            class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md hover:shadow-blue-500/30 border border-blue-500 text-sm inline-flex items-center justify-center glow-hover">
+                                        <i class="fas fa-camera mr-2 text-sm"></i>Choose Image
+                                    </button>
+                                    {% if profile.profile_picture %}
+                                    <button type="button" onclick="removeProfilePic()"
+                                            class="bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md hover:shadow-red-500/30 border border-red-500 text-sm inline-flex items-center justify-center glow-hover">
+                                        <i class="fas fa-trash mr-2 text-sm"></i>Remove Current
+                                    </button>
+                                    {% endif %}
+                                </div>
+                                <p class="text-sm text-gray-500">JPG, PNG or WebP. Max 5MB.</p>
                             </div>
-                            <p class="text-sm text-gray-500 mt-2">JPG, PNG or WebP. Max 5MB.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Form Fields Grid -->
+                <!-- Rest of your form content remains the same -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Left Column -->
                     <div class="space-y-4">
@@ -146,13 +170,13 @@
                     </div>
                 </div>
 
-                <!-- Form Actions -->
+                <!-- Form Actions - Compact and Professional -->
                 <div class="flex flex-col sm:flex-row justify-between space-y-3 sm:space-y-0 sm:space-x-4 pt-6 border-t border-gray-200">
-                    <a href="{% url 'tourist_profile' %}" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium transition text-center">
-                        Cancel
+                    <a href="{% url 'tourist_profile' %}" class="bg-gray-500 hover:bg-gray-600 text-white px-5 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md hover:shadow-gray-500/20 border border-gray-400 text-sm text-center glow-hover">
+                        <i class="fas fa-times mr-2 text-sm"></i>Cancel
                     </a>
-                    <button type="submit" class="bg-deshblue hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-medium transition inline-flex items-center justify-center">
-                        <i class="fas fa-save mr-2"></i>Save Changes
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md hover:shadow-blue-500/30 border border-blue-500 text-sm inline-flex items-center justify-center glow-hover">
+                        <i class="fas fa-save mr-2 text-sm"></i>Save Changes
                     </button>
                 </div>
             </form>
@@ -177,6 +201,7 @@
     function previewProfilePic(input) {
         const preview = document.getElementById('profilePreview');
         const current = document.getElementById('currentProfilePic');
+        const previewActions = document.getElementById('previewActions');
 
         if (input.files && input.files[0]) {
             const reader = new FileReader();
@@ -185,10 +210,31 @@
                 preview.style.backgroundImage = `url(${e.target.result})`;
                 preview.classList.remove('hidden');
                 current.classList.add('hidden');
+                previewActions.classList.remove('hidden');
             }
 
             reader.readAsDataURL(input.files[0]);
         }
+    }
+
+    // Cancel preview and revert to original
+    function cancelPreview() {
+        const preview = document.getElementById('profilePreview');
+        const current = document.getElementById('currentProfilePic');
+        const fileInput = document.getElementById('id_profile_picture');
+        const previewActions = document.getElementById('previewActions');
+
+        preview.classList.add('hidden');
+        current.classList.remove('hidden');
+        fileInput.value = '';
+        previewActions.classList.add('hidden');
+    }
+
+    // Confirm the preview (keep it as is)
+    function confirmPreview() {
+        const previewActions = document.getElementById('previewActions');
+        previewActions.classList.add('hidden');
+        // The preview remains visible, user can now save the form
     }
 
     // Remove profile picture functionality
@@ -196,10 +242,20 @@
         const preview = document.getElementById('profilePreview');
         const current = document.getElementById('currentProfilePic');
         const fileInput = document.getElementById('id_profile_picture');
+        const previewActions = document.getElementById('previewActions');
+
+        // Reset to default avatar
+        if (current.querySelector('img')) {
+            current.innerHTML = `
+                <div class="w-40 h-40 rounded-full border-4 border-gray-200 bg-gray-100 flex items-center justify-center shadow-md">
+                    <i class="fas fa-user text-gray-400 text-4xl"></i>
+                </div>
+            `;
+        }
 
         preview.classList.add('hidden');
-        current.classList.remove('hidden');
         fileInput.value = '';
+        previewActions.classList.add('hidden');
 
         // Show message about profile picture removal
         alert('Profile picture will be removed when you save changes.');
@@ -243,6 +299,44 @@
     /* Custom radio button styling */
     input[type="radio"] {
         transform: scale(1.2);
+    }
+
+    /* Profile picture preview styling */
+    #profilePreview {
+        position: static;
+        margin: 0 auto;
+    }
+
+    /* Professional button styling with subtle glow */
+    button, a.bg-gray-500 {
+        transition: all 0.2s ease-in-out;
+    }
+
+    /* Subtle hover effects */
+    button:hover, a.bg-gray-500:hover {
+        transform: translateY(-1px);
+    }
+
+    /* Glow effect class */
+    .glow-hover:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    /* Color-specific glow effects */
+    .bg-blue-600:hover {
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
+    }
+
+    .bg-green-600:hover {
+        box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3) !important;
+    }
+
+    .bg-red-600:hover {
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3) !important;
+    }
+
+    .bg-gray-500:hover {
+        box-shadow: 0 4px 12px rgba(107, 114, 128, 0.2) !important;
     }
 </style>
 {% endblock %}

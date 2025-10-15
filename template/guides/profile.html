@@ -4,10 +4,10 @@
 {% block title %}My Profile - TravelGuide{% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8 max-w-6xl">
+<div class="container mx-auto px-4 py-8 max-w-5xl">
     <!-- Profile Header -->
     <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
-        <div class="bg-gradient-to-r from-blue-500 to-indigo-600 h-32"></div>
+        <div class="bg-gradient-to-r from-blue-500 to-indigo-600 h-28"></div>
 
         <div class="px-6 pb-6">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center -mt-16">
@@ -16,10 +16,10 @@
                     <div class="relative">
                         {% if guide_profile.avatar %}
                             <img src="{{ guide_profile.avatar.url }}" alt="Profile Avatar"
-                                 class="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover">
+                                 class="w-28 h-28 rounded-full border-4 border-white shadow-lg object-cover">
                         {% else %}
-                            <div class="w-32 h-32 rounded-full border-4 border-white shadow-lg bg-gray-200 flex items-center justify-center">
-                                <i class="fas fa-user text-gray-400 text-4xl"></i>
+                            <div class="w-28 h-28 rounded-full border-4 border-white shadow-lg bg-gray-200 flex items-center justify-center">
+                                <i class="fas fa-user text-gray-400 text-3xl"></i>
                             </div>
                         {% endif %}
 
@@ -31,10 +31,10 @@
                     </div>
 
                     <div class="text-center md:text-left">
-                        <h2 class="text-2xl font-bold text-gray-800">
+                        <h2 class="text-2xl font-bold text-white bg-gradient-to-r from-blue-600/90 to-indigo-600/90 px-4 py-2 rounded-lg shadow-md">
                             {{ user.get_full_name|default:user.username }}
                         </h2>
-                        <p class="text-gray-600">Professional Travel Guide</p>
+                        <p class="text-gray-600 mt-2">Professional Travel Guide</p>
                         <div class="flex items-center justify-center md:justify-start mt-2 space-x-4">
                             <div class="flex items-center">
                                 <i class="fas fa-star text-yellow-400 mr-1"></i>
@@ -50,14 +50,11 @@
                     </div>
                 </div>
 
-                <!-- Action Buttons -->
-                <div class="mt-4 md:mt-0 flex space-x-3">
-                    <a href="{% url 'edit_profile' %}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition inline-flex items-center">
+                <!-- Edit Profile Button Only -->
+                <div class="mt-4 md:mt-0">
+                    <a href="{% url 'edit_profile' %}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition inline-flex items-center shadow-md hover:shadow-lg">
                         <i class="fas fa-edit mr-2"></i>Edit Profile
                     </a>
-                    <button class="bg-white hover:bg-gray-100 text-blue-600 border border-blue-600 px-4 py-2 rounded-lg font-medium transition inline-flex items-center">
-                        <i class="fas fa-share-alt mr-2"></i>Share Profile
-                    </button>
                 </div>
             </div>
         </div>
@@ -65,37 +62,8 @@
 
     <!-- Profile Details Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Left Column - Personal Info -->
-        <div class="lg:col-span-2 space-y-6">
-            <!-- About Me Section -->
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <h3 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">About Me</h3>
-                {% if guide_profile.bio %}
-                    <p class="text-gray-600 leading-relaxed">{{ guide_profile.bio }}</p>
-                {% else %}
-                    <p class="text-gray-400 italic">No bio added yet. <a href="{% url 'edit_profile' %}" class="text-blue-500 hover:text-blue-600">Add one now</a>.</p>
-                {% endif %}
-            </div>
-
-            <!-- Skills & Languages -->
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <h3 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">Languages & Skills</h3>
-                {% if guide_profile.languages %}
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        {% for lang in guide_profile.languages.split %}
-                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                                {{ lang }}
-                            </span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <p class="text-gray-400 italic mb-4">No languages specified. <a href="{% url 'edit_profile' %}" class="text-blue-500 hover:text-blue-600">Add them now</a>.</p>
-                {% endif %}
-            </div>
-        </div>
-
         <!-- Right Column - Contact & Stats -->
-        <div class="space-y-6">
+        <div class="lg:col-span-1 space-y-6">
             <!-- Contact Information -->
             <div class="bg-white rounded-xl shadow-md p-6">
                 <h3 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">Contact Information</h3>
@@ -165,12 +133,63 @@
                     <a href="{% url 'edit_profile' %}" class="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 px-4 py-2 rounded-lg font-medium transition flex items-center justify-center">
                         <i class="fas fa-edit mr-2"></i>Edit Profile
                     </a>
-                    <a href="#" class="w-full bg-green-50 hover:bg-green-100 text-green-700 px-4 py-2 rounded-lg font-medium transition flex items-center justify-center">
-                        <i class="fas fa-plus mr-2"></i>Create Tour
-                    </a>
-                    <a href="#" class="w-full bg-purple-50 hover:bg-purple-100 text-purple-700 px-4 py-2 rounded-lg font-medium transition flex items-center justify-center">
+                     <a href="{% url 'tour_requests' %}" class="w-full bg-purple-50 hover:bg-purple-100 text-purple-700 px-4 py-2 rounded-lg font-medium transition flex items-center justify-center">
+                        <i class="fas fa-eye mr-2"></i>View Request
+                    <a href="{% url 'my_tours' %}" class="w-full bg-purple-50 hover:bg-purple-100 text-purple-700 px-4 py-2 rounded-lg font-medium transition flex items-center justify-center">
                         <i class="fas fa-eye mr-2"></i>View My Tours
                     </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Left Column - Personal Info -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- About Me Section -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">About Me</h3>
+                {% if guide_profile.bio %}
+                    <p class="text-gray-600 leading-relaxed">{{ guide_profile.bio }}</p>
+                {% else %}
+                    <p class="text-gray-400 italic">No bio added yet. <a href="{% url 'edit_profile' %}" class="text-blue-500 hover:text-blue-600">Add one now</a>.</p>
+                {% endif %}
+            </div>
+
+            <!-- Skills & Languages -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">Languages & Skills</h3>
+                {% if guide_profile.languages %}
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        {% for lang in guide_profile.languages.split %}
+                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                                {{ lang }}
+                            </span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-gray-400 italic mb-4">No languages specified. <a href="{% url 'edit_profile' %}" class="text-blue-500 hover:text-blue-600">Add them now</a>.</p>
+                {% endif %}
+            </div>
+
+            <!-- Tour Specializations -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">Tour Specializations</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                        <i class="fas fa-mountain text-green-500 mr-3 text-lg"></i>
+                        <span class="font-medium">Adventure Tours</span>
+                    </div>
+                    <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                        <i class="fas fa-landmark text-yellow-500 mr-3 text-lg"></i>
+                        <span class="font-medium">Cultural Heritage</span>
+                    </div>
+                    <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                        <i class="fas fa-utensils text-red-500 mr-3 text-lg"></i>
+                        <span class="font-medium">Food Tours</span>
+                    </div>
+                    <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                        <i class="fas fa-camera text-purple-500 mr-3 text-lg"></i>
+                        <span class="font-medium">Photography Tours</span>
+                    </div>
                 </div>
             </div>
         </div>

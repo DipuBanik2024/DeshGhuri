@@ -29,6 +29,7 @@ from guides import views as g_views
 from hotels import views as hotels_views
 from packages import views as p_views
 from tourists import views as t_views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),  # accounts app routes
@@ -36,7 +37,7 @@ urlpatterns = [
     path('',main_views.home,name='home'),
 
     #helpline
-    path('help_center',h_views.help_center,name='help_center'),
+
     #hotels
     path('hotels_info',hotels_views.hotels_info,name="hotels_info"),
     #packages
@@ -47,4 +48,5 @@ urlpatterns = [
     path('packages/', include('packages.urls')),
     path('destinations/', include('destinations.urls')),
     path('tourists/', include('tourists.urls')),
+    path('helpline/', include('helpline.urls')),
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

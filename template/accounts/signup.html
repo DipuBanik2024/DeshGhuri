@@ -98,8 +98,8 @@
             <div class="flex items-start gap-2 bg-gray-50 rounded-lg p-2 border border-gray-200">
               {{ form.agree_terms }}
               <label for="{{ form.agree_terms.id_for_label }}" class="text-2xs text-gray-700 leading-relaxed cursor-pointer">
-                I agree to the <a href="#" class="text-cyan-600 font-medium hover:text-cyan-700">Terms & Conditions</a>
-                and <a href="#" class="text-cyan-600 font-medium hover:text-cyan-700">Privacy Policy</a>
+                I agree to the <a href="{%url 'terms'%}" class="text-cyan-600 font-medium hover:text-cyan-700">Terms & Conditions</a>
+                and <a href="{%url 'privacy_policy'%}" class="text-cyan-600 font-medium hover:text-cyan-700">Privacy Policy</a>
               </label>
             </div>
             {% for error in form.agree_terms.errors %}

@@ -1,5 +1,5 @@
 {% load static %}
-<nav class="flex justify-between items-center bg-deshblue px-12 py-4">
+<nav class="flex justify-between items-center bg-gray-800 shadow-lg px-12 py-4">
   <!-- Logo -->
   <a href="#" class="text-white italic text-3xl font-script">Deshghuri Tourist</a>
 
@@ -24,12 +24,11 @@
 
       <!-- Dropdown Menu -->
       <div id="profileMenu" class="hidden absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg py-2 z-50">
+          <a href="{% url 'tourist_dashboard' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">📊 Dashboard</a>
           <a href="{% url 'tourist_profile' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">👤 Profile</a>
-        <a href="{% url 'edit_tourist_profile' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">✏️ Edit Profile</a>
-        <a href="{% url 'logout' %}" class="block px-4 py-2 text-red-600 hover:bg-gray-100">🚪 Logout</a>
+          <a href="{% url 'edit_tourist_profile' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">✏️ Edit Profile</a>
+          <a href="{% url 'logout' %}" class="block px-4 py-2 text-red-600 hover:bg-gray-100">🚪 Logout</a>
       </div>
     </div>
   </div>
 </nav>
-
-<!-- ❌ JavaScript part DELETE করে দিয়েছি - Base template এ already আছে -->

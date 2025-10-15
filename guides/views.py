@@ -7,6 +7,10 @@ from .forms import GuideProfileForm, TourRequestForm, ReviewForm
 from accounts.utils import role_required
 from django.contrib.auth import get_user_model
 from django.template.defaulttags import register
+from django.utils import timezone
+from django.db.models import Sum
+from datetime import date
+
 
 User = get_user_model()
 
@@ -71,14 +75,59 @@ def guide_list(request):
 # --------------------------
 # GUIDE DASHBOARD
 # --------------------------
+
+
 @login_required
 @role_required(['guide'])
 def guide_dashboard(request):
     profile, created = GuideProfile.objects.get_or_create(user=request.user)
-    bookings = getattr(request.user, 'booking_set', None)
-    bookings = bookings.all() if bookings else []
-    return render(request, "guides/guide_dashboard.html", {"profile": profile, "bookings": bookings})
 
+    # Today's tours
+    today_tours_count = Tour.objects.filter(
+        guide=request.user,
+        start_date=date.today()
+    ).count()
+
+    # Pending requests
+    pending_requests_count = TourRequest.objects.filter(
+        guide=request.user,
+        status="pending"
+    ).count()
+
+    # Monthly earnings (current month)
+    current_month = timezone.now().month
+    current_year = timezone.now().year
+    monthly_earnings = Earning.objects.filter(
+        guide=request.user,
+        date__month=current_month,
+        date__year=current_year
+    ).aggregate(Sum('amount'))['amount__sum'] or 0
+
+    # Recent requests (last 5)
+    recent_requests = TourRequest.objects.filter(
+        guide=request.user,
+        status="pending"
+    ).order_by('-created_at')[:3]
+
+    # Recent reviews (last 3)
+    recent_reviews = Review.objects.filter(
+        guide=request.user
+    ).select_related('tourist').order_by('-created_at')[:3]
+
+    # Review count
+    review_count = Review.objects.filter(guide=request.user).count()
+
+    context = {
+        'profile': profile,
+        'today_tours_count': today_tours_count,
+        'pending_requests_count': pending_requests_count,
+        'monthly_earnings': monthly_earnings,
+        'recent_requests': recent_requests,
+        'recent_reviews': recent_reviews,
+        'review_count': review_count,
+    }
+
+    return render(request, "guides/guide_dashboard.html", context)
 
 # --------------------------
 # EDIT GUIDE PROFILE
@@ -184,9 +233,47 @@ def my_tours(request):
 @login_required
 @role_required(['guide'])
 def earnings(request):
-    earnings = Earning.objects.filter(guide=request.user)
+    earnings = Earning.objects.filter(guide=request.user).order_by('-date')
     total = sum(e.amount for e in earnings)
-    return render(request, "guides/earnings.html", {"earnings": earnings, "total": total})
+
+    # Calculate completed tours count - FIXED
+    completed_tours_count = Tour.objects.filter(
+        guide=request.user,
+        status="completed"
+    ).count()
+
+    # Alternative: Count from earnings if tours aren't marked as completed
+    if completed_tours_count == 0:
+        completed_tours_count = earnings.count()
+
+    # Calculate average earnings per tour - FIXED
+    avg_per_tour = 0
+    if completed_tours_count > 0:
+        avg_per_tour = round(total / completed_tours_count, 2)
+    else:
+        avg_per_tour = total  # If no completed tours but has earnings
+
+    # Get monthly earnings
+    current_month = timezone.now().month
+    current_year = timezone.now().year
+    monthly_earnings = Earning.objects.filter(
+        guide=request.user,
+        date__month=current_month,
+        date__year=current_year
+    ).aggregate(Sum('amount'))['amount__sum'] or 0
+
+    # For chart max value
+    max_amount = max([e.amount for e in earnings]) if earnings else 0
+
+    context = {
+        'earnings': earnings,
+        'total': total,
+        'monthly_earnings': monthly_earnings,
+        'completed_tours_count': completed_tours_count,
+        'avg_per_tour': avg_per_tour,
+        'max_amount': max_amount,
+    }
+    return render(request, "guides/earnings.html", context)
 
 
 # --------------------------

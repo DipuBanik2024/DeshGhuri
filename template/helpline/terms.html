@@ -1,0 +1,307 @@
+{% extends 'base.html' %}
+
+{% block title %}Terms & Conditions - DeshGhuri{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-4xl mx-auto">
+    <div class="bg-white shadow-xl rounded-2xl overflow-hidden">
+      <!-- Header -->
+      <div class="bg-gradient-to-r from-blue-600 to-cyan-700 px-8 py-12 text-center">
+        <h1 class="text-4xl font-bold text-white mb-4">Terms & Conditions</h1>
+        <p class="text-blue-100 text-lg">Last updated: {{ current_date }}</p>
+      </div>
+
+      <!-- Content -->
+      <div class="px-8 py-12 space-y-12">
+        <!-- Introduction -->
+        <section>
+          <p class="text-gray-700 text-lg leading-relaxed">
+            Welcome to DeshGhuri, your trusted travel platform connecting tourists with local guides and hotel partners.
+            By accessing or using our website and services, you agree to be bound by the following terms and conditions.
+            Please read them carefully before using our platform.
+          </p>
+        </section>
+
+        <!-- User Eligibility -->
+        <section>
+          <h2 class="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+            <span class="bg-blue-100 text-blue-600 rounded-full w-8 h-8 flex items-center justify-center mr-3">1</span>
+            User Eligibility
+          </h2>
+          <div class="bg-blue-50 rounded-lg p-6 border-l-4 border-blue-500">
+            <p class="text-gray-700">
+              You must be at least <span class="font-semibold text-blue-600">18 years old</span> to use our platform.
+              By registering as a tourist, guide, or hotel partner, you confirm that you meet the age requirement
+              and are legally capable of entering into binding contracts.
+            </p>
+          </div>
+        </section>
+
+        <!-- Account Registration -->
+        <section>
+          <h2 class="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+            <span class="bg-blue-100 text-blue-600 rounded-full w-8 h-8 flex items-center justify-center mr-3">2</span>
+            Account Registration
+          </h2>
+          <div class="space-y-4">
+            <div class="flex items-start">
+              <div class="flex-shrink-0">
+                <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-1">
+                  <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                </div>
+              </div>
+              <p class="ml-3 text-gray-700">Provide accurate and complete information during registration</p>
+            </div>
+            <div class="flex items-start">
+              <div class="flex-shrink-0">
+                <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-1">
+                  <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                </div>
+              </div>
+              <p class="ml-3 text-gray-700">Maintain the security of your account credentials</p>
+            </div>
+            <div class="flex items-start">
+              <div class="flex-shrink-0">
+                <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-1">
+                  <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                </div>
+              </div>
+              <p class="ml-3 text-gray-700">Notify us immediately of any unauthorized account access</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tourist Responsibilities -->
+        <section>
+          <h2 class="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+            <span class="bg-blue-100 text-blue-600 rounded-full w-8 h-8 flex items-center justify-center mr-3">3</span>
+            Tourist Responsibilities
+          </h2>
+          <div class="bg-green-50 rounded-lg p-6 border-l-4 border-green-500">
+            <ul class="space-y-3 text-gray-700">
+              <li class="flex items-start">
+                <span class="text-green-500 mr-2">•</span>
+                Provide accurate personal information and travel preferences
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-500 mr-2">•</span>
+                Respect scheduled tour times and guide availability
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-500 mr-2">•</span>
+                Follow local laws and regulations during travels
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-500 mr-2">•</span>
+                Make timely payments for booked services
+              </li>
+              <li class="flex items-start">
+                <span class="text-green-500 mr-2">•</span>
+                Provide honest reviews and feedback after services
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Guide Responsibilities -->
+        <section>
+          <h2 class="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+            <span class="bg-blue-100 text-blue-600 rounded-full w-8 h-8 flex items-center justify-center mr-3">4</span>
+            Guide Responsibilities
+          </h2>
+          <div class="bg-yellow-50 rounded-lg p-6 border-l-4 border-yellow-500">
+            <ul class="space-y-3 text-gray-700">
+              <li class="flex items-start">
+                <span class="text-yellow-600 mr-2">•</span>
+                Provide authentic identification and certification documents
+              </li>
+              <li class="flex items-start">
+                <span class="text-yellow-600 mr-2">•</span>
+                Maintain professional conduct with tourists at all times
+              </li>
+              <li class="flex items-start">
+                <span class="text-yellow-600 mr-2">•</span>
+                Honor scheduled tours and provide adequate notice for cancellations
+              </li>
+              <li class="flex items-start">
+                <span class="text-yellow-600 mr-2">•</span>
+                Set fair and transparent pricing for guide services
+              </li>
+              <li class="flex items-start">
+                <span class="text-yellow-600 mr-2">•</span>
+                Ensure tourist safety and follow local tourism regulations
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Hotel Partner Responsibilities -->
+        <section>
+          <h2 class="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+            <span class="bg-blue-100 text-blue-600 rounded-full w-8 h-8 flex items-center justify-center mr-3">5</span>
+            Hotel Partner Responsibilities
+          </h2>
+          <div class="bg-purple-50 rounded-lg p-6 border-l-4 border-purple-500">
+            <ul class="space-y-3 text-gray-700">
+              <li class="flex items-start">
+                <span class="text-purple-500 mr-2">•</span>
+                Provide accurate hotel information, amenities, and photos
+              </li>
+              <li class="flex items-start">
+                <span class="text-purple-500 mr-2">•</span>
+                Maintain updated room availability and pricing
+              </li>
+              <li class="flex items-start">
+                <span class="text-purple-500 mr-2">•</span>
+                Honor confirmed bookings and provide quality service
+              </li>
+              <li class="flex items-start">
+                <span class="text-purple-500 mr-2">•</span>
+                Comply with all hospitality industry standards and regulations
+              </li>
+              <li class="flex items-start">
+                <span class="text-purple-500 mr-2">•</span>
+                Handle customer complaints professionally and promptly
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Payments & Fees -->
+        <section>
+          <h2 class="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+            <span class="bg-blue-100 text-blue-600 rounded-full w-8 h-8 flex items-center justify-center mr-3">6</span>
+            Payments & Fees
+          </h2>
+          <div class="bg-orange-50 rounded-lg p-6">
+            <div class="grid md:grid-cols-2 gap-6">
+              <div class="text-center p-4 bg-white rounded-lg shadow-sm">
+                <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <span class="text-orange-600 font-bold">₹</span>
+                </div>
+                <h3 class="font-semibold text-gray-900 mb-2">Service Fees</h3>
+                <p class="text-sm text-gray-600">Platform commission fees will be clearly communicated for each transaction</p>
+              </div>
+              <div class="text-center p-4 bg-white rounded-lg shadow-sm">
+                <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <span class="text-orange-600 font-bold">💳</span>
+                </div>
+                <h3 class="font-semibold text-gray-900 mb-2">Payment Security</h3>
+                <p class="text-sm text-gray-600">All payments are processed through secure, encrypted channels</p>
+              </div>
+            </div>
+            <div class="mt-6 p-4 bg-white rounded-lg border">
+              <h4 class="font-semibold text-gray-900 mb-2">Commission Structure</h4>
+              <ul class="text-sm text-gray-600 space-y-1">
+                <li>• Guide Services: 10-15% platform fee</li>
+                <li>• Hotel Bookings: 12-18% platform fee</li>
+                <li>• Tour Packages: 8-12% platform fee</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Cancellation & Refunds -->
+        <section>
+          <h2 class="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+            <span class="bg-blue-100 text-blue-600 rounded-full w-8 h-8 flex items-center justify-center mr-3">7</span>
+            Cancellation & Refunds
+          </h2>
+          <div class="bg-red-50 rounded-lg p-6 border-l-4 border-red-400">
+            <div class="grid md:grid-cols-3 gap-4 text-center">
+              <div class="p-4 bg-white rounded-lg">
+                <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <span class="text-red-600 font-bold">24h</span>
+                </div>
+                <p class="text-sm font-semibold">Free Cancellation</p>
+                <p class="text-xs text-gray-600">24 hours before service</p>
+              </div>
+              <div class="p-4 bg-white rounded-lg">
+                <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <span class="text-yellow-600 font-bold">50%</span>
+                </div>
+                <p class="text-sm font-semibold">Partial Refund</p>
+                <p class="text-xs text-gray-600">12-24 hours before</p>
+              </div>
+              <div class="p-4 bg-white rounded-lg">
+                <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <span class="text-gray-600 font-bold">0%</span>
+                </div>
+                <p class="text-sm font-semibold">No Refund</p>
+                <p class="text-xs text-gray-600">Less than 12 hours</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Privacy & Data -->
+        <section>
+          <h2 class="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+            <span class="bg-blue-100 text-blue-600 rounded-full w-8 h-8 flex items-center justify-center mr-3">8</span>
+            Privacy & Data Protection
+          </h2>
+          <div class="bg-indigo-50 rounded-lg p-6 border-l-4 border-indigo-500">
+            <p class="text-gray-700 mb-4">
+              We are committed to protecting your privacy. All user data is handled in accordance with our comprehensive Privacy Policy.
+            </p>
+            <a href="{% url 'privacy_policy' %}" class="inline-flex items-center text-indigo-600 font-semibold hover:text-indigo-800 transition-colors">
+              View Privacy Policy
+              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+        </section>
+
+        <!-- Limitation of Liability -->
+        <section>
+          <h2 class="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+            <span class="bg-blue-100 text-blue-600 rounded-full w-8 h-8 flex items-center justify-center mr-3">9</span>
+            Limitation of Liability
+          </h2>
+          <div class="bg-gray-100 rounded-lg p-6">
+            <p class="text-gray-700">
+              DeshGhuri acts as a platform to connect tourists with guides and hotel partners. We are not responsible for any issues arising
+              from the service provider-customer relationship. Users are advised to verify identities and qualifications before
+              engaging in any travel arrangements. We are not liable for any injuries, losses, or damages during travel activities.
+            </p>
+          </div>
+        </section>
+
+        <!-- Changes to Terms -->
+        <section>
+          <h2 class="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+            <span class="bg-blue-100 text-blue-600 rounded-full w-8 h-8 flex items-center justify-center mr-3">10</span>
+            Changes to Terms
+          </h2>
+          <div class="bg-blue-50 rounded-lg p-6">
+            <p class="text-gray-700">
+              We may update these Terms at any time to reflect changes in our services or legal requirements.
+              Continued use of the platform after changes constitutes acceptance of the new Terms.
+              We will notify users of significant changes via email or platform notifications.
+            </p>
+          </div>
+        </section>
+
+        <!-- Contact Information -->
+        <section class="text-center bg-gradient-to-r from-blue-50 to-cyan-100 rounded-2xl p-8">
+          <h2 class="text-2xl font-bold text-gray-900 mb-4">Questions About Our Terms?</h2>
+          <p class="text-gray-700 mb-6">We're here to help you understand our terms and conditions.</p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="mailto:support@deshghuri.com" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+              </svg>
+              support@deshghuri.com
+            </a>
+            <a href="{% url 'contact' %}" class="inline-flex items-center px-6 py-3 border border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-600 hover:text-white transition-colors">
+              Contact Form
+            </a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

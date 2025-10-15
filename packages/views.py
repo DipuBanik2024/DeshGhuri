@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Package, Booking, Review
-from .forms import BookingForm
+from .forms import PackageBookingForm
 from django.contrib import messages
 
 def package_list(request):
@@ -41,7 +41,7 @@ def book_package(request, pk):
         return redirect('package_detail', pk=pk)
 
     if request.method == "POST":
-        form = BookingForm(request.POST)
+        form = PackageBookingForm(request.POST)
         if form.is_valid():
             booking = form.save(commit=False)
 
@@ -62,7 +62,7 @@ def book_package(request, pk):
             messages.success(request, "Booking confirmed successfully!")
             return redirect('package_detail', pk=pk)
     else:
-        form = BookingForm()
+        form = PackageBookingForm()
 
     return render(request, 'packages/book_package.html', {'form': form, 'package': package})
 

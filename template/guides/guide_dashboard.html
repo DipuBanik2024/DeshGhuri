@@ -1,46 +1,211 @@
 {% extends "base.html" %}
-{% block title %}Guide Dashboard{% endblock %}
+{% load static %}
+
+{% block title %}Guide Dashboard | TourGuide{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h3>Guide Dashboard</h3>
-  <a class="btn btn-outline-primary" href="{% url 'edit_profile' %}">Edit Profile</a>
-</div>
-
-{% if profile %}
-<div class="card mb-3">
-  <div class="card-body">
-    <h5 class="card-title">{{ profile.user.get_full_name|default:profile.user.username }}</h5>
-    <p class="card-text"><strong>Phone:</strong> {{ profile.phone|default:"N/A" }}</p>
-    <p class="card-text"><strong>Experience:</strong> {{ profile.experience_years|default:"0" }} years</p>
-    <p class="card-text">{{ profile.bio|default:"No bio available." }}</p>
-  </div>
-</div>
-{% else %}
-  <p class="text-warning">Profile not found. Please <a href="{% url 'edit_profile' %}">create your profile</a>.</p>
-{% endif %}
-
-<h5>Bookings</h5>
-{% if bookings %}
-  <ul class="list-group">
-    {% for b in bookings %}
-      <li class="list-group-item d-flex justify-content-between align-items-center">
-        <div>
-          <strong>{{ b.tourist.get_full_name|default:b.tourist.username }}</strong>
-          <div><small>{{ b.date }}</small></div>
-          <div><small>{{ b.notes|default:"No notes" }}</small></div>
+<div class="min-h-screen bg-gray-50 py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Welcome Header -->
+        <div class="mb-8">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">Welcome back, {{ profile.user.get_full_name|default:profile.user.username }}! 👋</h1>
+                    <p class="text-gray-600 mt-2">Here's your business overview</p>
+                </div>
+                <div class="flex gap-3">
+                    <a href="{% url 'edit_profile' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                        Edit Profile
+                    </a>
+                    <a href="{% url 'tour_requests' %}" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors font-medium">
+                        View Requests
+                    </a>
+                </div>
+            </div>
         </div>
-        <div>
-          {% if b.confirmed %}
-            <span class="badge bg-success">Confirmed</span>
-          {% else %}
-            <span class="badge bg-secondary">Pending</span>
-          {% endif %}
+
+        <!-- Quick Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Today's Tours -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Today's Tours</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ today_tours_count }}</p>
+                    </div>
+                    <div class="p-3 bg-blue-100 rounded-lg">
+                        <i class="fas fa-calendar-day text-blue-600 text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-2">Scheduled for today</p>
+            </div>
+
+            <!-- Pending Requests -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Pending Requests</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ pending_requests_count }}</p>
+                    </div>
+                    <div class="p-3 bg-orange-100 rounded-lg">
+                        <i class="fas fa-clock text-orange-600 text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-2">Awaiting your response</p>
+            </div>
+
+            <!-- Monthly Earnings -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Monthly Earnings</p>
+                        <p class="text-2xl font-bold text-gray-900">${{ monthly_earnings|default:"0" }}</p>
+                    </div>
+                    <div class="p-3 bg-green-100 rounded-lg">
+                        <i class="fas fa-dollar-sign text-green-600 text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-2">This month's income</p>
+            </div>
+
+            <!-- Average Rating -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Your Rating</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ profile.average_rating|default:"0" }}/5</p>
+                    </div>
+                    <div class="p-3 bg-purple-100 rounded-lg">
+                        <i class="fas fa-star text-purple-600 text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-2">Based on {{ review_count }} reviews</p>
+            </div>
         </div>
-      </li>
-    {% endfor %}
-  </ul>
-{% else %}
-  <p>No bookings yet.</p>
-{% endif %}
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Recent Booking Requests -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900">Recent Booking Requests</h3>
+                    <a href="{% url 'tour_requests' %}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">View All</a>
+                </div>
+
+                {% if recent_requests %}
+                <div class="space-y-4">
+                    {% for request in recent_requests %}
+                    <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h4 class="font-medium text-gray-900">{{ request.tourist.get_full_name|default:request.tourist.username }}</h4>
+                                <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                                    {{ request.duration_hours }}h
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-600">{{ request.destination }}</p>
+                            <p class="text-xs text-gray-500 mt-1">{{ request.date }} • {{ request.number_of_travelers }} travelers</p>
+                        </div>
+                        <div class="flex gap-2">
+                           <!-- <a href="{% url 'accept_request' request.id %}" class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 transition-colors">
+                                Accept
+                            </a>
+                            <a href="{% url 'reject_request' request.id %}" class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 transition-colors">
+                                Reject
+                            </a>-->
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-8">
+                    <i class="fas fa-inbox text-gray-300 text-4xl mb-3"></i>
+                    <p class="text-gray-500">No pending requests</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Recent Reviews -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900">Recent Reviews</h3>
+                    <span class="text-sm text-gray-500">{{ review_count }} total</span>
+                </div>
+
+                {% if recent_reviews %}
+                <div class="space-y-4">
+                    {% for review in recent_reviews %}
+                    <div class="p-4 border border-gray-200 rounded-lg">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-medium text-gray-900">{{ review.tourist.get_full_name|default:review.tourist.username }}</h4>
+                            <div class="flex items-center text-amber-500">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= review.rating %}
+                                        <i class="fas fa-star text-sm"></i>
+                                    {% else %}
+                                        <i class="far fa-star text-sm"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600">{{ review.comment|truncatewords:20 }}</p>
+                        <p class="text-xs text-gray-500 mt-2">{{ review.created_at|date:"M d, Y" }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-8">
+                    <i class="fas fa-comments text-gray-300 text-4xl mb-3"></i>
+                    <p class="text-gray-500">No reviews yet</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="mt-8 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-6">Quick Actions</h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <a href="{% url 'tour_requests' %}" class="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-200 transition-colors">
+                    <div class="p-2 bg-blue-100 rounded-lg">
+                        <i class="fas fa-clock text-blue-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-900">Manage Requests</p>
+                        <p class="text-sm text-gray-600">Respond to bookings</p>
+                    </div>
+                </a>
+
+                <a href="{% url 'my_tours' %}" class="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-green-50 hover:border-green-200 transition-colors">
+                    <div class="p-2 bg-green-100 rounded-lg">
+                        <i class="fas fa-route text-green-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-900">My Tours</p>
+                        <p class="text-sm text-gray-600">View all tours</p>
+                    </div>
+                </a>
+
+                <a href="{% url 'earnings' %}" class="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-purple-50 hover:border-purple-200 transition-colors">
+                    <div class="p-2 bg-purple-100 rounded-lg">
+                        <i class="fas fa-chart-line text-purple-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-900">Earnings</p>
+                        <p class="text-sm text-gray-600">View income</p>
+                    </div>
+                </a>
+
+                <a href="{% url 'edit_profile' %}" class="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-orange-50 hover:border-orange-200 transition-colors">
+                    <div class="p-2 bg-orange-100 rounded-lg">
+                        <i class="fas fa-user-edit text-orange-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-900">Edit Profile</p>
+                        <p class="text-sm text-gray-600">Update details</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
