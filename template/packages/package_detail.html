@@ -2,36 +2,41 @@
 {% load static %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto mt-6 p-6 bg-white rounded-2xl shadow-lg">
+<div class="max-w-7xl mx-auto mt-8 p-4 sm:p-6 lg:p-8 bg-gray-50 rounded-3xl shadow-xl font-sans animate-fade-in">
 
   <!-- Package Header -->
-  <div class="mb-8 text-center">
-    <h1 class="text-4xl font-bold text-gray-800 mb-2">{{ package.destination_name }}</h1>
+  <div class="mb-10 text-center">
+    <h1 class="text-4xl sm:text-5xl font-serif font-extrabold text-gray-900 mb-3 tracking-tight">{{ package.destination_name }}</h1>
     <div class="flex justify-center items-center space-x-4 text-gray-600">
-
-
+      <span class="inline-flex items-center px-3 py-1 rounded-full bg-indigo-100 text-indigo-800 text-sm font-medium">
+        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+        </svg>
+        {{ package.days }} Days
+      </span>
     </div>
   </div>
 
   <!-- Image + Details -->
-  <div class="grid md:grid-cols-2 gap-10 items-start mb-12">
+  <div class="grid md:grid-cols-2 gap-8 lg:gap-12 mb-12">
     <!-- Left: Image -->
-    <div class="relative overflow-hidden rounded-2xl shadow-lg">
-      <img src="{{ package.image.url }}" alt="{{ package.destination_name }}" class="w-full h-auto transition-transform duration-500 hover:scale-105">
-      <div class="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full font-semibold shadow-md">
+    <div class="relative overflow-hidden rounded-2xl shadow-lg group">
+      <img src="{{ package.image.url }}" alt="{{ package.destination_name }}" class="w-full h-auto max-h-[500px] object-cover transition-transform duration-700 group-hover:scale-110">
+      <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      <div class="absolute top-4 right-4 bg-indigo-600 text-white px-4 py-1.5 rounded-full font-semibold shadow-md transform transition-transform duration-300 group-hover:scale-105">
         {{ package.days }} Days
       </div>
     </div>
 
     <!-- Right: Details -->
-    <div class="bg-gray-50 p-6 rounded-2xl shadow-sm">
-      <h2 class="text-2xl font-bold text-gray-800 mb-4">About This Package</h2>
-      <p class="text-gray-700 mb-6 leading-relaxed">{{ package.description|linebreaksbr }}</p>
+    <div class="bg-white p-6 lg:p-8 rounded-2xl shadow-md">
+      <h2 class="text-2xl lg:text-3xl font-serif font-bold text-gray-900 mb-4">About This Package</h2>
+      <p class="text-gray-600 mb-6 leading-relaxed text-base">{{ package.description|linebreaksbr }}</p>
 
-      <div class="space-y-4 mb-6">
+      <div class="space-y-5 mb-6">
         <div class="flex items-start">
-          <div class="bg-blue-100 p-2 rounded-lg mr-3">
-            <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+          <div class="bg-indigo-100 p-2.5 rounded-lg mr-4">
+            <svg class="w-5 h-5 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
             </svg>
           </div>
@@ -42,8 +47,8 @@
         </div>
 
         <div class="flex items-start">
-          <div class="bg-blue-100 p-2 rounded-lg mr-3">
-            <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+          <div class="bg-indigo-100 p-2.5 rounded-lg mr-4">
+            <svg class="w-5 h-5 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 005 10a6 6 0 0112 0c0 .35-.03.693-.083 1.022A5 5 0 0010 11z" clip-rule="evenodd"></path>
             </svg>
           </div>
@@ -54,18 +59,18 @@
         </div>
       </div>
 
-      <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-4 rounded-xl text-white text-center mb-4">
-        <p class="text-xl font-bold">৳{{ package.price }} BDT</p>
-        <p class="text-blue-100">Per person</p>
+      <div class="bg-gradient-to-r from-indigo-500 to-teal-600 p-5 rounded-xl text-white text-center mb-6 shadow-inner">
+        <p class="text-2xl font-bold">৳{{ package.price }} BDT</p>
+        <p class="text-indigo-100 text-sm">Per person</p>
       </div>
 
       {% if user.is_authenticated %}
-        <a href="{% url 'book_package' package.pk %}" class="block w-full bg-gradient-to-r from-green-500 to-green-600 text-white text-center font-bold py-3 px-4 rounded-xl shadow-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 transform hover:-translate-y-1">
+        <a href="{% url 'book_package' package.pk %}" class="block w-full bg-gradient-to-r from-teal-500 to-indigo-600 text-white text-center font-semibold py-3.5 px-6 rounded-xl shadow-lg hover:from-teal-600 hover:to-indigo-700 transition-all duration-300 transform hover:-translate-y-1 sticky-booking" id="booking-button">
           Book This Package Now
         </a>
       {% else %}
-        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-lg">
-          <p class="text-yellow-800 font-medium flex items-center">
+        <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-lg">
+          <p class="text-amber-800 font-medium flex items-center">
             <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
             </svg>
@@ -77,55 +82,52 @@
   </div>
 
   <!-- Itinerary -->
-<div class="mb-12 bg-gradient-to-br from-blue-50 to-white border border-blue-100 rounded-2xl p-6 shadow-sm">
-  <div class="flex items-center mb-6">
-    <div class="bg-blue-100 p-2 rounded-lg mr-3">
-      <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-        <path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd"></path>
-      </svg>
+  <div class="mb-12 bg-white border border-indigo-100 rounded-2xl p-6 lg:p-8 shadow-md">
+    <div class="flex items-center mb-6">
+      <div class="bg-indigo-100 p-2.5 rounded-lg mr-3">
+        <svg class="w-6 h-6 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd"></path>
+        </svg>
+      </div>
+      <h3 class="text-2xl lg:text-3xl font-serif font-bold text-gray-900">Itinerary</h3>
     </div>
-    <h3 class="text-2xl font-bold text-gray-800">Itinerary</h3>
-  </div>
 
-  <div class="space-y-4">
-    {% for day in itinerary_days %}
-      <div class="bg-white border border-blue-100 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow duration-300">
-        <div class="flex items-start">
-
-          <p class="text-gray-800 pt-1">{{ day }}</p>
+    <div class="space-y-4">
+      {% for day in itinerary_days %}
+        <div class="bg-gray-50 border border-indigo-100 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow duration-300">
+          <p class="text-gray-800 font-medium">{{ day }}</p>
         </div>
-      </div>
-    {% empty %}
-      <div class="bg-white border border-blue-100 rounded-xl p-6 text-center">
-        <p class="text-gray-600">No itinerary available for this package.</p>
-      </div>
-    {% endfor %}
+      {% empty %}
+        <div class="bg-gray-50 border border-indigo-100 rounded-xl p-6 text-center">
+          <p class="text-gray-600">No itinerary available for this package.</p>
+        </div>
+      {% endfor %}
+    </div>
   </div>
-</div>
 
   <!-- Included / Excluded -->
   <div class="grid md:grid-cols-2 gap-8 mb-12">
     <!-- Included -->
-    <div class="bg-gradient-to-br from-green-50 to-white border border-green-100 rounded-2xl p-6 shadow-sm">
-      <div class="flex items-center mb-4">
-        <div class="bg-green-100 p-2 rounded-lg mr-3">
+    <div class="bg-white border border-green-100 rounded-2xl p-6 lg:p-8 shadow-md">
+      <div class="flex items-center mb-5">
+        <div class="bg-green-100 p-2.5 rounded-lg mr-3">
           <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
           </svg>
         </div>
-        <h4 class="text-xl font-bold text-gray-800">Included Services</h4>
+        <h4 class="text-xl font-serif font-bold text-gray-900">Included Services</h4>
       </div>
 
       <div class="space-y-3">
         {% for item in included_services_list %}
-          <div class="flex items-start bg-white p-3 rounded-lg border border-green-100">
+          <div class="flex items-start bg-gray-50 p-3 rounded-lg border border-green-100">
             <svg class="w-5 h-5 text-green-500 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
             </svg>
             <span class="text-gray-700">{{ item }}</span>
           </div>
         {% empty %}
-          <div class="bg-white p-4 rounded-lg border border-green-100 text-center">
+          <div class="bg-gray-50 p-4 rounded-lg border border-green-100 text-center">
             <p class="text-gray-600">No services listed.</p>
           </div>
         {% endfor %}
@@ -133,26 +135,26 @@
     </div>
 
     <!-- Excluded -->
-    <div class="bg-gradient-to-br from-red-50 to-white border border-red-100 rounded-2xl p-6 shadow-sm">
-      <div class="flex items-center mb-4">
-        <div class="bg-red-100 p-2 rounded-lg mr-3">
+    <div class="bg-white border border-red-100 rounded-2xl p-6 lg:p-8 shadow-md">
+      <div class="flex items-center mb-5">
+        <div class="bg-red-100 p-2.5 rounded-lg mr-3">
           <svg class="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
           </svg>
         </div>
-        <h4 class="text-xl font-bold text-gray-800">Exclusions</h4>
+        <h4 class="text-xl font-serif font-bold text-gray-900">Exclusions</h4>
       </div>
 
       <div class="space-y-3">
         {% for item in exclusions_list %}
-          <div class="flex items-start bg-white p-3 rounded-lg border border-red-100">
+          <div class="flex items-start bg-gray-50 p-3 rounded-lg border border-red-100">
             <svg class="w-5 h-5 text-red-500 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
             </svg>
             <span class="text-gray-700">{{ item }}</span>
           </div>
         {% empty %}
-          <div class="bg-white p-4 rounded-lg border border-red-100 text-center">
+          <div class="bg-gray-50 p-4 rounded-lg border border-red-100 text-center">
             <p class="text-gray-600">No exclusions listed.</p>
           </div>
         {% endfor %}
@@ -162,43 +164,43 @@
 
   <!-- Important Notes -->
   {% if package.important_notes %}
-    <div class="mb-12 bg-gradient-to-r from-yellow-50 to-amber-50 border-l-4 border-yellow-500 rounded-xl p-6 shadow-sm">
+    <div class="mb-12 bg-white border-l-4 border-amber-500 rounded-xl p-6 lg:p-8 shadow-md">
       <div class="flex items-start">
-        <div class="bg-yellow-100 p-2 rounded-lg mr-4 flex-shrink-0">
-          <svg class="w-6 h-6 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+        <div class="bg-amber-100 p-2.5 rounded-lg mr-4 flex-shrink-0">
+          <svg class="w-6 h-6 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
           </svg>
         </div>
         <div>
-          <p class="font-bold text-yellow-800 text-lg mb-2">Important Notes</p>
-          <p class="text-gray-700">{{ package.important_notes|linebreaksbr }}</p>
+          <p class="font-bold text-amber-800 text-lg mb-2">Important Notes</p>
+          <p class="text-gray-600">{{ package.important_notes|linebreaksbr }}</p>
         </div>
       </div>
     </div>
   {% endif %}
 
   <!-- Divider -->
-  <hr class="my-10 border-gray-300">
+  <hr class="my-10 border-gray-200">
 
   <!-- Reviews Section -->
   <div class="mb-12">
     <div class="flex items-center justify-between mb-6">
       <div class="flex items-center">
-        <div class="bg-purple-100 p-2 rounded-lg mr-3">
-          <svg class="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+        <div class="bg-indigo-100 p-2.5 rounded-lg mr-3">
+          <svg class="w-6 h-6 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
             <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"></path>
           </svg>
         </div>
-        <h3 class="text-2xl font-bold text-gray-800">Customer Reviews</h3>
+        <h3 class="text-2xl lg:text-3xl font-serif font-bold text-gray-900">Customer Reviews</h3>
       </div>
-      <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-semibold">
+      <div class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full font-semibold text-sm">
         {{ reviews|length }} Review{{ reviews|length|pluralize }}
       </div>
     </div>
 
     <div id="reviews-container" class="space-y-4">
       {% for review in reviews %}
-        <div class="review-item bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow duration-300 {% if forloop.counter > 5 %}hidden{% endif %}">
+        <div class="review-item bg-white border border-gray-100 rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-300 {% if forloop.counter > 5 %}hidden{% endif %}">
           <div class="flex justify-between items-start mb-3">
             <div>
               <p class="font-bold text-gray-800">{{ review.tourist.username }}</p>
@@ -207,11 +209,11 @@
                   {% for i in "12345" %}
                     {% if forloop.counter <= review.rating %}
                       <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3 .921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784 .57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81 .588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                       </svg>
                     {% else %}
-                      <svg class="w-5 h-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                      <svg class="w-5 h-5 text-gray-200" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3 .921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784 .57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81 .588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                       </svg>
                     {% endif %}
                   {% endfor %}
@@ -221,10 +223,10 @@
             </div>
             <span class="text-sm text-gray-500">{{ review.created_at|date:"M d, Y" }}</span>
           </div>
-          <p class="text-gray-700">{{ review.comment|linebreaksbr }}</p>
+          <p class="text-gray-600">{{ review.comment|linebreaksbr }}</p>
         </div>
       {% empty %}
-        <div class="bg-gray-50 border border-gray-200 rounded-xl p-8 text-center">
+        <div class="bg-gray-50 border border-gray-100 rounded-xl p-8 text-center">
           <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
           </svg>
@@ -235,7 +237,7 @@
 
     {% if reviews|length > 5 %}
       <div class="text-center mt-6">
-        <button id="load-more-btn" class="bg-white border border-blue-600 text-blue-600 px-6 py-2 rounded-lg hover:bg-blue-50 transition-colors duration-300 font-medium">
+        <button id="load-more-btn" class="bg-white border border-indigo-600 text-indigo-600 px-6 py-2.5 rounded-lg hover:bg-indigo-50 transition-colors duration-300 font-semibold">
           See More Reviews
         </button>
       </div>
@@ -244,22 +246,22 @@
 
   <!-- Add Review Form -->
   {% if user.is_authenticated %}
-    <div class="bg-gradient-to-br from-blue-50 to-white border border-blue-200 rounded-2xl p-6 shadow-sm">
-      <h4 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
-        <svg class="w-6 h-6 text-blue-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+    <div class="bg-white border border-indigo-100 rounded-2xl p-6 lg:p-8 shadow-md">
+      <h4 class="text-xl lg:text-2xl font-serif font-bold text-gray-900 mb-4 flex items-center">
+        <svg class="w-6 h-6 text-indigo-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
           <path fill-rule="evenodd" d="M18 13V5a2 2 0 00-2-2H4a2 2 0 00-2 2v8a2 2 0 002 2h3l3 3 3-3h3a2 2 0 002-2zM5 7a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H6z" clip-rule="evenodd"></path>
         </svg>
         Share Your Experience
       </h4>
-      <form method="POST" action="{% url 'add_review' package.pk %}" class="space-y-4">
+      <form method="POST" action="{% url 'add_review' package.pk %}" class="space-y-5">
         {% csrf_token %}
         <div>
           <label class="block font-medium text-gray-700 mb-2">Your Rating</label>
           <div class="flex space-x-1" id="rating-stars">
             {% for i in "12345" %}
-              <button type="button" class="rating-star text-2xl text-gray-300 hover:text-yellow-400 transition-colors" data-rating="{{ forloop.counter }}">
+              <button type="button" class="rating-star text-2xl text-gray-200 hover:text-yellow-400 transition-colors duration-200" data-rating="{{ forloop.counter }}">
                 <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3 .921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784 .57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81 .588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                 </svg>
               </button>
             {% endfor %}
@@ -268,15 +270,15 @@
         </div>
         <div>
           <label class="block font-medium text-gray-700 mb-2">Your Review</label>
-          <textarea name="comment" rows="4" placeholder="Share your experience with this package..." class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300" required></textarea>
+          <textarea name="comment" rows="4" placeholder="Share your experience with this package..." class="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition-all duration-300" required></textarea>
         </div>
-        <button type="submit" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 transform hover:-translate-y-1">
+        <button type="submit" class="bg-gradient-to-r from-indigo-500 to-teal-600 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:from-indigo-600 hover:to-teal-700 transition-all duration-300 transform hover:-translate-y-1">
           Submit Review
         </button>
       </form>
     </div>
   {% else %}
-    <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center">
+    <div class="bg-gray-50 border border-gray-100 rounded-xl p-6 text-center">
       <p class="text-gray-600 flex items-center justify-center">
         <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
           <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
@@ -287,21 +289,61 @@
   {% endif %}
 </div>
 
-<!-- Load more JS -->
+<!-- Custom CSS for Animations and Sticky Button -->
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out;
+  }
+  .sticky-booking {
+    transition: all 0.3s ease;
+  }
+  .sticky {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 250px;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    animation: slideIn 0.3s ease-out;
+  }
+  @media (max-width: 640px) {
+    .sticky {
+      width: 180px;
+      bottom: 10px;
+      right: 10px;
+      font-size: 0.875rem;
+      padding: 0.75rem 1rem;
+    }
+  }
+</style>
+
+<!-- JavaScript Enhancements -->
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    // Load more reviews functionality
-    const btn = document.getElementById('load-more-btn');
-    if (btn) {
+    // Load more reviews functionality with smooth scroll
+    const loadMoreBtn = document.getElementById('load-more-btn');
+    if (loadMoreBtn) {
       const items = document.querySelectorAll('.review-item');
       let visible = 5;
 
-      btn.addEventListener('click', () => {
+      loadMoreBtn.addEventListener('click', () => {
         for (let i = visible; i < visible + 5 && i < items.length; i++) {
           items[i].classList.remove('hidden');
+          items[i].classList.add('animate-fade-in');
         }
         visible += 5;
-        if (visible >= items.length) btn.classList.add('hidden');
+        if (visible >= items.length) loadMoreBtn.classList.add('hidden');
+
+        // Smooth scroll to the last visible review
+        items[visible - 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
       });
     }
 
@@ -317,14 +359,15 @@
           currentRating = parseInt(star.getAttribute('data-rating'));
           ratingInput.value = currentRating;
 
-          // Update star display
+          // Update star display with animation
           stars.forEach((s, index) => {
             if (index < currentRating) {
-              s.classList.remove('text-gray-300');
-              s.classList.add('text-yellow-400');
+              s.classList.remove('text-gray-200');
+              s.classList.add('text-yellow-400', 'animate-pulse');
+              setTimeout(() => s.classList.remove('animate-pulse'), 300);
             } else {
-              s.classList.remove('text-yellow-400');
-              s.classList.add('text-gray-300');
+              s.classList.remove('text-yellow-400', 'animate-pulse');
+              s.classList.add('text-gray-200');
             }
           });
         });
@@ -346,6 +389,35 @@
             }
           });
         });
+      });
+    }
+
+    // Sticky booking button with improved logic
+    const bookingButton = document.getElementById('booking-button');
+    if (bookingButton) {
+      const originalPosition = bookingButton.getBoundingClientRect().top + window.scrollY;
+      const footer = document.querySelector('footer') || document.body; // Adjust if footer exists
+      const footerOffset = footer.getBoundingClientRect().top + window.scrollY;
+
+      const handleScroll = () => {
+        const scrollPosition = window.scrollY + window.innerHeight;
+        const isBelowOriginal = window.scrollY > originalPosition + 100; // Add buffer
+        const isAboveFooter = scrollPosition < footerOffset - 100; // Avoid footer overlap
+
+        if (isBelowOriginal && isAboveFooter) {
+          bookingButton.classList.add('sticky');
+        } else {
+          bookingButton.classList.remove('sticky');
+        }
+      };
+
+      window.addEventListener('scroll', handleScroll);
+      window.addEventListener('resize', handleScroll); // Recalculate on resize
+
+      // Cleanup event listeners on page unload
+      window.addEventListener('unload', () => {
+        window.removeEventListener('scroll', handleScroll);
+        window.removeEventListener('resize', handleScroll);
       });
     }
   });

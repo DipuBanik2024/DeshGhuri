@@ -105,7 +105,7 @@
                     <!-- Results Count -->
                     <div class="pt-3 border-t border-gray-200">
                         <p class="text-xs text-gray-600 text-center">
-                            <span id="resultsCount">{{ guides|length }}</span> guides found
+                            <span id="resultsCount">0</span> guides found
                         </p>
                     </div>
                 </div>
@@ -172,10 +172,10 @@
                     </div>
                 </div>
 
-                <!-- Enhanced Guide Cards Grid - SHORTENED VERSION -->
+                <!-- Enhanced Guide Cards Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5" id="guides-container">
                     {% for guide in guides %}
-                    <div class="guide-card group bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-blue-200 overflow-hidden hover:-translate-y-1"
+                    <div class="guide-card group bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-blue-200 overflow-hidden hover:-translate-y-1 relative {% if forloop.counter > 6 %}hidden{% endif %}"
                          data-name="{{ guide.user.get_full_name|default:guide.user.username|lower }}"
                          data-location="{{ guide.address|default:''|lower }}"
                          data-bio="{{ guide.bio|default:''|lower }}"
@@ -185,74 +185,63 @@
                          data-verified="{{ guide.is_verified }}"
                          data-region="{{ guide.region|default:'all'|lower }}">
 
-                        <!-- Compact Card Header -->
-                        <div class="relative">
-                            {% if guide.avatar %}
-                                <img src="{{ guide.avatar.url }}" alt="{{ guide.user.get_full_name }}"
-                                     class="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-500">
-                            {% else %}
-                                <div class="w-full h-32 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                                    <i class="fas fa-user text-white text-2xl"></i>
-                                </div>
-                            {% endif %}
-
-                            <!-- Badges - More Compact -->
-                            <div class="absolute top-2 right-2 flex flex-col space-y-1">
-                                {% if guide.is_verified %}
-                                <div class="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center shadow-sm">
-                                    <i class="fas fa-shield-check mr-1"></i>
-                                    Verified
-                                </div>
-                                {% endif %}
-                                {% if guide.experience_years >= 5 %}
-                                <div class="bg-amber-500 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center shadow-sm">
-                                    <i class="fas fa-crown mr-1"></i>
-                                    Expert
-                                </div>
-                                {% endif %}
+                        <!-- Badges in Upper Right Corner - ALWAYS VISIBLE -->
+                        <div class="absolute top-3 right-3 flex flex-col space-y-2 z-10">
+                            {% if guide.is_verified %}
+                            <div class="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center shadow-sm">
+                                <i class="fas fa-shield-check mr-1"></i>
+                                Verified
                             </div>
+                            {% endif %}
+                            {% if guide.experience_years >= 5 %}
+                            <div class="bg-amber-500 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center shadow-sm">
+                                <i class="fas fa-crown mr-1"></i>
+                                Expert
+                            </div>
+                            {% endif %}
+                        </div>
 
-                            <!-- Smaller Avatar -->
-                            <div class="absolute -bottom-4 left-3">
-                                <div class="relative">
+                        <!-- Circular Profile Section -->
+                        <div class="relative pt-8 px-4">
+                            <div class="flex flex-col items-center text-center">
+                                <!-- Larger Circular Profile Picture -->
+                                <div class="relative mb-4">
                                     {% if guide.avatar %}
                                         <img src="{{ guide.avatar.url }}" alt="{{ guide.user.get_full_name }}"
-                                             class="w-10 h-10 rounded-lg border-2 border-white shadow-md object-cover">
+                                             class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg group-hover:scale-110 transition-transform duration-300">
                                     {% else %}
-                                        <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg border-2 border-white shadow-md flex items-center justify-center text-white font-bold text-sm">
+                                        <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center text-white font-bold text-2xl group-hover:scale-110 transition-transform duration-300">
                                             {{ guide.user.get_full_name|default:guide.user.username|first|upper }}
                                         </div>
                                     {% endif %}
+                                </div>
+
+                                <!-- Name and Location -->
+                                <h3 class="font-bold text-gray-900 text-lg mb-1 group-hover:text-blue-600 transition-colors duration-300">
+                                    {{ guide.user.get_full_name|default:guide.user.username }}
+                                </h3>
+                                <div class="flex items-center justify-center text-gray-600 text-sm mb-3">
+                                    <i class="fas fa-map-marker-alt mr-1 text-blue-500 text-xs"></i>
+                                    <span class="truncate">{{ guide.address|default:"Available Worldwide" }}</span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Compact Card Content -->
-                        <div class="pt-6 px-3 pb-3">
-                            <!-- Name and Location - Compact -->
-                            <div class="mb-3">
-                                <h3 class="font-bold text-gray-900 text-base mb-1 group-hover:text-blue-600 transition-colors duration-300">
-                                    {{ guide.user.get_full_name|default:guide.user.username }}
-                                </h3>
-                                <div class="flex items-center text-gray-600 text-xs">
-                                    <i class="fas fa-map-marker-alt mr-1 text-blue-500 text-xs"></i>
-                                    <span class="truncate">{{ guide.address|default:"Available Worldwide" }}</span>
-                                </div>
-                            </div>
-
+                        <div class="px-4 pb-4">
                             <!-- Compact Stats Row -->
-                            <div class="flex items-center justify-between mb-3 p-2 bg-blue-50 rounded-lg border border-blue-100">
+                            <div class="flex items-center justify-between mb-4 p-3 bg-blue-50 rounded-lg border border-blue-100">
                                 <!-- Experience -->
                                 <div class="text-center flex-1">
                                     <div class="flex items-center justify-center text-orange-500 mb-1">
-                                        <i class="fas fa-briefcase text-xs"></i>
+                                        <i class="fas fa-briefcase text-sm"></i>
                                     </div>
-                                    <div class="text-xs text-gray-600 font-medium">Exp</div>
-                                    <div class="text-xs font-bold text-gray-900">{{ guide.experience_years }}+ yrs</div>
+                                    <div class="text-xs text-gray-600 font-medium">Experience</div>
+                                    <div class="text-sm font-bold text-gray-900">{{ guide.experience_years }}+ yrs</div>
                                 </div>
 
                                 <!-- Divider -->
-                                <div class="w-px h-6 bg-blue-200 mx-1"></div>
+                                <div class="w-px h-8 bg-blue-200 mx-1"></div>
 
                                 <!-- Rating -->
                                 <div class="text-center flex-1">
@@ -266,14 +255,14 @@
                                         {% endfor %}
                                     </div>
                                     <div class="text-xs text-gray-600 font-medium">Rating</div>
-                                    <div class="text-xs font-bold text-gray-900">{{ guide.average_rating }}</div>
+                                    <div class="text-sm font-bold text-gray-900">{{ guide.average_rating }}</div>
                                 </div>
                             </div>
 
                             <!-- Languages - Compact -->
                             {% if guide.languages %}
-                            <div class="mb-3">
-                                <div class="flex flex-wrap gap-1">
+                            <div class="mb-4">
+                                <div class="flex flex-wrap gap-1 justify-center">
                                     {% for lang in guide.languages|split:","|slice:":2" %}
                                     <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-medium border border-blue-200">
                                         {{ lang|strip }}
@@ -289,9 +278,9 @@
                             {% endif %}
 
                             <!-- Compact CTA Button -->
-                            <div class="pt-2 border-t border-gray-100">
+                            <div class="pt-3 border-t border-gray-100">
                                 <a href="{% url 'guide_detail' guide.id %}"
-                                   class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-sm hover:shadow font-semibold text-xs text-center block">
+                                   class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-sm hover:shadow font-semibold text-sm text-center block">
                                     View Profile
                                 </a>
                             </div>
@@ -313,9 +302,9 @@
                     {% endfor %}
                 </div>
 
-                <!-- Enhanced Load More -->
-                <div class="text-center mt-12">
-                    <button class="bg-gradient-to-r from-white to-gray-50 text-gray-700 border border-gray-300 px-8 py-3 rounded-xl hover:from-gray-50 hover:to-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl font-semibold text-sm group">
+                <!-- Load More Button -->
+                <div class="text-center mt-12" id="loadMoreContainer" {% if guides|length <= 6 %}style="display: none;"{% endif %}>
+                    <button id="loadMoreBtn" class="bg-gradient-to-r from-white to-gray-50 text-gray-700 border border-gray-300 px-8 py-3 rounded-xl hover:from-gray-50 hover:to-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl font-semibold text-sm group">
                         <span class="group-hover:scale-105 transition-transform duration-300 inline-block">
                             Load More Guides
                         </span>
@@ -337,8 +326,28 @@
         const verificationFilter = document.getElementById('verificationFilter');
         const clearFilters = document.getElementById('clearFilters');
         const resultsCount = document.getElementById('resultsCount');
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        const loadMoreContainer = document.getElementById('loadMoreContainer');
         const cards = document.querySelectorAll('.guide-card');
 
+        let currentVisibleCount = 6;
+        const guidesPerLoad = 6;
+        let filteredCards = Array.from(cards);
+
+        // Initialize - show first 6 guides
+        function initializeGuides() {
+            cards.forEach((card, index) => {
+                if (index < 6) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+            updateResultsCount();
+            updateLoadMoreButton();
+        }
+
+        // Filter guides based on search and filters
         function filterGuides() {
             const searchValue = searchInput.value.toLowerCase();
             const locationValue = locationFilter.value;
@@ -347,9 +356,7 @@
             const languageValue = languageFilter.value;
             const verificationValue = verificationFilter.value;
 
-            let visibleCount = 0;
-
-            cards.forEach(card => {
+            filteredCards = Array.from(cards).filter(card => {
                 const name = card.dataset.name || '';
                 const location = card.dataset.location || '';
                 const bio = card.dataset.bio || '';
@@ -359,7 +366,6 @@
                 const verified = card.dataset.verified === 'True';
                 const region = card.dataset.region || 'all';
 
-                // Check all filters
                 const matchesSearch = !searchValue ||
                     name.includes(searchValue) ||
                     location.includes(searchValue) ||
@@ -372,18 +378,52 @@
                 const matchesLanguage = languageValue === 'all' || languages.includes(languageValue);
                 const matchesVerification = verificationValue === 'all' || verified;
 
-                const shouldShow = matchesSearch && matchesLocation && matchesExperience &&
-                                 matchesRating && matchesLanguage && matchesVerification;
-
-                if (shouldShow) {
-                    card.style.display = 'block';
-                    visibleCount++;
-                } else {
-                    card.style.display = 'none';
-                }
+                return matchesSearch && matchesLocation && matchesExperience &&
+                       matchesRating && matchesLanguage && matchesVerification;
             });
 
-            resultsCount.textContent = visibleCount;
+            // Reset to show first 6 filtered results
+            currentVisibleCount = 6;
+
+            // Hide all cards first
+            cards.forEach(card => card.classList.add('hidden'));
+
+            // Show filtered results
+            filteredCards.slice(0, currentVisibleCount).forEach(card => {
+                card.classList.remove('hidden');
+            });
+
+            updateResultsCount();
+            updateLoadMoreButton();
+        }
+
+        // Load more guides
+        function loadMoreGuides() {
+            const nextVisibleCount = currentVisibleCount + guidesPerLoad;
+            const guidesToShow = filteredCards.slice(currentVisibleCount, nextVisibleCount);
+
+            guidesToShow.forEach(card => {
+                card.classList.remove('hidden');
+            });
+
+            currentVisibleCount = nextVisibleCount;
+            updateResultsCount();
+            updateLoadMoreButton();
+        }
+
+        // Update results count
+        function updateResultsCount() {
+            const visibleCount = Math.min(currentVisibleCount, filteredCards.length);
+            resultsCount.textContent = `${visibleCount} of ${filteredCards.length}`;
+        }
+
+        // Update load more button visibility
+        function updateLoadMoreButton() {
+            if (currentVisibleCount >= filteredCards.length) {
+                loadMoreContainer.style.display = 'none';
+            } else {
+                loadMoreContainer.style.display = 'block';
+            }
         }
 
         // Event listeners
@@ -404,8 +444,16 @@
             filterGuides();
         });
 
-        // Initial filter
-        filterGuides();
+        loadMoreBtn.addEventListener('click', loadMoreGuides);
+
+        // Initialize
+        initializeGuides();
     });
 </script>
+
+<style>
+.hidden {
+    display: none !important;
+}
+</style>
 {% endblock %}
