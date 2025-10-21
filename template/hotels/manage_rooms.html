@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Manage Rooms - {{ hotel.name }} - TourGuide{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Manage Rooms</h1>
+                <p class="text-gray-600">{{ hotel.name }}</p>
+            </div>
+            <div class="flex space-x-3">
+                <a href="{% url 'manage_hotel_images' hotel.id %}" class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition-colors">
+                    <i class="fas fa-images mr-2"></i>Manage Images
+                </a>
+                <a href="{% url 'hotel_dashboard' %}" class="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg font-semibold hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Add Room Form -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sticky top-8">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6">Add New Room Type</h2>
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Room Name</label>
+                                <input type="text" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-lg" required>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                                <textarea name="description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg"></textarea>
+                            </div>
+
+                            <!-- Room Image -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Room Image</label>
+                                <input type="file" name="room_image" accept="image/*" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                <p class="text-xs text-gray-500 mt-1">Upload an image for this room type</p>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Capacity</label>
+                                    <input type="number" name="capacity" min="1" class="w-full px-3 py-2 border border-gray-300 rounded-lg" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Available Rooms</label>
+                                    <input type="number" name="available_rooms" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg" required>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Price per Night</label>
+                                <input type="number" name="price_per_night" min="0" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-lg" required>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Room Size (Optional)</label>
+                                <input type="text" name="room_size" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="e.g., 25 sqm">
+                            </div>
+
+                            <!-- Room Amenities -->
+                            <div class="space-y-2">
+                                <label class="block text-sm font-medium text-gray-700">Room Amenities</label>
+                                <div class="space-y-2">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" name="has_ac" class="mr-2">
+                                        <span class="text-sm text-gray-700">Air Conditioning</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" name="has_tv" class="mr-2">
+                                        <span class="text-sm text-gray-700">TV</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" name="has_balcony" class="mr-2">
+                                        <span class="text-sm text-gray-700">Balcony</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full mt-6 bg-green-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-green-700 transition-colors">
+                            <i class="fas fa-plus mr-2"></i>Add Room Type
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Existing Room Types -->
+            <div class="lg:col-span-2">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Existing Room Types</h2>
+
+                {% if room_types %}
+                <div class="space-y-6">
+                    {% for room_type in room_types %}
+                    <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-all duration-300">
+                        <div class="flex gap-4 mb-4">
+                            <!-- Room Image -->
+                            {% if room_type.room_image %}
+                            <div class="flex-shrink-0">
+                                <img src="{{ room_type.room_image.url }}" alt="{{ room_type.name }}"
+                                     class="w-24 h-24 rounded-lg object-cover border border-gray-200">
+                            </div>
+                            {% else %}
+                            <div class="flex-shrink-0 w-24 h-24 bg-gray-200 rounded-lg flex items-center justify-center border border-gray-300">
+                                <i class="fas fa-door-closed text-gray-400 text-2xl"></i>
+                            </div>
+                            {% endif %}
+
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h3 class="text-xl font-bold text-gray-900">{{ room_type.name }}</h3>
+                                        <p class="text-gray-600">{{ room_type.capacity }} guests • {{ room_type.room_size|default:"Standard size" }}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-2xl font-bold text-green-600">৳{{ room_type.price_per_night }}</div>
+                                        <div class="text-gray-600 text-sm">per night</div>
+                                    </div>
+                                </div>
+
+                                {% if room_type.description %}
+                                <p class="text-gray-700 mt-2">{{ room_type.description }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Room Amenities -->
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            {% if room_type.has_ac %}
+                            <span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                                <i class="fas fa-wind mr-1"></i>AC
+                            </span>
+                            {% endif %}
+                            {% if room_type.has_tv %}
+                            <span class="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                                <i class="fas fa-tv mr-1"></i>TV
+                            </span>
+                            {% endif %}
+                            {% if room_type.has_balcony %}
+                            <span class="inline-flex items-center px-2 py-1 bg-amber-100 text-amber-800 text-xs rounded-full">
+                                <i class="fas fa-umbrella-beach mr-1"></i>Balcony
+                            </span>
+                            {% endif %}
+                        </div>
+
+                        <div class="flex justify-between items-center pt-4 border-t border-gray-200">
+                            <div class="text-sm text-gray-600">
+                                <span class="font-semibold {% if room_type.available_rooms > 0 %}text-green-600{% else %}text-red-600{% endif %}">
+                                    {{ room_type.available_rooms }} rooms available
+                                </span>
+                                <span class="mx-2">•</span>
+                                <span>{{ room_type.bookings.count }} bookings</span>
+                            </div>
+
+                            <div class="flex space-x-2">
+                                <a href="{% url 'room_type_edit' hotel.id room_type.id %}"
+                                   class="inline-flex items-center bg-blue-100 text-blue-700 px-3 py-2 rounded-lg text-sm font-semibold hover:bg-blue-200 transition-colors">
+                                    <i class="fas fa-edit mr-1"></i>Edit
+                                </a>
+                                <button onclick="confirmDelete('{{ room_type.name }}', '{% url 'room_type_delete' hotel.id room_type.id %}')"
+                                        class="inline-flex items-center bg-red-100 text-red-700 px-3 py-2 rounded-lg text-sm font-semibold hover:bg-red-200 transition-colors">
+                                    <i class="fas fa-trash mr-1"></i>Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-12 bg-white rounded-2xl border-2 border-dashed border-gray-300">
+                    <i class="fas fa-door-closed text-gray-400 text-5xl mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">No Room Types Yet</h3>
+                    <p class="text-gray-600">Add your first room type to start accepting bookings.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-2xl p-6 max-w-md mx-4">
+        <h3 class="text-xl font-bold text-gray-900 mb-2">Confirm Delete</h3>
+        <p class="text-gray-600 mb-6">Are you sure you want to delete "<span id="roomName"></span>"? This action cannot be undone.</p>
+        <div class="flex justify-end space-x-3">
+            <button onclick="closeModal()" class="px-4 py-2 text-gray-600 font-semibold hover:text-gray-800 transition-colors">
+                Cancel
+            </button>
+            <form id="deleteForm" method="post" class="inline">
+                {% csrf_token %}
+                <button type="submit" class="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors">
+                    Delete Room
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function confirmDelete(roomName, deleteUrl) {
+    document.getElementById('roomName').textContent = roomName;
+    document.getElementById('deleteForm').action = deleteUrl;
+    document.getElementById('deleteModal').classList.remove('hidden');
+}
+
+function closeModal() {
+    document.getElementById('deleteModal').classList.add('hidden');
+}
+
+// Close modal when clicking outside
+document.getElementById('deleteModal').addEventListener('click', function(e) {
+    if (e.target.id === 'deleteModal') {
+        closeModal();
+    }
+});
+</script>
+{% endblock %}

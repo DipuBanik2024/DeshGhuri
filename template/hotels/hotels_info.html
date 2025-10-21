@@ -1,9 +1,0 @@
-<h1>All Hotels</h1>
-
-<ul>
-  {% for hotel in hotels %}
-    <li>{{ hotel.name }} - {{ hotel.location }}</li>
-  {% empty %}
-    <li>No hotels available.</li>
-  {% endfor %}
-</ul>

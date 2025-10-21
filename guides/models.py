@@ -1,6 +1,5 @@
 from django.db import models
 from django.conf import settings
-
 class GuideProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     phone = models.CharField(max_length=30, blank=True)
@@ -19,6 +18,12 @@ class GuideProfile(models.Model):
 
     def __str__(self):
         return f"Guide: {self.user.get_full_name() or self.user.username}"
+
+    @property
+    def review_count(self):
+        """Return the number of reviews for this guide"""
+        return self.user.reviews_received.count()
+
 
 
 class TourRequest(models.Model):
@@ -99,6 +104,13 @@ class Tour(models.Model):
 
     def __str__(self):
         return f"Tour at {self.destination} ({self.status})"
+
+    @property
+    def duration_days(self):
+        """Calculate tour duration in days"""
+        if self.start_date and self.end_date:
+            return (self.end_date - self.start_date).days + 1
+        return 0
 
 
 class Earning(models.Model):

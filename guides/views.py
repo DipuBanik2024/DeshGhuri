@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponseForbidden
 from .models import GuideProfile, TourRequest, Tour, Earning, Review
+from tourists.models import Tourist
 from .forms import GuideProfileForm, TourRequestForm, ReviewForm
 from accounts.utils import role_required
 from django.contrib.auth import get_user_model
@@ -11,6 +12,8 @@ from django.utils import timezone
 from django.db.models import Sum
 from datetime import date
 
+# Import Notification model from hotels app
+from hotels.models import Notification
 
 User = get_user_model()
 
@@ -75,8 +78,6 @@ def guide_list(request):
 # --------------------------
 # GUIDE DASHBOARD
 # --------------------------
-
-
 @login_required
 @role_required(['guide'])
 def guide_dashboard(request):
@@ -117,6 +118,12 @@ def guide_dashboard(request):
     # Review count
     review_count = Review.objects.filter(guide=request.user).count()
 
+    # UNREAD NOTIFICATIONS COUNT - ADDED FOR NOTIFICATION SYSTEM
+    unread_notifications_count = Notification.objects.filter(
+        user=request.user,
+        is_read=False
+    ).count()
+
     context = {
         'profile': profile,
         'today_tours_count': today_tours_count,
@@ -125,9 +132,24 @@ def guide_dashboard(request):
         'recent_requests': recent_requests,
         'recent_reviews': recent_reviews,
         'review_count': review_count,
+        'unread_notifications_count': unread_notifications_count,  # ADDED FOR NOTIFICATION SYSTEM
     }
 
     return render(request, "guides/guide_dashboard.html", context)
+
+
+# --------------------------
+# GUIDE NOTIFICATION VIEWS
+# --------------------------
+@login_required
+@role_required(['guide'])
+def mark_guide_notifications_read(request):
+    """Mark all notifications as read for guide"""
+    if request.method == "POST":
+        Notification.objects.filter(user=request.user, is_read=False).update(is_read=True)
+        messages.success(request, "All notifications marked as read!")
+    return redirect('guide_dashboard')
+
 
 # --------------------------
 # EDIT GUIDE PROFILE
@@ -203,6 +225,12 @@ def accept_request(request, request_id):
             description=f"Tour to {tr.destination}"
         )
 
+    # CREATE NOTIFICATION FOR TOURIST - ADDED FOR NOTIFICATION SYSTEM
+    Notification.objects.create(
+        user=tr.tourist,
+        message=f"Your tour request for {tr.destination} has been accepted by {request.user.get_full_name()}",
+    )
+
     messages.success(request, "Tour request accepted successfully!")
     return redirect('tour_requests')
 
@@ -213,18 +241,61 @@ def reject_request(request, request_id):
     tr = get_object_or_404(TourRequest, id=request_id, guide=request.user)
     tr.status = "rejected"
     tr.save()
+
+    # CREATE NOTIFICATION FOR TOURIST - ADDED FOR NOTIFICATION SYSTEM
+    Notification.objects.create(
+        user=tr.tourist,
+        message=f"Your tour request for {tr.destination} has been declined by {request.user.get_full_name()}",
+    )
+
     messages.success(request, "Tour request rejected.")
     return redirect('tour_requests')
 
 
 # --------------------------
-# MY TOURS
+# MY TOURS & TOUR DETAILS
 # --------------------------
 @login_required
 @role_required(['guide'])
 def my_tours(request):
     tours = Tour.objects.filter(guide=request.user)
     return render(request, "guides/my_tours.html", {"tours": tours})
+
+
+@login_required
+@role_required(['guide'])
+def tour_detail(request, tour_id):
+    # Get the tour object or return 404
+    tour = get_object_or_404(Tour, id=tour_id, guide=request.user)
+
+    # Get guide profile with contact information
+    guide_profile = None
+    try:
+        guide_profile = GuideProfile.objects.get(user=tour.guide)
+    except GuideProfile.DoesNotExist:
+        pass
+
+    # Get tourist profiles for all tourists in this tour
+    tourist_profiles = []
+    for tourist_user in tour.tourists.all():
+        try:
+            tourist_profile = Tourist.objects.get(user=tourist_user)
+            tourist_profiles.append({
+                'user': tourist_user,
+                'profile': tourist_profile
+            })
+        except Tourist.DoesNotExist:
+            tourist_profiles.append({
+                'user': tourist_user,
+                'profile': None
+            })
+
+    context = {
+        'tour': tour,
+        'guide_profile': guide_profile,
+        'tourist_profiles': tourist_profiles,
+    }
+    return render(request, "guides/tour_detail.html", context)
 
 
 # --------------------------
@@ -309,6 +380,12 @@ def create_review(request, guide_id):
             review.guide = guide_user
             review.tourist = request.user
             review.save()
+
+            # CREATE NOTIFICATION FOR GUIDE - ADDED FOR NOTIFICATION SYSTEM
+            Notification.objects.create(
+                user=guide_user,
+                message=f"New {review.rating}-star review from {request.user.get_full_name()}",
+            )
 
             # Update guide's average rating
             update_guide_rating(guide_user)
@@ -404,6 +481,13 @@ def guide_detail(request, guide_id):
                 tour_request.tourist = request.user
                 tour_request.guide = guide.user
                 tour_request.save()
+
+                # CREATE NOTIFICATION FOR GUIDE - ADDED FOR NOTIFICATION SYSTEM
+                Notification.objects.create(
+                    user=guide.user,
+                    message=f"New tour request from {request.user.get_full_name()} for {tour_request.destination}",
+                )
+
                 messages.success(request, "Tour request sent successfully!")
                 return redirect("guide_detail", guide_id=guide.id)
         else:
@@ -454,6 +538,13 @@ def book_guide(request, guide_id):
             tour_request.tourist = request.user
             tour_request.guide = guide.user
             tour_request.save()
+
+            # CREATE NOTIFICATION FOR GUIDE - ADDED FOR NOTIFICATION SYSTEM
+            Notification.objects.create(
+                user=guide.user,
+                message=f"New tour request from {request.user.get_full_name()} for {tour_request.destination}",
+            )
+
             messages.success(request, "Tour request sent successfully!")
             return redirect("guide_detail", guide_id=guide.id)
     else:

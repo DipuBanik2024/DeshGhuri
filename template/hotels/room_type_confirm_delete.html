@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Delete Room - {{ room_type.name }} - TourGuide{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-md mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+                    <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                </div>
+                <h3 class="mt-4 text-xl font-bold text-gray-900">Delete Room Type</h3>
+                <p class="mt-2 text-gray-600">
+                    Are you sure you want to delete "<strong>{{ room_type.name }}</strong>" from {{ hotel.name }}?
+                </p>
+                <p class="mt-2 text-sm text-gray-500">
+                    This action cannot be undone. All bookings for this room type will also be affected.
+                </p>
+            </div>
+
+            <form method="post" class="mt-6">
+                {% csrf_token %}
+                <div class="flex space-x-3">
+                    <button type="submit" class="flex-1 bg-red-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-red-700 transition-colors">
+                        <i class="fas fa-trash mr-2"></i>Delete Room
+                    </button>
+                    <a href="{% url 'manage_rooms' hotel.id %}" class="flex-1 bg-gray-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-gray-700 transition-colors text-center">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

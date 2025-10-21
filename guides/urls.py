@@ -11,6 +11,7 @@ urlpatterns = [
     path('tour-requests/accept/<int:request_id>/', g_views.accept_request, name='accept_request'),
     path('tour-requests/reject/<int:request_id>/', g_views.reject_request, name='reject_request'),
     path("my_tours/", g_views.my_tours, name="my_tours"),
+    path('tour-detail/<int:tour_id>/', g_views.tour_detail, name='tour_detail'),
     path("earnings/", g_views.earnings, name="earnings"),
     path("messages/", g_views.guide_messages, name="guide_messages"),
 
@@ -21,4 +22,7 @@ urlpatterns = [
 
     # NEW BOOKING URL
     path("guides/<int:guide_id>/book/", g_views.book_guide, name="book_guide"),
+
+    # NOTIFICATION URLS - ADD THESE
+    path("notifications/mark-all-read/", g_views.mark_guide_notifications_read, name="mark_guide_notifications_read"),
 ]

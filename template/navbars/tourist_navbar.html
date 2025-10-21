@@ -7,9 +7,79 @@
   <div class="flex items-center gap-9">
     <a href="{% url 'home' %}" class="text-white text-lg font-semibold hover:underline">Home</a>
     <a href="{% url 'destination_list' %}" class="text-white text-lg font-semibold hover:underline">Destination</a>
-    <a href="#" class="text-white text-lg font-semibold hover:underline">Hotels</a>
+    <a href="{% url 'hotels_info' %}" class="text-white text-lg font-semibold hover:underline">Hotels</a>
     <a href="{% url 'guide_list' %}" class="text-white text-lg font-semibold hover:underline">Guides</a>
     <a href="{% url 'package_list' %}" class="text-white text-lg font-semibold hover:underline">Packages</a>
+
+    <!-- Notifications Dropdown -->
+    <div class="relative" id="notification-section">
+        <button id="notification-bell" class="relative p-2 text-gray-300 hover:text-white transition-colors">
+            <i class="fas fa-bell text-xl"></i>
+            {% if unread_notifications_count > 0 %}
+            <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center animate-pulse">
+                {{ unread_notifications_count }}
+            </span>
+            {% endif %}
+        </button>
+
+        <!-- Notifications Dropdown Menu -->
+        <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-gray-200 z-50">
+            <div class="p-4 border-b border-gray-200">
+                <h3 class="font-semibold text-gray-900">Notifications</h3>
+                {% if unread_notifications_count > 0 %}
+                <form method="post" action="{% url 'mark_notifications_read' %}" class="inline">
+                    {% csrf_token %}
+                    <button type="submit" class="text-xs text-blue-600 hover:text-blue-700 font-semibold">
+                        Mark all as read
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+            <div class="max-h-96 overflow-y-auto">
+                {% if request.user.is_authenticated %}
+                    {% with recent_notifications=request.user.notifications.all|slice:":5" %}
+                        {% if recent_notifications %}
+                            {% for notification in recent_notifications %}
+                            <div class="p-4 border-b border-gray-100 hover:bg-gray-50 {% if not notification.is_read %}bg-blue-50 border-l-4 border-l-blue-500{% endif %}">
+                                <p class="text-sm text-gray-900 {% if not notification.is_read %}font-semibold{% endif %}">
+                                    {{ notification.message }}
+                                </p>
+                                <p class="text-xs text-gray-500 mt-1">
+                                    <i class="fas fa-clock mr-1"></i>
+                                    {{ notification.created_at|timesince }} ago
+                                </p>
+                                {% if notification.booking %}
+                                <div class="mt-2 p-2 bg-gray-100 rounded-lg text-xs">
+                                    <div class="flex justify-between">
+                                        <span class="font-semibold">{{ notification.booking.hotel.name }}</span>
+                                        <span class="{% if notification.booking.status == 'confirmed' %}text-green-600{% elif notification.booking.status == 'pending' %}text-yellow-600{% else %}text-red-600{% endif %}">
+                                            {{ notification.booking.status|title }}
+                                        </span>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="p-8 text-center">
+                                <i class="fas fa-bell-slash text-gray-400 text-3xl mb-2"></i>
+                                <p class="text-gray-600 text-sm">No notifications</p>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                {% else %}
+                    <div class="p-8 text-center">
+                        <p class="text-gray-600 text-sm">Please log in to see notifications</p>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="p-4 border-t border-gray-200">
+                <a href="{% url 'tourist_dashboard' %}" class="block text-center text-blue-600 hover:text-blue-700 font-semibold text-sm">
+                    View All Notifications
+                </a>
+            </div>
+        </div>
+    </div>
 
     <!-- Profile Dropdown -->
     <div class="relative">

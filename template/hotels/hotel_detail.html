@@ -1,0 +1,342 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ hotel.name }} - TourGuide{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Hotel Header -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden mb-8">
+            <!-- Hotel Image -->
+            {% if hotel.profile_image %}
+            <div class="h-64 bg-gray-200 overflow-hidden">
+                <img src="{{ hotel.profile_image.url }}" alt="{{ hotel.name }}"
+                     class="w-full h-full object-cover">
+            </div>
+            {% else %}
+            <div class="h-64 bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white">
+                <div class="text-center">
+                    <h1 class="text-4xl font-bold mb-4">{{ hotel.name }}</h1>
+                    <div class="flex items-center justify-center space-x-6 text-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span>{{ hotel.city }}{% if hotel.area %}, {{ hotel.area }}{% endif %}</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-star text-amber-400 mr-1"></i>
+                            <span>{{ avg_rating }} ({{ review_count }} reviews)</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-phone mr-2"></i>
+                            <span>{{ hotel.phone|default:"Not provided" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Hotel Gallery -->
+            {% if gallery_images %}
+            <div class="border-t border-gray-200">
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Hotel Gallery</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {% for image in gallery_images %}
+                        <div class="bg-gray-200 rounded-lg overflow-hidden">
+                            <img src="{{ image.image.url }}" alt="{{ image.caption|default:hotel.name }}"
+                                 class="w-full h-32 object-cover hover:scale-105 transition-transform duration-300 cursor-pointer">
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="p-6">
+                <!-- Hotel Info (shown below image when image exists) -->
+                {% if hotel.profile_image %}
+                <div class="text-center mb-6">
+                    <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ hotel.name }}</h1>
+                    <div class="flex items-center justify-center space-x-6 text-lg text-gray-600">
+                        <div class="flex items-center">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span>{{ hotel.city }}{% if hotel.area %}, {{ hotel.area }}{% endif %}</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-star text-amber-400 mr-1"></i>
+                            <span>{{ avg_rating }} ({{ review_count }} reviews)</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-phone mr-2"></i>
+                            <span>{{ hotel.phone|default:"Not provided" }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Review Button Section -->
+                <div class="mb-6">
+                    {% if user.is_authenticated and user.role == 'tourist' %}
+                        {% with existing_review=hotel.reviews.all|dictsort:"id"|last %}
+                            {% if existing_review and existing_review.tourist == user %}
+                                <div class="flex space-x-3">
+                                    <a href="{% url 'edit_review' existing_review.id %}"
+                                       class="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors">
+                                        <i class="fas fa-edit mr-2"></i>Edit Your Review
+                                    </a>
+                                    <a href="{% url 'my_reviews' %}"
+                                       class="bg-gray-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-700 transition-colors">
+                                        <i class="fas fa-list mr-2"></i>My Reviews
+                                    </a>
+                                </div>
+                            {% else %}
+                                <a href="{% url 'submit_hotel_review' hotel.id %}"
+                                   class="bg-orange-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-orange-700 transition-colors">
+                                    <i class="fas fa-star mr-2"></i>Write a Review
+                                </a>
+                            {% endif %}
+                        {% endwith %}
+                    {% elif not user.is_authenticated %}
+                        <a href="{% url 'login' %}?next={{ request.path }}"
+                           class="bg-orange-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-orange-700 transition-colors">
+                            <i class="fas fa-star mr-2"></i>Login to Write Review
+                        </a>
+                    {% endif %}
+                </div>
+
+                <!-- Amenities -->
+                <div class="flex flex-wrap gap-3 mb-6">
+                    {% if hotel.has_wifi %}
+                    <div class="flex items-center bg-blue-100 text-blue-800 px-3 py-2 rounded-lg">
+                        <i class="fas fa-wifi mr-2"></i>
+                        <span class="text-sm font-medium">Free WiFi</span>
+                    </div>
+                    {% endif %}
+                    {% if hotel.has_ac %}
+                    <div class="flex items-center bg-green-100 text-green-800 px-3 py-2 rounded-lg">
+                        <i class="fas fa-wind mr-2"></i>
+                        <span class="text-sm font-medium">Air Conditioning</span>
+                    </div>
+                    {% endif %}
+                    {% if hotel.has_pool %}
+                    <div class="flex items-center bg-teal-100 text-teal-800 px-3 py-2 rounded-lg">
+                        <i class="fas fa-swimming-pool mr-2"></i>
+                        <span class="text-sm font-medium">Swimming Pool</span>
+                    </div>
+                    {% endif %}
+                    {% if hotel.has_breakfast %}
+                    <div class="flex items-center bg-yellow-100 text-yellow-800 px-3 py-2 rounded-lg">
+                        <i class="fas fa-utensils mr-2"></i>
+                        <span class="text-sm font-medium">Breakfast Included</span>
+                    </div>
+                    {% endif %}
+                    {% if hotel.has_parking %}
+                    <div class="flex items-center bg-indigo-100 text-indigo-800 px-3 py-2 rounded-lg">
+                        <i class="fas fa-parking mr-2"></i>
+                        <span class="text-sm font-medium">Free Parking</span>
+                    </div>
+                    {% endif %}
+                    {% if hotel.has_gym %}
+                    <div class="flex items-center bg-purple-100 text-purple-800 px-3 py-2 rounded-lg">
+                        <i class="fas fa-dumbbell mr-2"></i>
+                        <span class="text-sm font-medium">Gym</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Description -->
+                <div class="mb-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">About This Hotel</h3>
+                    <p class="text-gray-700 leading-relaxed">{{ hotel.description|default:"No description provided." }}</p>
+                </div>
+
+                <!-- Address -->
+                {% if hotel.address %}
+                <div class="mb-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Address</h3>
+                    <p class="text-gray-700 flex items-start">
+                        <i class="fas fa-map-marker-alt text-orange-500 mr-3 mt-1"></i>
+                        <span>{{ hotel.address }}</span>
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Room Types Section -->
+        <div class="mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
+                <i class="fas fa-door-open text-orange-500 mr-4"></i>
+                Available Room Types
+            </h2>
+
+            {% if room_types %}
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {% for room_type in room_types %}
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300">
+                    <div class="flex gap-4 p-6">
+                        <!-- Room Image -->
+                        {% if room_type.room_image %}
+                        <div class="flex-shrink-0 w-24 h-24 bg-gray-200 rounded-lg overflow-hidden">
+                            <img src="{{ room_type.room_image.url }}" alt="{{ room_type.name }}"
+                                 class="w-full h-full object-cover">
+                        </div>
+                        {% else %}
+                        <div class="flex-shrink-0 w-24 h-24 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400">
+                            <i class="fas fa-door-closed text-2xl"></i>
+                        </div>
+                        {% endif %}
+
+                        <div class="flex-1">
+                            <!-- Room Header -->
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-900">{{ room_type.name }}</h3>
+                                    <p class="text-gray-600 text-sm">{{ room_type.capacity }} guests • {{ room_type.room_size|default:"Standard size" }}</p>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-2xl font-bold text-gray-900">৳{{ room_type.price_per_night }}</div>
+                                    <div class="text-gray-600 text-sm">per night</div>
+                                </div>
+                            </div>
+
+                            <!-- Room Description -->
+                            {% if room_type.description %}
+                            <p class="text-gray-700 text-sm mb-4">{{ room_type.description }}</p>
+                            {% endif %}
+
+                            <!-- Room Amenities -->
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                {% if room_type.has_ac %}
+                                <span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                                    <i class="fas fa-wind mr-1"></i>AC
+                                </span>
+                                {% endif %}
+                                {% if room_type.has_tv %}
+                                <span class="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                                    <i class="fas fa-tv mr-1"></i>TV
+                                </span>
+                                {% endif %}
+                                {% if room_type.has_balcony %}
+                                <span class="inline-flex items-center px-2 py-1 bg-amber-100 text-amber-800 text-xs rounded-full">
+                                    <i class="fas fa-umbrella-beach mr-1"></i>Balcony
+                                </span>
+                                {% endif %}
+                            </div>
+
+                            <!-- Availability and Book Button -->
+                            <div class="flex justify-between items-center pt-4 border-t border-gray-200">
+                                <div class="text-sm text-gray-600">
+                                    {% if room_type.available_rooms > 0 %}
+                                    <span class="text-green-600 font-semibold">{{ room_type.available_rooms }} rooms available</span>
+                                    {% else %}
+                                    <span class="text-red-600 font-semibold">Sold out</span>
+                                    {% endif %}
+                                </div>
+                                {% if room_type.available_rooms > 0 %}
+                                <a href="{% url 'book_hotel' hotel.id room_type.id %}"
+                                   class="bg-orange-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-orange-700 transition-colors">
+                                    Book Now
+                                </a>
+                                {% else %}
+                                <button disabled class="bg-gray-400 text-white px-6 py-3 rounded-xl font-semibold cursor-not-allowed">
+                                    Sold Out
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-12 bg-white rounded-2xl border-2 border-dashed border-gray-300">
+                <i class="fas fa-door-closed text-gray-400 text-5xl mb-4"></i>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">No Rooms Available</h3>
+                <p class="text-gray-600">This hotel doesn't have any room types listed yet.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Reviews Section -->
+        <div class="mb-12">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 flex items-center">
+                    <i class="fas fa-star text-amber-500 mr-4"></i>
+                    Guest Reviews
+                </h2>
+                {% if user.is_authenticated and user.role == 'tourist' %}
+                <a href="{% url 'my_reviews' %}" class="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg font-semibold hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-list mr-2"></i>My Reviews
+                </a>
+                {% endif %}
+            </div>
+
+            {% if reviews %}
+            <div class="space-y-6">
+                {% for review in reviews %}
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-red-500 rounded-full flex items-center justify-center text-white font-bold text-lg mr-4">
+                                {{ review.tourist.get_full_name|default:review.tourist.username|first|upper }}
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">{{ review.tourist.get_full_name|default:review.tourist.username }}</h4>
+                                <div class="flex items-center">
+                                    <div class="flex text-amber-500 mr-2">
+                                        {% for i in "12345" %}
+                                            {% if forloop.counter <= review.rating %}
+                                                <i class="fas fa-star text-sm"></i>
+                                            {% else %}
+                                                <i class="far fa-star text-sm"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <span class="text-sm text-gray-500">{{ review.created_at|date:"M d, Y" }}</span>
+                                    {% if review.updated_at != review.created_at %}
+                                    <span class="text-xs text-gray-400 ml-2">(edited)</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% if review.tourist == user %}
+                        <div class="flex space-x-3">
+                            <a href="{% url 'edit_review' review.id %}"
+                               class="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-sm rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                                <i class="fas fa-edit mr-1"></i>Edit
+                            </a>
+                            <form method="post" action="{% url 'delete_review' review.id %}" class="inline">
+                                {% csrf_token %}
+                                <button type="submit"
+                                        class="inline-flex items-center px-3 py-1 bg-red-600 text-white text-sm rounded-lg font-semibold hover:bg-red-700 transition-colors"
+                                        onclick="return confirm('Are you sure you want to delete this review?');">
+                                    <i class="fas fa-trash mr-1"></i>Delete
+                                </button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% if review.comment %}
+                    <p class="text-gray-700 leading-relaxed">{{ review.comment }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-12 bg-white rounded-2xl border-2 border-dashed border-gray-300">
+                <i class="fas fa-star text-gray-400 text-5xl mb-4"></i>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">No Reviews Yet</h3>
+                <p class="text-gray-600">This hotel doesn't have any reviews yet.</p>
+                {% if user.is_authenticated and user.role == 'tourist' %}
+                <a href="{% url 'submit_hotel_review' hotel.id %}" class="inline-flex items-center px-6 py-3 bg-orange-600 text-white rounded-xl font-semibold hover:bg-orange-700 transition-colors mt-4">
+                    <i class="fas fa-star mr-2"></i>Be the first to review
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

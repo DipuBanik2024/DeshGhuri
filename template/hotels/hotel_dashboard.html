@@ -1,42 +1,240 @@
 {% extends "base.html" %}
-{% block title %}Hotel Manager Dashboard{% endblock %}
+{% load static %}
+
+{% block title %}Hotel Manager Dashboard - TourGuide{% endblock %}
+
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h3>My Hotels</h3>
-  <a class="btn btn-primary" href="{% url 'hotel_create' %}">Add Hotel</a>
-</div>
-
-{% if hotels %}
-  <div class="row">
-    {% for hotel in hotels %}
-      <div class="col-md-6 mb-3">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">{{ hotel.name }}</h5>
-            <p class="card-text">{{ hotel.address }}</p>
-            <p class="card-text"><small>{{ hotel.phone }}</small></p>
-            <a class="btn btn-sm btn-outline-primary" href="{% url 'hotel_edit' hotel.pk %}">Edit</a>
-            <a class="btn btn-sm btn-outline-danger" href="{% url 'hotel_delete' hotel.pk %}">Delete</a>
-          </div>
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">Hotel Manager Dashboard 🏨</h1>
+            <p class="text-xl text-gray-600">Manage your hotels and bookings</p>
         </div>
-      </div>
-    {% endfor %}
-  </div>
-{% else %}
-  <p>No hotels found. Add one.</p>
-{% endif %}
 
-<h5>Bookings</h5>
-{% if bookings %}
-  <ul class="list-group">
-    {% for b in bookings %}
-      <li class="list-group-item">
-        <strong>{{ b.tourist.get_full_name|default:b.tourist.username }}</strong> — {{ b.date }}
-        <div><small>{{ b.notes }}</small></div>
-      </li>
-    {% endfor %}
-  </ul>
-{% else %}
-  <p>No bookings yet.</p>
-{% endif %}
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
+            <!-- Total Hotels -->
+            <div class="bg-white rounded-2xl shadow-lg border border-blue-200 p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                        <i class="fas fa-hotel text-blue-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900">{{ hotels.count }}</h3>
+                        <p class="text-gray-600 text-sm">Total Hotels</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Bookings -->
+            <div class="bg-white rounded-2xl shadow-lg border border-green-200 p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
+                        <i class="fas fa-calendar-check text-green-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900">{{ total_bookings }}</h3>
+                        <p class="text-gray-600 text-sm">Total Bookings</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Bookings -->
+            <div class="bg-white rounded-2xl shadow-lg border border-yellow-200 p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mr-4">
+                        <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900">{{ pending_bookings }}</h3>
+                        <p class="text-gray-600 text-sm">Pending Bookings</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Confirmed Bookings -->
+            <div class="bg-white rounded-2xl shadow-lg border border-purple-200 p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mr-4">
+                        <i class="fas fa-check-circle text-purple-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900">{{ confirmed_bookings }}</h3>
+                        <p class="text-gray-600 text-sm">Confirmed Bookings</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Today Check-ins -->
+            <div class="bg-white rounded-2xl shadow-lg border border-orange-200 p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mr-4">
+                        <i class="fas fa-door-open text-orange-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900">{{ today_checkins }}</h3>
+                        <p class="text-gray-600 text-sm">Today Check-ins</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <a href="{% url 'hotel_create' %}" class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 text-center hover:shadow-xl transition-all duration-300 group">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-200 transition-colors">
+                    <i class="fas fa-plus text-green-600 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Add New Hotel</h3>
+                <p class="text-gray-600 text-sm">Register a new hotel property</p>
+            </a>
+
+            <a href="#recent-bookings" class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 text-center hover:shadow-xl transition-all duration-300 group">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-200 transition-colors">
+                    <i class="fas fa-list text-blue-600 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">View All Bookings</h3>
+                <p class="text-gray-600 text-sm">Manage all booking requests</p>
+            </a>
+
+            <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 text-center">
+                <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-chart-line text-purple-600 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Recent Activity</h3>
+                <p class="text-green-600 text-sm font-semibold">{{ recent_bookings_count }} new bookings this week</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- My Hotels Section -->
+            <div>
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                        <i class="fas fa-hotel text-blue-500 mr-3"></i>
+                        My Hotels
+                    </h2>
+                    <a href="{% url 'hotel_create' %}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>Add Hotel
+                    </a>
+                </div>
+
+                {% if hotels %}
+                <div class="space-y-4">
+                    {% for hotel in hotels %}
+                    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-4 hover:shadow-xl transition-all duration-300">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold text-gray-900 text-lg">{{ hotel.name }}</h3>
+                                <p class="text-gray-600 text-sm">{{ hotel.city }}{% if hotel.area %}, {{ hotel.area }}{% endif %}</p>
+                                <div class="flex items-center mt-2">
+                                    <div class="flex text-amber-500 mr-2">
+                                        {% with rating=hotel.average_rating %}
+                                            {% for i in "12345" %}
+                                                {% if forloop.counter <= rating %}
+                                                    <i class="fas fa-star text-xs"></i>
+                                                {% else %}
+                                                    <i class="far fa-star text-xs"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endwith %}
+                                    </div>
+                                    <span class="text-xs text-gray-500">({{ hotel.average_rating|default:"0" }})</span>
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <a href="{% url 'manage_rooms' hotel.id %}" class="bg-green-100 text-green-700 px-3 py-1 rounded-lg text-sm font-semibold hover:bg-green-200 transition-colors">
+                                    <i class="fas fa-door-open mr-1"></i>Rooms
+                                </a>
+                                <a href="{% url 'hotel_edit' hotel.id %}" class="bg-blue-100 text-blue-700 px-3 py-1 rounded-lg text-sm font-semibold hover:bg-blue-200 transition-colors">
+                                    <i class="fas fa-edit mr-1"></i>Edit
+                                </a>
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-gray-200 flex justify-between text-sm text-gray-600">
+                            <span>৳{{ hotel.min_price }} - ৳{{ hotel.max_price }}</span>
+                            <span>{{ hotel.bookings.count }} bookings</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-12 bg-white rounded-2xl border-2 border-dashed border-gray-300">
+                    <i class="fas fa-hotel text-gray-400 text-5xl mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">No Hotels Yet</h3>
+                    <p class="text-gray-600 mb-6">Start by adding your first hotel property.</p>
+                    <a href="{% url 'hotel_create' %}" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all duration-300">
+                        <i class="fas fa-plus mr-2"></i>Add Your First Hotel
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Recent Bookings Section -->
+            <div id="recent-bookings">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                        <i class="fas fa-calendar-alt text-green-500 mr-3"></i>
+                        Recent Bookings
+                    </h2>
+                    <span class="text-sm text-gray-500">Last 10 bookings</span>
+                </div>
+
+                {% if bookings %}
+                <div class="space-y-4">
+                    {% for booking in bookings %}
+                    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-4 hover:shadow-xl transition-all duration-300">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 class="font-semibold text-gray-900">{{ booking.hotel.name }}</h3>
+                                <p class="text-gray-600 text-sm">{{ booking.room_type.name }}</p>
+                            </div>
+                            <span class="{% if booking.status == 'confirmed' %}bg-green-100 text-green-800{% elif booking.status == 'pending' %}bg-yellow-100 text-yellow-800{% else %}bg-red-100 text-red-800{% endif %} px-2 py-1 rounded-full text-xs font-semibold">
+                                {{ booking.status|title }}
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
+                            <div>
+                                <span class="font-semibold">Guest:</span> {{ booking.guest_name }}
+                            </div>
+                            <div>
+                                <span class="font-semibold">Check-in:</span> {{ booking.check_in }}
+                            </div>
+                            <div>
+                                <span class="font-semibold">Rooms:</span> {{ booking.number_of_rooms }}
+                            </div>
+                            <div>
+                                <span class="font-semibold">Total:</span> ৳{{ booking.total_amount }}
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center pt-3 border-t border-gray-200">
+                            <span class="text-xs text-gray-500">{{ booking.created_at|date:"M d, Y" }}</span>
+                            <div class="flex space-x-2">
+                                {% if booking.status == 'pending' %}
+                                <a href="{% url 'update_booking_status' booking.id 'confirmed' %}" class="bg-green-600 text-white px-3 py-1 rounded-lg text-xs font-semibold hover:bg-green-700 transition-colors">
+                                    Confirm
+                                </a>
+                                <a href="{% url 'update_booking_status' booking.id 'cancelled' %}" class="bg-red-600 text-white px-3 py-1 rounded-lg text-xs font-semibold hover:bg-red-700 transition-colors">
+                                    Cancel
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-12 bg-white rounded-2xl border-2 border-dashed border-gray-300">
+                    <i class="fas fa-calendar-times text-gray-400 text-5xl mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">No Bookings Yet</h3>
+                    <p class="text-gray-600">You'll see booking requests here when tourists book your hotels.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

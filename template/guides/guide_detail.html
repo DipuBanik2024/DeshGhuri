@@ -380,35 +380,9 @@
         </div>
     </div>
 </div>
-
-<!-- Success Messages -->
-{% if messages %}
-<div class="fixed top-4 right-4 z-50 space-y-2">
-    {% for message in messages %}
-    <div class="bg-green-500 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center animate-fade-in">
-        <i class="fas fa-check-circle text-xl mr-3"></i>
-        <span class="font-semibold">{{ message }}</span>
-    </div>
-    {% endfor %}
-</div>
-{% endif %}
 {% endblock %}
 
 {% block extra_js %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Auto-hide success messages after 5 seconds
-    setTimeout(() => {
-        const messages = document.querySelectorAll('.fixed .bg-green-500');
-        messages.forEach(msg => {
-            msg.style.opacity = '0';
-            msg.style.transform = 'translateX(100%)';
-            setTimeout(() => msg.remove(), 300);
-        });
-    }, 5000);
-});
-</script>
-
 <style>
 .animate-fade-in {
     animation: fadeIn 0.5s ease-out;

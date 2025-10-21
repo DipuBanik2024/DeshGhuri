@@ -7,4 +7,5 @@ urlpatterns = [
     path('profile/', t_views.tourist_profile, name='tourist_profile'),
     path('profile/edit/', t_views.edit_tourist_profile, name='edit_tourist_profile'),
     path("create_tour_request/", t_views.create_tour_requests, name="create_tour_request"),
+    path("notifications/read/", t_views.mark_notifications_read, name="mark_notifications_read"),
 ]

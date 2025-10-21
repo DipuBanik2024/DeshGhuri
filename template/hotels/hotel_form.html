@@ -1,32 +1,181 @@
 {% extends "base.html" %}
-{% block title %}Hotel Form{% endblock %}
+{% load static %}
+
+{% block title %}{% if form.instance.pk %}Edit Hotel{% else %}Create Hotel{% endif %} - TourGuide{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-7">
-    <h3 class="mb-3">{% if form.instance.pk %}Edit Hotel{% else %}Create Hotel{% endif %}</h3>
-    <form method="post">
-      {% csrf_token %}
-      {{ form.non_field_errors }}
-      <div class="mb-3">
-        <label class="form-label">Name</label>
-        {{ form.name|as_widget(attrs={"class":"form-control"}) }}
-        {{ form.name.errors }}
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Address</label>
-        {{ form.address|as_widget(attrs={"class":"form-control", "rows":"3"}) }}
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Phone</label>
-        {{ form.phone|as_widget(attrs={"class":"form-control"}) }}
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Description</label>
-        {{ form.description|as_widget(attrs={"class":"form-control", "rows":"4"}) }}
-      </div>
-      <button class="btn btn-primary">Save</button>
-      <a class="btn btn-link" href="{% url 'hotel_dashboard' %}">Cancel</a>
-    </form>
-  </div>
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-8">
+                {% if form.instance.pk %}Edit Hotel{% else %}Create New Hotel{% endif %}
+            </h1>
+
+            <!-- IMPORTANT: Add enctype="multipart/form-data" for file uploads -->
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <!-- Hotel Profile Image -->
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Hotel Profile Image</label>
+
+                        <!-- Show current image if editing -->
+                        {% if form.instance.pk and form.instance.profile_image %}
+                        <div class="mb-4">
+                            <p class="text-sm text-gray-600 mb-2">Current Image:</p>
+                            <img src="{{ form.instance.profile_image.url }}" alt="Current hotel image"
+                                 class="w-32 h-32 object-cover rounded-lg border border-gray-200">
+                        </div>
+                        {% endif %}
+
+                        {{ form.profile_image }}
+                        {% if form.profile_image.errors %}
+                        <div class="text-red-600 text-sm mt-1">{{ form.profile_image.errors.0 }}</div>
+                        {% endif %}
+                        <p class="text-xs text-gray-500 mt-1">This image will be displayed in hotel listings and cards. Recommended size: 400x300px</p>
+                    </div>
+
+                    <!-- Name -->
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Hotel Name</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                        <div class="text-red-600 text-sm mt-1">{{ form.name.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- City and Area -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">City</label>
+                        {{ form.city }}
+                        {% if form.city.errors %}
+                        <div class="text-red-600 text-sm mt-1">{{ form.city.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Area/Location</label>
+                        {{ form.area }}
+                        {% if form.area.errors %}
+                        <div class="text-red-600 text-sm mt-1">{{ form.area.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                        {{ form.phone }}
+                        {% if form.phone.errors %}
+                        <div class="text-red-600 text-sm mt-1">{{ form.phone.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Address -->
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                        {{ form.address }}
+                        {% if form.address.errors %}
+                        <div class="text-red-600 text-sm mt-1">{{ form.address.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Landmark -->
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Landmark (Optional)</label>
+                        {{ form.landmark }}
+                        {% if form.landmark.errors %}
+                        <div class="text-red-600 text-sm mt-1">{{ form.landmark.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Description -->
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                        <div class="text-red-600 text-sm mt-1">{{ form.description.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Amenities Section -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Amenities</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <label class="flex items-center">
+                            {{ form.has_wifi }}
+                            <span class="ml-2 text-gray-700">Free WiFi</span>
+                        </label>
+                        <label class="flex items-center">
+                            {{ form.has_ac }}
+                            <span class="ml-2 text-gray-700">Air Conditioning</span>
+                        </label>
+                        <label class="flex items-center">
+                            {{ form.has_pool }}
+                            <span class="ml-2 text-gray-700">Swimming Pool</span>
+                        </label>
+                        <label class="flex items-center">
+                            {{ form.has_breakfast }}
+                            <span class="ml-2 text-gray-700">Breakfast Included</span>
+                        </label>
+                        <label class="flex items-center">
+                            {{ form.has_parking }}
+                            <span class="ml-2 text-gray-700">Free Parking</span>
+                        </label>
+                        <label class="flex items-center">
+                            {{ form.has_gym }}
+                            <span class="ml-2 text-gray-700">Gym</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-end space-x-4">
+                    <a href="{% url 'hotel_dashboard' %}" class="px-6 py-3 bg-gray-600 text-white rounded-xl font-semibold hover:bg-gray-700 transition-colors">
+                        Cancel
+                    </a>
+                    <button type="submit" class="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors">
+                        {% if form.instance.pk %}Update Hotel{% else %}Create Hotel{% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
+
+<style>
+/* Add some basic styling for form fields */
+input, textarea, select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    background-color: white;
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    ring: 2px;
+    ring-color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+/* Style checkboxes */
+input[type="checkbox"] {
+    width: auto;
+}
+
+/* Style file input */
+input[type="file"] {
+    padding: 0.5rem;
+    border: 2px dashed #d1d5db;
+    background-color: #f9fafb;
+}
+
+input[type="file"]:focus {
+    border-color: #3b82f6;
+    background-color: #eff6ff;
+}
+</style>
 {% endblock %}

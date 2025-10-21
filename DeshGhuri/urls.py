@@ -24,9 +24,9 @@ from hotels.views import hotels_info
 from main import views as main_views
 from accounts import views as a_views
 from destinations import views as d_views
-from helpline import views as h_views
+from helpline import views as help_views
 from guides import views as g_views
-from hotels import views as hotels_views
+from hotels import views as h_views
 from packages import views as p_views
 from tourists import views as t_views
 
@@ -36,11 +36,7 @@ urlpatterns = [
     #main
     path('',main_views.home,name='home'),
 
-    #helpline
-
-    #hotels
-    path('hotels_info',hotels_views.hotels_info,name="hotels_info"),
-    #packages
+    #apps urls
 
     path('accounts/', include('accounts.urls')),
     path('guides/', include('guides.urls')),

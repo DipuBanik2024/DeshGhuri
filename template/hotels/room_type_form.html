@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Edit Room - {{ room_type.name }} - TourGuide{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Edit Room Type</h1>
+                <p class="text-gray-600">{{ hotel.name }}</p>
+            </div>
+            <a href="{% url 'manage_rooms' hotel.id %}" class="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg font-semibold hover:bg-gray-700 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>Back to Rooms
+            </a>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="space-y-6">
+                    <!-- Current Image -->
+                    {% if room_type.room_image %}
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Current Image</label>
+                        <img src="{{ room_type.room_image.url }}" alt="{{ room_type.name }}" 
+                             class="w-32 h-32 rounded-lg object-cover border border-gray-200">
+                    </div>
+                    {% endif %}
+
+                    <!-- Room Image Upload -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Room Image</label>
+                        <input type="file" name="room_image" accept="image/*" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                        <p class="text-xs text-gray-500 mt-1">Upload a new image for this room type</p>
+                    </div>
+
+                    <!-- Room Name -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Room Name</label>
+                        <input type="text" name="name" value="{{ room_type.name }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" required>
+                    </div>
+                    
+                    <!-- Description -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <textarea name="description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg">{{ room_type.description }}</textarea>
+                    </div>
+                    
+                    <!-- Capacity and Available Rooms -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Capacity</label>
+                            <input type="number" name="capacity" value="{{ room_type.capacity }}" min="1" class="w-full px-3 py-2 border border-gray-300 rounded-lg" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Available Rooms</label>
+                            <input type="number" name="available_rooms" value="{{ room_type.available_rooms }}" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Price -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Price per Night</label>
+                        <input type="number" name="price_per_night" value="{{ room_type.price_per_night }}" min="0" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-lg" required>
+                    </div>
+                    
+                    <!-- Room Size -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Room Size (Optional)</label>
+                        <input type="text" name="room_size" value="{{ room_type.room_size }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="e.g., 25 sqm">
+                    </div>
+                    
+                    <!-- Room Amenities -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">Room Amenities</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" name="has_ac" {% if room_type.has_ac %}checked{% endif %} class="mr-2">
+                                <span class="text-sm text-gray-700">Air Conditioning</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="has_tv" {% if room_type.has_tv %}checked{% endif %} class="mr-2">
+                                <span class="text-sm text-gray-700">TV</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="has_balcony" {% if room_type.has_balcony %}checked{% endif %} class="mr-2">
+                                <span class="text-sm text-gray-700">Balcony</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex space-x-3 mt-8">
+                    <button type="submit" class="flex-1 bg-green-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-green-700 transition-colors">
+                        <i class="fas fa-save mr-2"></i>Update Room
+                    </button>
+                    <a href="{% url 'manage_rooms' hotel.id %}" class="flex-1 bg-gray-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-gray-700 transition-colors text-center">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

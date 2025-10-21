@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Manage Images - {{ hotel.name }} - TourGuide{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Manage Hotel Images</h1>
+                <p class="text-gray-600">{{ hotel.name }}</p>
+            </div>
+            <a href="{% url 'manage_rooms' hotel.id %}" class="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg font-semibold hover:bg-gray-700 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>Back to Rooms
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Add Image Form -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sticky top-8">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6">Add New Image</h2>
+                    
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Image</label>
+                                <input type="file" name="image" accept="image/*" class="w-full px-3 py-2 border border-gray-300 rounded-lg" required>
+                                <p class="text-xs text-gray-500 mt-1">Upload hotel photos for gallery</p>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Caption (Optional)</label>
+                                <input type="text" name="caption" class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="e.g., Swimming Pool Area">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full mt-6 bg-green-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-green-700 transition-colors">
+                            <i class="fas fa-plus mr-2"></i>Add Image
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Existing Images -->
+            <div class="lg:col-span-2">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Hotel Gallery</h2>
+                
+                {% if gallery_images %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {% for image in gallery_images %}
+                    <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+                        <img src="{{ image.image.url }}" alt="{{ image.caption|default:hotel.name }}" 
+                             class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            {% if image.caption %}
+                            <p class="text-gray-900 font-semibold mb-2">{{ image.caption }}</p>
+                            {% endif %}
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">
+                                    Added {{ image.created_at|date:"M d, Y" }}
+                                </span>
+                                <form method="post" action="{% url 'delete_hotel_image' hotel.id image.id %}" class="inline">
+                                    {% csrf_token %}
+                                    <button type="submit" 
+                                            onclick="return confirm('Are you sure you want to delete this image?')"
+                                            class="text-red-600 hover:text-red-800 text-sm font-semibold">
+                                        <i class="fas fa-trash mr-1"></i>Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-12 bg-white rounded-2xl border-2 border-dashed border-gray-300">
+                    <i class="fas fa-images text-gray-400 text-5xl mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">No Images Yet</h3>
+                    <p class="text-gray-600">Add images to showcase your hotel's facilities and rooms.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

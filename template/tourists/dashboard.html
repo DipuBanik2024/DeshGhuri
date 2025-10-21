@@ -8,12 +8,14 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Welcome Header -->
         <div class="text-center mb-12">
-            <h1 class="text-4xl font-bold text-gray-900 mb-4">Welcome back, {{ request.user.get_full_name|default:request.user.username }}! 👋</h1>
-            <p class="text-xl text-gray-600">Manage your tours, guides, and travel experiences</p>
+            <h1 class="text-4xl font-bold bg-gradient-to-r from-gray-900 to-blue-600 bg-clip-text text-transparent mb-4">
+    Welcome back, {{ request.user.get_full_name|default:request.user.username }}!
+</h1>
+            <p class="text-xl text-gray-600">Manage your tours, guides, and travel experiences 👋</p>
         </div>
 
-        <!-- Stats Overview -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <!-- Stats Overview - UPDATED WITH HOTELS -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
             <!-- Total Guide Bookings -->
             <div class="bg-white rounded-2xl shadow-lg border border-blue-200 p-6">
                 <div class="flex items-center">
@@ -40,6 +42,19 @@
                 </div>
             </div>
 
+            <!-- Hotel Bookings -->
+            <div class="bg-white rounded-2xl shadow-lg border border-orange-200 p-6">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mr-4">
+                        <i class="fas fa-hotel text-orange-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900">{{ total_hotel_bookings }}</h3>
+                        <p class="text-gray-600 text-sm">Hotel Bookings</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Pending Requests -->
             <div class="bg-white rounded-2xl shadow-lg border border-yellow-200 p-6">
                 <div class="flex items-center">
@@ -47,28 +62,28 @@
                         <i class="fas fa-clock text-yellow-600 text-xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-2xl font-bold text-gray-900">{{ pending_guide_requests }}</h3>
+                        <h3 class="text-2xl font-bold text-gray-900">{{ pending_guide_requests|add:pending_hotel_bookings }}</h3>
                         <p class="text-gray-600 text-sm">Pending Requests</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Confirmed Tours -->
+            <!-- Notifications -->
             <div class="bg-white rounded-2xl shadow-lg border border-purple-200 p-6">
                 <div class="flex items-center">
                     <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mr-4">
-                        <i class="fas fa-calendar-check text-purple-600 text-xl"></i>
+                        <i class="fas fa-bell text-purple-600 text-xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-2xl font-bold text-gray-900">{{ accepted_guide_requests }}</h3>
-                        <p class="text-gray-600 text-sm">Confirmed Tours</p>
+                        <h3 class="text-2xl font-bold text-gray-900">{{ unread_notifications }}</h3>
+                        <p class="text-gray-600 text-sm">Notifications</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Quick Actions -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <!-- Quick Actions - UPDATED WITH HOTELS -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
             <a href="{% url 'guide_list' %}" class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 text-center hover:shadow-xl transition-all duration-300 group">
                 <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-200 transition-colors">
                     <i class="fas fa-user-tie text-blue-600 text-2xl"></i>
@@ -83,6 +98,14 @@
                 </div>
                 <h3 class="text-lg font-semibold text-gray-900 mb-2">Browse Packages</h3>
                 <p class="text-gray-600 text-sm">Explore curated tour packages</p>
+            </a>
+
+            <a href="{% url 'hotels_info' %}" class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 text-center hover:shadow-xl transition-all duration-300 group">
+                <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-200 transition-colors">
+                    <i class="fas fa-hotel text-orange-600 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Find Hotels</h3>
+                <p class="text-gray-600 text-sm">Book accommodation for your stay</p>
             </a>
 
             <a href="{% url 'edit_tourist_profile' %}" class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 text-center hover:shadow-xl transition-all duration-300 group">
@@ -106,7 +129,7 @@
                     Book New Guide
                 </a>
             </div>
-            
+
             {% if guide_bookings %}
             <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
                 {% for booking in guide_bookings %}
@@ -126,12 +149,12 @@
                             <span>#{{ booking.id }}</span>
                         </div>
                     </div>
-                    
+
                     <div class="p-6">
                         <!-- Guide Info -->
                         <div class="flex items-center mb-4">
                             {% if booking.guide.guideprofile.avatar %}
-                                <img src="{{ booking.guide.guideprofile.avatar.url }}" alt="{{ booking.guide.get_full_name }}" 
+                                <img src="{{ booking.guide.guideprofile.avatar.url }}" alt="{{ booking.guide.get_full_name }}"
                                      class="w-16 h-16 rounded-full mr-4 border-2 border-blue-200 object-cover">
                             {% else %}
                                 <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mr-4 flex items-center justify-center text-white font-bold text-xl">
@@ -157,7 +180,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Booking Details -->
                         <div class="space-y-3 border-t border-gray-200 pt-4">
                             <div class="flex justify-between items-center">
@@ -192,14 +215,9 @@
                             {% endif %}
                         </div>
 
-                        <!-- Action Buttons -->
-                        <div class="mt-6 pt-4 border-t border-gray-200 flex space-x-3">
-                            {% if booking.status == 'accepted' %}
-                            <a href="#" class="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg text-center text-sm font-semibold hover:bg-green-700 transition-colors">
-                                <i class="fas fa-comment mr-2"></i>Message
-                            </a>
-                            {% endif %}
-                            <a href="{% url 'guide_detail' booking.guide.guideprofile.id %}" class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg text-center text-sm font-semibold hover:bg-blue-700 transition-colors">
+                        <!-- Action Buttons - UPDATED: Removed Message button -->
+                        <div class="mt-6 pt-4 border-t border-gray-200">
+                            <a href="{% url 'guide_detail' booking.guide.guideprofile.id %}" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg text-center text-sm font-semibold hover:bg-blue-700 transition-colors block">
                                 <i class="fas fa-eye mr-2"></i>View Guide
                             </a>
                         </div>
@@ -237,12 +255,12 @@
                     Book New Package
                 </a>
             </div>
-            
+
             {% if package_bookings %}
             <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
                 {% for booking in package_bookings %}
                 <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300">
-                    <!-- Status Badge -->
+                    <!-- Status Badge
                     <div class="{% if booking.status == 'Confirmed' %}bg-green-500{% else %}bg-yellow-500{% endif %} px-4 py-2 text-white text-sm font-semibold">
                         <div class="flex items-center justify-between">
                             <span>
@@ -254,13 +272,13 @@
                             </span>
                             <span>#{{ booking.id }}</span>
                         </div>
-                    </div>
-                    
+                    </div> -->
+
                     <div class="p-6">
                         <!-- Package Info -->
                         <div class="flex items-center mb-4">
                             {% if booking.package.image %}
-                                <img src="{{ booking.package.image.url }}" alt="{{ booking.package.destination_name }}" 
+                                <img src="{{ booking.package.image.url }}" alt="{{ booking.package.destination_name }}"
                                      class="w-16 h-16 rounded-lg mr-4 border-2 border-green-200 object-cover">
                             {% else %}
                                 <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg mr-4 flex items-center justify-center text-white font-bold text-xl">
@@ -286,7 +304,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Booking Details -->
                         <div class="space-y-3 border-t border-gray-200 pt-4">
                             <div class="flex justify-between items-center">
@@ -319,13 +337,10 @@
                             </div>
                         </div>
 
-                        <!-- Action Buttons -->
-                        <div class="mt-6 pt-4 border-t border-gray-200 flex space-x-3">
-                            <a href="{% url 'package_detail' booking.package.id %}" class="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg text-center text-sm font-semibold hover:bg-green-700 transition-colors">
+                        <!-- Action Buttons - UPDATED: Removed Contact button -->
+                        <div class="mt-6 pt-4 border-t border-gray-200">
+                            <a href="{% url 'package_detail' booking.package.id %}" class="w-full bg-green-600 text-white py-2 px-4 rounded-lg text-center text-sm font-semibold hover:bg-green-700 transition-colors block">
                                 <i class="fas fa-eye mr-2"></i>View Package
-                            </a>
-                            <a href="#" class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg text-center text-sm font-semibold hover:bg-blue-700 transition-colors">
-                                <i class="fas fa-phone mr-2"></i>Contact
                             </a>
                         </div>
 
@@ -345,6 +360,139 @@
                 <a href="{% url 'package_list' %}" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-xl font-semibold text-lg hover:shadow-lg transition-all duration-300">
                     <i class="fas fa-search mr-3"></i>
                     Browse Tour Packages
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Hotel Bookings Section - NEW SECTION -->
+        <div class="mb-16" id="hotel-bookings">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-bold text-gray-900 flex items-center">
+                    <i class="fas fa-hotel text-orange-500 mr-4"></i>
+                    My Hotel Bookings
+                </h2>
+                <a href="{% url 'hotels_info' %}" class="inline-flex items-center px-6 py-3 bg-orange-600 text-white rounded-xl font-semibold hover:bg-orange-700 transition-all duration-300">
+                    <i class="fas fa-plus mr-2"></i>
+                    Book New Hotel
+                </a>
+            </div>
+
+            {% if hotel_bookings %}
+            <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+                {% for booking in hotel_bookings %}
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300">
+                    <!-- Status Badge -->
+                    <div class="{% if booking.status == 'confirmed' %}bg-green-500{% elif booking.status == 'pending' %}bg-yellow-500{% elif booking.status == 'cancelled' %}bg-red-500{% else %}bg-blue-500{% endif %} px-4 py-2 text-white text-sm font-semibold">
+                        <div class="flex items-center justify-between">
+                            <span>
+                                {% if booking.status == 'confirmed' %}
+                                    <i class="fas fa-check-circle mr-2"></i>Confirmed
+                                {% elif booking.status == 'pending' %}
+                                    <i class="fas fa-clock mr-2"></i>Pending
+                                {% elif booking.status == 'cancelled' %}
+                                    <i class="fas fa-times-circle mr-2"></i>Cancelled
+                                {% else %}
+                                    <i class="fas fa-check-double mr-2"></i>Completed
+                                {% endif %}
+                            </span>
+                            <span>#{{ booking.id }}</span>
+                        </div>
+                    </div>
+
+                    <div class="p-6">
+                        <!-- Hotel Info -->
+                        <div class="flex items-center mb-4">
+                            <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg mr-4 flex items-center justify-center text-white font-bold text-xl">
+                                {{ booking.hotel.name|first|upper }}
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-gray-900 text-lg">{{ booking.hotel.name }}</h3>
+                                <p class="text-gray-600 text-sm">{{ booking.room_type.name }}</p>
+                                <div class="flex items-center mt-1">
+                                    <div class="flex text-amber-500 mr-2">
+                                        {% with rating=booking.hotel.average_rating %}
+                                            {% for i in "12345" %}
+                                                {% if forloop.counter <= rating %}
+                                                    <i class="fas fa-star text-xs"></i>
+                                                {% else %}
+                                                    <i class="far fa-star text-xs"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endwith %}
+                                    </div>
+                                    <span class="text-xs text-gray-500">({{ booking.hotel.average_rating|default:"0" }})</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Booking Details -->
+                        <div class="space-y-3 border-t border-gray-200 pt-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600 flex items-center">
+                                    <i class="fas fa-calendar-day mr-2 text-orange-500"></i>
+                                    Check-in
+                                </span>
+                                <span class="font-semibold text-gray-900">{{ booking.check_in }}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600 flex items-center">
+                                    <i class="fas fa-calendar-check mr-2 text-orange-500"></i>
+                                    Check-out
+                                </span>
+                                <span class="font-semibold text-gray-900">{{ booking.check_out }}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600 flex items-center">
+                                    <i class="fas fa-door-open mr-2 text-orange-500"></i>
+                                    Rooms
+                                </span>
+                                <span class="font-semibold text-gray-900">{{ booking.number_of_rooms }} {{ booking.room_type.name }}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600 flex items-center">
+                                    <i class="fas fa-users mr-2 text-orange-500"></i>
+                                    Guests
+                                </span>
+                                <span class="font-semibold text-gray-900">{{ booking.total_guests }}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600 flex items-center">
+                                    <i class="fas fa-tag mr-2 text-orange-500"></i>
+                                    Total
+                                </span>
+                                <span class="font-semibold text-green-600">৳{{ booking.total_amount }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="mt-6 pt-4 border-t border-gray-200 flex space-x-3">
+                            {% if booking.status == 'completed' and not booking.review %}
+                            <a href="{% url 'submit_review' booking.id %}" class="flex-1 bg-amber-600 text-white py-2 px-4 rounded-lg text-center text-sm font-semibold hover:bg-amber-700 transition-colors">
+                                <i class="fas fa-star mr-2"></i>Review
+                            </a>
+                            {% endif %}
+                            <a href="{% url 'hotel_detail' booking.hotel.id %}" class="flex-1 bg-orange-600 text-white py-2 px-4 rounded-lg text-center text-sm font-semibold hover:bg-orange-700 transition-colors">
+                                <i class="fas fa-eye mr-2"></i>View Hotel
+                            </a>
+                        </div>
+
+                        <!-- Timestamp -->
+                        <div class="mt-4 text-xs text-gray-500 text-center">
+                            Booked on {{ booking.created_at|date:"M d, Y" }}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-16 bg-white rounded-2xl border-2 border-dashed border-gray-300">
+                <i class="fas fa-hotel text-gray-400 text-6xl mb-6"></i>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">No Hotel Bookings Yet</h3>
+                <p class="text-gray-600 text-lg mb-8 max-w-md mx-auto">You haven't booked any hotels yet. Find the perfect accommodation for your travel!</p>
+                <a href="{% url 'hotels_info' %}" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-xl font-semibold text-lg hover:shadow-lg transition-all duration-300">
+                    <i class="fas fa-search mr-3"></i>
+                    Browse Hotels
                 </a>
             </div>
             {% endif %}

@@ -4,84 +4,181 @@
 {% block content %}
 <div class="max-w-7xl mx-auto mt-8 p-4 sm:p-6 lg:p-8 bg-gray-50 rounded-3xl shadow-xl font-sans animate-fade-in">
 
-  <!-- Package Header -->
-  <div class="mb-10 text-center">
-    <h1 class="text-4xl sm:text-5xl font-serif font-extrabold text-gray-900 mb-3 tracking-tight">{{ package.destination_name }}</h1>
-    <div class="flex justify-center items-center space-x-4 text-gray-600">
-      <span class="inline-flex items-center px-3 py-1 rounded-full bg-indigo-100 text-indigo-800 text-sm font-medium">
-        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+  <!-- Professional Image + Details Layout -->
+  <div class="grid lg:grid-cols-3 gap-8 mb-16">
+    <!-- Main Image - Takes 2 columns -->
+    <div class="lg:col-span-2">
+      <div class="relative overflow-hidden rounded-2xl shadow-2xl group">
+        <img src="{{ package.image.url }}" alt="{{ package.destination_name }}"
+             class="w-full h-[500px] object-cover transition-transform duration-700 group-hover:scale-105">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+        <!-- Premium Badge -->
+        <div class="absolute top-6 left-6">
+          <span class="bg-gradient-to-r from-amber-500 to-amber-600 text-white px-4 py-2 rounded-full font-bold text-sm shadow-lg">
+            ⭐ Premium Package
+          </span>
+        </div>
+
+        <!-- Smaller Price Overlay -->
+        <div class="absolute bottom-6 right-6 bg-white/95 backdrop-blur-sm px-3 py-2 rounded-xl shadow-lg">
+          <div class="text-center">
+            <p class="text-gray-600 text-xs font-medium mb-1">Starting from</p>
+            <p class="text-xl font-bold text-gray-900">৳{{ package.price }}</p>
+            <p class="text-gray-500 text-xs mt-1">per person</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Details Card - Takes 1 column -->
+    <div class="lg:col-span-1">
+      <div class="bg-white rounded-2xl shadow-xl border border-gray-100 h-full">
+        <div class="p-6">
+          <!-- Package Header on Right Side -->
+          <div class="mb-6">
+            <h1 class="text-3xl sm:text-4xl font-serif font-extrabold bg-gradient-to-r from-gray-900 to-blue-600 bg-clip-text text-transparent mb-4 tracking-tight">{{ package.destination_name }}</h1>
+          </div>
+
+          <!-- Package Highlights -->
+          <div class="mb-6">
+            <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+              <svg class="w-5 h-5 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+              </svg>
+              Package Highlights
+            </h3>
+
+            <div class="space-y-3">
+              <div class="flex items-start">
+                <div class="bg-blue-50 p-1.5 rounded-lg mr-3 flex-shrink-0">
+                  <svg class="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+                <div>
+                  <p class="font-semibold text-gray-800 text-sm">Duration</p>
+                  <p class="text-gray-600 text-xs">{{ package.days }} days of curated experience</p>
+                </div>
+              </div>
+
+              <div class="flex items-start">
+                <div class="bg-green-50 p-1.5 rounded-lg mr-3 flex-shrink-0">
+                  <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 005 10a6 6 0 0112 0c0 .35-.03.693-.083 1.022A5 5 0 0010 11z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+                <div>
+                  <p class="font-semibold text-gray-800 text-sm">Group Size</p>
+                  <p class="text-gray-600 text-xs">Personalized experience for {{ package.people_limit }} people</p>
+                </div>
+              </div>
+
+              <div class="flex items-start">
+                <div class="bg-purple-50 p-1.5 rounded-lg mr-3 flex-shrink-0">
+                  <svg class="w-4 h-4 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"></path>
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+                <div>
+                  <p class="font-semibold text-gray-800 text-sm">Best Value</p>
+                  <p class="text-gray-600 text-xs">All-inclusive premium experience</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Price Box - Made smaller -->
+          <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-3 text-white mb-6 shadow-lg">
+            <div class="text-center">
+              <p class="text-blue-100 text-xs font-medium mb-1">TOTAL PACKAGE PRICE</p>
+              <p class="text-2xl font-bold mb-1">৳{{ package.price }}</p>
+              <p class="text-blue-100 text-xs">Inclusive of all taxes & fees</p>
+            </div>
+          </div>
+
+          <!-- Booking Action - Made smaller -->
+          {% if user.is_authenticated %}
+            <a href="{% url 'book_package' package.pk %}"
+               class="block w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white text-center font-bold py-3 px-4 rounded-lg shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-xl sticky-booking text-sm"
+               id="booking-button">
+              <div class="flex items-center justify-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Book Now & Secure Your Spot
+              </div>
+            </a>
+          {% else %}
+            <div class="bg-amber-50 border border-amber-200 rounded-lg p-3">
+              <p class="text-amber-800 font-medium flex items-center text-xs">
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                </svg>
+                Please login to book this package
+              </p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rest of the content remains the same -->
+  <!-- Description Section -->
+  <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 mb-12">
+    <div class="flex items-center mb-6">
+      <div class="bg-blue-100 p-3 rounded-xl mr-4">
+        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9m0 0a2 2 0 01-2-2V3a2 2 0 012-2h4a2 2 0 012 2v2a2 2 0 01-2 2z"></path>
         </svg>
-        {{ package.days }} Days
-      </span>
+      </div>
+      <h2 class="text-3xl font-bold text-gray-900">Package Overview</h2>
+    </div>
+
+    <div class="prose prose-lg max-w-none text-gray-700 leading-relaxed">
+      <p class="text-lg text-gray-800 font-medium mb-6">{{ package.description|linebreaksbr }}</p>
+
+      <!-- Feature Grid -->
+      <div class="grid md:grid-cols-2 gap-6 mt-8">
+        <div class="flex items-center">
+          <div class="bg-green-100 p-2 rounded-lg mr-4">
+            <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+            </svg>
+          </div>
+          <span class="text-gray-700">Expert Local Guides</span>
+        </div>
+        <div class="flex items-center">
+          <div class="bg-green-100 p-2 rounded-lg mr-4">
+            <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+            </svg>
+          </div>
+          <span class="text-gray-700">Luxury Accommodation</span>
+        </div>
+        <div class="flex items-center">
+          <div class="bg-green-100 p-2 rounded-lg mr-4">
+            <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+            </svg>
+          </div>
+          <span class="text-gray-700">All Meals Included</span>
+        </div>
+        <div class="flex items-center">
+          <div class="bg-green-100 p-2 rounded-lg mr-4">
+            <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+            </svg>
+          </div>
+          <span class="text-gray-700">24/7 Support</span>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Image + Details -->
-  <div class="grid md:grid-cols-2 gap-8 lg:gap-12 mb-12">
-    <!-- Left: Image -->
-    <div class="relative overflow-hidden rounded-2xl shadow-lg group">
-      <img src="{{ package.image.url }}" alt="{{ package.destination_name }}" class="w-full h-auto max-h-[500px] object-cover transition-transform duration-700 group-hover:scale-110">
-      <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div class="absolute top-4 right-4 bg-indigo-600 text-white px-4 py-1.5 rounded-full font-semibold shadow-md transform transition-transform duration-300 group-hover:scale-105">
-        {{ package.days }} Days
-      </div>
-    </div>
-
-    <!-- Right: Details -->
-    <div class="bg-white p-6 lg:p-8 rounded-2xl shadow-md">
-      <h2 class="text-2xl lg:text-3xl font-serif font-bold text-gray-900 mb-4">About This Package</h2>
-      <p class="text-gray-600 mb-6 leading-relaxed text-base">{{ package.description|linebreaksbr }}</p>
-
-      <div class="space-y-5 mb-6">
-        <div class="flex items-start">
-          <div class="bg-indigo-100 p-2.5 rounded-lg mr-4">
-            <svg class="w-5 h-5 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
-            </svg>
-          </div>
-          <div>
-            <p class="font-semibold text-gray-800">Duration</p>
-            <p class="text-gray-600">{{ package.days }} days of unforgettable experience</p>
-          </div>
-        </div>
-
-        <div class="flex items-start">
-          <div class="bg-indigo-100 p-2.5 rounded-lg mr-4">
-            <svg class="w-5 h-5 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 005 10a6 6 0 0112 0c0 .35-.03.693-.083 1.022A5 5 0 0010 11z" clip-rule="evenodd"></path>
-            </svg>
-          </div>
-          <div>
-            <p class="font-semibold text-gray-800">Group Size</p>
-            <p class="text-gray-600">Maximum {{ package.people_limit }} people for personalized experience</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-gradient-to-r from-indigo-500 to-teal-600 p-5 rounded-xl text-white text-center mb-6 shadow-inner">
-        <p class="text-2xl font-bold">৳{{ package.price }} BDT</p>
-        <p class="text-indigo-100 text-sm">Per person</p>
-      </div>
-
-      {% if user.is_authenticated %}
-        <a href="{% url 'book_package' package.pk %}" class="block w-full bg-gradient-to-r from-teal-500 to-indigo-600 text-white text-center font-semibold py-3.5 px-6 rounded-xl shadow-lg hover:from-teal-600 hover:to-indigo-700 transition-all duration-300 transform hover:-translate-y-1 sticky-booking" id="booking-button">
-          Book This Package Now
-        </a>
-      {% else %}
-        <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-lg">
-          <p class="text-amber-800 font-medium flex items-center">
-            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-            </svg>
-            Please login to book this package
-          </p>
-        </div>
-      {% endif %}
-    </div>
-  </div>
-
-  <!-- Itinerary -->
+  <!-- Itinerary Section -->
   <div class="mb-12 bg-white border border-indigo-100 rounded-2xl p-6 lg:p-8 shadow-md">
     <div class="flex items-center mb-6">
       <div class="bg-indigo-100 p-2.5 rounded-lg mr-3">
@@ -105,7 +202,7 @@
     </div>
   </div>
 
-  <!-- Included / Excluded -->
+  <!-- Included / Excluded Section -->
   <div class="grid md:grid-cols-2 gap-8 mb-12">
     <!-- Included -->
     <div class="bg-white border border-green-100 rounded-2xl p-6 lg:p-8 shadow-md">
@@ -309,18 +406,21 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
-    width: 250px;
+    width: 240px;
     z-index: 1000;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
     animation: slideIn 0.3s ease-out;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    padding: 0.75rem 1rem;
   }
   @media (max-width: 640px) {
     .sticky {
       width: 180px;
       bottom: 10px;
       right: 10px;
-      font-size: 0.875rem;
-      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      padding: 0.5rem 0.75rem;
     }
   }
 </style>
@@ -396,13 +496,13 @@
     const bookingButton = document.getElementById('booking-button');
     if (bookingButton) {
       const originalPosition = bookingButton.getBoundingClientRect().top + window.scrollY;
-      const footer = document.querySelector('footer') || document.body; // Adjust if footer exists
+      const footer = document.querySelector('footer') || document.body;
       const footerOffset = footer.getBoundingClientRect().top + window.scrollY;
 
       const handleScroll = () => {
         const scrollPosition = window.scrollY + window.innerHeight;
-        const isBelowOriginal = window.scrollY > originalPosition + 100; // Add buffer
-        const isAboveFooter = scrollPosition < footerOffset - 100; // Avoid footer overlap
+        const isBelowOriginal = window.scrollY > originalPosition + 100;
+        const isAboveFooter = scrollPosition < footerOffset - 100;
 
         if (isBelowOriginal && isAboveFooter) {
           bookingButton.classList.add('sticky');
@@ -412,9 +512,8 @@
       };
 
       window.addEventListener('scroll', handleScroll);
-      window.addEventListener('resize', handleScroll); // Recalculate on resize
+      window.addEventListener('resize', handleScroll);
 
-      // Cleanup event listeners on page unload
       window.addEventListener('unload', () => {
         window.removeEventListener('scroll', handleScroll);
         window.removeEventListener('resize', handleScroll);
