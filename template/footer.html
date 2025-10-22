@@ -44,9 +44,9 @@
     <div>
       <h3 class="text-white text-lg font-semibold mb-3">Services</h3>
       <ul class="space-y-2 text-sm">
-        <li><a href="#" class="hover:text-white">Hotel Booking</a></li>
-        <li><a href="#" class="hover:text-white">Tour Guides</a></li>
-        <li><a href="#" class="hover:text-white">Travel Packages</a></li>
+        <li><a href="{% url 'hotels_info' %}" class="hover:text-white">Hotel Booking</a></li>
+        <li><a href="{% url 'guide_list' %}" class="hover:text-white">Tour Guides</a></li>
+        <li><a href="{% url 'package_list' %}" class="hover:text-white">Travel Packages</a></li>
       </ul>
     </div>
 
@@ -54,12 +54,10 @@
     <div>
       <h3 class="text-white text-lg font-semibold mb-3">Support</h3>
       <ul class="space-y-2 text-sm">
-        <li><a href="#" class="hover:text-white">Help Center</a></li>
-        <li><a href="#" class="hover:text-white">Contact Us</a></li>
-        <li><a href="#" class="hover:text-white">Terms of Service</a></li>
-        <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
-        <li><a href="#" class="hover:text-white">Cancellation</a></li>
-      </ul>
+        <li><a href="{% url 'help_center' %}" class="hover:text-white">Help Center</a></li>
+        <li><a href="{% url 'contact' %}" class="hover:text-white">Contact Us</a></li>
+        <li><a href="{% url 'terms'  %}" class="hover:text-white">Terms & Conditions</a></li>
+        <li><a href="{% url 'privacy_policy' %}" class="hover:text-white">Privacy Policy</a></li>
     </div>
 
     <!-- Newsletter -->

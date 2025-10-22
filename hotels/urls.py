@@ -33,7 +33,7 @@ urlpatterns = [
     # Review management (update/delete)
     path("review/<int:review_id>/edit/", h_views.edit_review, name="edit_hotel_review"),
     path("review/<int:review_id>/delete/", h_views.delete_review, name="delete_hotel_review"),
-    path("my-reviews/", h_views.my_reviews, name="my_reviews"),
+
 
     # Notifications
     path("notifications/", h_views.my_notifications, name="my_notifications"),

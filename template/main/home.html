@@ -8,17 +8,14 @@
 
   <!-- Hero Section -->
   <section id="hero"
-    class="relative h-[90vh] bg-cover bg-center flex items-center justify-center transition-all duration-1000"
-    style="background-image: url('{% static "images/landing_image.jpg" %}')">
+    class="relative h-[90vh] bg-cover bg-center flex items-center justify-center transition-all duration-1000 pt-72">
 
     <!-- Overlay -->
     <div class="absolute inset-0 bg-black/40"></div>
 
     <!-- Text Content -->
-    <div id="hero-text" class="relative text-center text-white px-6 transition-opacity duration-700">
-      <h1 class="text-5xl font-bold mb-6">Discover Your Perfect Journey</h1>
-      <p class="text-xl mb-8">Book hotels, find expert guides, and create unforgettable travel experiences.</p>
-      <a href="{% url 'destination_list' %}" class="inline-block bg-deshblue hover:bg-[#2c6978] text-white font-semibold py-3 px-8 rounded-full text-lg transition">Explore Now</a>
+    <div id="hero-text" class="relative text-center text-white px-6 transition-opacity duration-700 ">
+      <!-- Text will be populated by JavaScript -->
     </div>
 
     <!-- Hidden fade overlay for smooth background transition -->
@@ -28,26 +25,37 @@
   <script>
     const slides = [
       {
-        image: "{% static 'images/image2.jpg' %}",
+        image: "{% static 'images/landing_image.jpg' %}",
         title: "Discover Your Perfect Journey",
         text: "Book hotels, find expert guides, and create unforgettable travel experiences."
       },
       {
-        image: "{% static 'images/image3.jpg' %}",
+        image: "{% static 'images/image2.jpg' %}",
         title: "Adventure Awaits You",
         text: "Experience the thrill of new destinations and breathtaking landscapes."
       },
       {
-        image: "{% static 'images/image4.jpg' %}",
+        image: "{% static 'images/image3.jpg' %}",
         title: "Relax and Explore",
         text: "Find peace and beauty in the world's most stunning places."
-      }
+      },
+
     ];
 
     let index = 0;
     const hero = document.getElementById('hero');
     const heroText = document.getElementById('hero-text');
     const fadeOverlay = document.getElementById('fade-overlay');
+
+    // Set initial background and text to first slide
+    function initializeHero() {
+      hero.style.backgroundImage = `url('${slides[0].image}')`;
+      heroText.innerHTML = `
+        <h1 class="text-5xl font-bold mb-6">${slides[0].title}</h1>
+        <p class="text-xl mb-8">${slides[0].text}</p>
+
+      `;
+    }
 
     function changeSlide() {
       index = (index + 1) % slides.length;
@@ -68,17 +76,17 @@
         heroText.innerHTML = `
           <h1 class="text-5xl font-bold mb-6">${slides[index].title}</h1>
           <p class="text-xl mb-8">${slides[index].text}</p>
-          <a href="{% url 'destination_list' %}" class="inline-block bg-deshblue hover:bg-[#2c6978] text-white font-semibold py-3 px-8 rounded-full text-lg transition">Explore Now</a>
-        `;
+          `;
 
         // Fade text back in
         heroText.style.opacity = 1;
       }, 1000); // Match transition duration
     }
 
+    // Initialize the hero section
+    initializeHero();
     setInterval(changeSlide, 5000);
   </script>
-
   <!-- Trip Section -->
   <section class="py-16 bg-[#f9fafb]">
     <div class="max-w-6xl mx-auto px-4 text-center">

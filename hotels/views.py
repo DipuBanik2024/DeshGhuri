@@ -285,6 +285,11 @@ def hotel_detail(request, hotel_id):
     # Calculate average rating
     avg_rating = reviews.aggregate(Avg('rating'))['rating__avg'] or 0
 
+    # Check if current user has reviewed this hotel
+    user_review = None
+    if request.user.is_authenticated:
+        user_review = reviews.filter(tourist=request.user).first()
+
     context = {
         'hotel': hotel,
         'room_types': room_types,
@@ -292,6 +297,7 @@ def hotel_detail(request, hotel_id):
         'gallery_images': gallery_images,
         'avg_rating': round(avg_rating, 1),
         'review_count': reviews.count(),
+        'user_review': user_review,
     }
     return render(request, "hotels/hotel_detail.html", context)
 
@@ -423,7 +429,7 @@ def submit_hotel_review(request, hotel_id):
     existing_review = HotelReview.objects.filter(hotel=hotel, tourist=request.user).first()
     if existing_review:
         messages.info(request, "You have already reviewed this hotel. You can edit your existing review.")
-        return redirect('edit_review', review_id=existing_review.id)
+        return redirect('edit_hotel_review', review_id=existing_review.id)
 
     if request.method == "POST":
         form = HotelReviewForm(request.POST)
@@ -463,7 +469,7 @@ def edit_review(request, review_id):
         form = HotelReviewForm(request.POST, instance=review)
         if form.is_valid():
             updated_review = form.save(commit=False)
-            updated_review.save()  # This will update updated_at field
+            updated_review.save()
 
             # Update hotel average rating
             hotel = review.hotel
@@ -489,36 +495,32 @@ def edit_review(request, review_id):
 
 # Delete review view
 @login_required
-@require_http_methods(["POST"])
 def delete_review(request, review_id):
     review = get_object_or_404(HotelReview, pk=review_id, tourist=request.user)
-    hotel_id = review.hotel.id
-    review.delete()
+    hotel = review.hotel
 
-    # Update hotel average rating
-    hotel = get_object_or_404(Hotel, pk=hotel_id)
-    hotel_reviews = hotel.reviews.all()
-    if hotel_reviews:
-        avg_rating = hotel_reviews.aggregate(Avg('rating'))['rating__avg']
-        hotel.average_rating = round(avg_rating, 2) if avg_rating else 0.00
-    else:
-        hotel.average_rating = 0.00
-    hotel.save()
+    if request.method == "POST":
+        # Delete the review
+        review.delete()
 
-    messages.success(request, "Review deleted successfully!")
-    return redirect('hotel_detail', hotel_id=hotel_id)
+        # Update hotel average rating
+        hotel_reviews = hotel.reviews.all()
+        if hotel_reviews:
+            avg_rating = hotel_reviews.aggregate(Avg('rating'))['rating__avg']
+            hotel.average_rating = round(avg_rating, 2) if avg_rating else 0.00
+        else:
+            hotel.average_rating = 0.00
+        hotel.save()
 
+        messages.success(request, "Review deleted successfully!")
+        return redirect('hotel_detail', hotel_id=hotel.id)
 
-# My reviews view
-@login_required
-def my_reviews(request):
-    reviews = HotelReview.objects.filter(tourist=request.user).select_related('hotel').order_by('-created_at')
-
+    # GET request - show confirmation page
     context = {
-        'reviews': reviews
+        'review': review,
+        'hotel': hotel
     }
-    return render(request, "hotels/my_reviews.html", context)
-
+    return render(request, "hotels/delete_hotel_review.html", context)
 
 @login_required
 @role_required(['hotel_manager'])
@@ -566,7 +568,7 @@ def hotel_search_api(request):
             hotels = hotels.filter(avg_rating__gte=float(min_rating))
 
         hotel_data = []
-        for hotel in hotels[:10]:  # Limit to 10 results
+        for hotel in hotels[:10]:
             hotel_data.append({
                 'id': hotel.id,
                 'name': hotel.name,
