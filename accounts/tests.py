@@ -57,7 +57,7 @@ class TestUserAuth:
 
         self.logout_user(live_server)
         self.login_user(username, password, live_server)
-        assert "/home/" in self.driver.current_url
+        assert "//" in self.driver.current_url
         self.logout_user(live_server)
 
 

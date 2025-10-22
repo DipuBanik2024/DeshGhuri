@@ -72,7 +72,7 @@ def dashboard_view(request):
         if request.user.role == 'guide':
             return redirect('guide_dashboard')
         elif request.user.role == 'tourist':
-            return redirect('tourist_home')
+            return redirect('home')
         elif request.user.role == 'hotel_manager':
             return redirect('hotel_dashboard')
 

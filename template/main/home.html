@@ -1,515 +1,495 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}Home - DeshGhuri{% endblock %}
 
 {% block content %}
 
- 
 <body class="m-0 font-sans flex flex-col min-h-screen">
 
+  <!-- Hero Section -->
+  <section id="hero"
+    class="relative h-[90vh] bg-cover bg-center flex items-center justify-center transition-all duration-1000"
+    style="background-image: url('{% static "images/landing_image.jpg" %}')">
 
-
-  <!-- Navbar -->
-
-
-  <!-- Hero Section (Full Background Image like screenshot) -->
-  <section class="relative h-[90vh] bg-cover bg-center flex items-center justify-center"
-           style="background-image: url('cox bazar.jpg')">
+    <!-- Overlay -->
     <div class="absolute inset-0 bg-black/40"></div>
-    <div class="relative text-center text-white px-6">
+
+    <!-- Text Content -->
+    <div id="hero-text" class="relative text-center text-white px-6 transition-opacity duration-700">
       <h1 class="text-5xl font-bold mb-6">Discover Your Perfect Journey</h1>
       <p class="text-xl mb-8">Book hotels, find expert guides, and create unforgettable travel experiences.</p>
-      <a href="{%url 'destination_list' %}" class="inline-block bg-deshblue hover:bg-[#2c6978] text-white font-semibold py-3 px-8 rounded-full text-lg transition">Explore Now</a>
+      <a href="{% url 'destination_list' %}" class="inline-block bg-deshblue hover:bg-[#2c6978] text-white font-semibold py-3 px-8 rounded-full text-lg transition">Explore Now</a>
+    </div>
+
+    <!-- Hidden fade overlay for smooth background transition -->
+    <div id="fade-overlay" class="absolute inset-0 bg-cover bg-center opacity-0 transition-opacity duration-1000"></div>
+  </section>
+
+  <script>
+    const slides = [
+      {
+        image: "{% static 'images/image2.jpg' %}",
+        title: "Discover Your Perfect Journey",
+        text: "Book hotels, find expert guides, and create unforgettable travel experiences."
+      },
+      {
+        image: "{% static 'images/image3.jpg' %}",
+        title: "Adventure Awaits You",
+        text: "Experience the thrill of new destinations and breathtaking landscapes."
+      },
+      {
+        image: "{% static 'images/image4.jpg' %}",
+        title: "Relax and Explore",
+        text: "Find peace and beauty in the world's most stunning places."
+      }
+    ];
+
+    let index = 0;
+    const hero = document.getElementById('hero');
+    const heroText = document.getElementById('hero-text');
+    const fadeOverlay = document.getElementById('fade-overlay');
+
+    function changeSlide() {
+      index = (index + 1) % slides.length;
+
+      // Fade overlay gets next image
+      fadeOverlay.style.backgroundImage = `url('${slides[index].image}')`;
+      fadeOverlay.style.opacity = 1;
+
+      // Text fade out
+      heroText.style.opacity = 0;
+
+      setTimeout(() => {
+        // Update main hero background after fade
+        hero.style.backgroundImage = `url('${slides[index].image}')`;
+        fadeOverlay.style.opacity = 0;
+
+        // Update text
+        heroText.innerHTML = `
+          <h1 class="text-5xl font-bold mb-6">${slides[index].title}</h1>
+          <p class="text-xl mb-8">${slides[index].text}</p>
+          <a href="{% url 'destination_list' %}" class="inline-block bg-deshblue hover:bg-[#2c6978] text-white font-semibold py-3 px-8 rounded-full text-lg transition">Explore Now</a>
+        `;
+
+        // Fade text back in
+        heroText.style.opacity = 1;
+      }, 1000); // Match transition duration
+    }
+
+    setInterval(changeSlide, 5000);
+  </script>
+
+  <!-- Trip Section -->
+  <section class="py-16 bg-[#f9fafb]">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+      <!-- Heading -->
+      <h2 class="text-3xl font-bold text-gray-800 mb-2">
+        Everything You Need for Your Perfect Trip
+      </h2>
+      <p class="text-gray-600 mb-12">
+        From luxury hotels to expert local guides and complete travel packages
+      </p>
+
+      <!-- Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+        <!-- Premium Hotels -->
+        <div class="card-hover border rounded-xl shadow-sm p-6 flex flex-col items-center bg-white">
+          <div class="bg-teal-100 p-4 rounded-full mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                 stroke="currentColor" class="w-8 h-8 text-teal-600">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M8.25 21v-4.5h7.5V21m-10.5 0h13.5a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 18.75 4.5H5.25A2.25 2.25 0 0 0 3 6.75v12A2.25 2.25 0 0 0 5.25 21z"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Premium Hotels</h3>
+          <p class="text-gray-600 mb-4 text-center">
+            Discover and book from thousands of hotels worldwide
+          </p>
+          <img src="{% static 'images/hotel.jpg' %}" alt="Hotels" class="rounded-lg mb-4 w-full h-40 object-cover">
+          <a href="{% url 'hotels_info' %}" class="border border-gray-300 px-5 py-2 rounded-md hover:bg-gray-100 transition">
+            Browse Hotels
+          </a>
+        </div>
+
+        <!-- Expert Guides -->
+        <div class="card-hover border rounded-xl shadow-sm p-6 flex flex-col items-center bg-white">
+          <div class="bg-green-100 p-4 rounded-full mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                 stroke="currentColor" class="w-8 h-8 text-green-600">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M15.75 9V5.25m0 0A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25V9m7.5-3.75h-7.5M4.5 21h15a2.25 2.25 0 0 0 2.25-2.25V11.25A2.25 2.25 0 0 0 19.5 9h-15A2.25 2.25 0 0 0 2.25 11.25v7.5A2.25 2.25 0 0 0 4.5 21z"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Expert Guides</h3>
+          <p class="text-gray-600 mb-4 text-center">
+            Connect with local experts for authentic experiences
+          </p>
+          <img src="{% static 'images/guide.jpg' %}" alt="Guides" class="rounded-lg mb-4 w-full h-40 object-cover">
+          <a href="{% url 'guide_list' %}" class="border border-gray-300 px-5 py-2 rounded-md hover:bg-gray-100 transition">
+            Find Guides
+          </a>
+        </div>
+
+        <!-- Travel Packages -->
+        <div class="card-hover border rounded-xl shadow-sm p-6 flex flex-col items-center bg-white">
+          <div class="bg-purple-100 p-4 rounded-full mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                 stroke="currentColor" class="w-8 h-8 text-purple-600">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M21 12.75V6.75A2.25 2.25 0 0 0 18.75 4.5h-13.5A2.25 2.25 0 0 0 3 6.75v6M21 12.75v4.5a2.25 2.25 0 0 1-2.25 2.25h-13.5A2.25 2.25 0 0 1 3 17.25v-4.5M21 12.75H3"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Travel Packages</h3>
+          <p class="text-gray-600 mb-4 text-center">
+            Complete travel experiences curated just for you
+          </p>
+          <img src="{% static 'images/package.jpg' %}" alt="Packages" class="rounded-lg mb-4 w-full h-40 object-cover">
+          <a href="{% url 'package_list' %}" class="border border-gray-300 px-5 py-2 rounded-md hover:bg-gray-100 transition">
+            View Packages
+          </a>
+        </div>
+
+      </div>
     </div>
   </section>
 
+  <!-- Destinations Section -->
+  <section class="py-16 bg-[#f9fafb]">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+      <!-- Heading -->
+      <h2 class="text-3xl font-bold text-gray-900">Explore Amazing Destinations</h2>
+      <p class="mt-2 text-gray-600">
+        Discover the most beautiful places with our curated selection of top destinations
+      </p>
 
-
-<br><br>
-
-
-
-  <!-- trip -->
-<section class="py-16 bg-white">
-  <div class="max-w-6xl mx-auto px-4 text-center">
-    <!-- Heading -->
-    <h2 class="text-3xl font-bold text-gray-800 mb-2">
-      Everything You Need for Your Perfect Trip
-    </h2>
-    <p class="text-gray-600 mb-12">
-      From luxury hotels to expert local guides and complete travel packages
-    </p>
-
-    <!-- Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-
-      <!-- Premium Hotels -->
-       <div class="border rounded-xl shadow-sm p-6 flex flex-col items-center">
-        <div class="bg-teal-100 p-4 rounded-full mb-4">
-           <svg xmlns="http://www.w3.org/2000/svg"
-                      fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="w-8 h-8 text-teal-600">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 21v-4.5h7.5V21m-10.5 0h13.5a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 18.75 4.5H5.25A2.25 2.25 0 0 0 3 6.75v12A2.25 2.25 0 0 0 5.25 21z" />
-          </svg>
+      <!-- Grid -->
+      <div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        {% for dest in destinations|slice:":6" %}
+        <div class="card-hover bg-white rounded-2xl shadow overflow-hidden transform transition duration-300">
+          <div class="relative">
+            <img src="{{ dest.main_image.url }}" alt="{{ dest.name }}" class="w-full h-56 object-cover">
+          </div>
+          <div class="p-6 text-left">
+            <h3 class="text-lg font-semibold text-gray-800">{{ dest.name }}</h3>
+            <p class="text-sm text-gray-500">{{ dest.division }}</p>
+            <p class="mt-2 text-gray-600 text-sm">{{ dest.short_description|default:"Explore this beautiful destination." }}</p>
+            <a href="{% url 'destination_detail' dest.pk %}" class="mt-4 inline-block w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 text-center transition-colors duration-300">Explore Destination</a>
+          </div>
         </div>
-        <h3 class="text-xl font-semibold mb-2">Premium Hotels</h3>
-        <p class="text-gray-600 mb-4 text-center"> Discover and book from thousands
-          of hotels worldwide </p>
-          <img src="/premium hotel.jpg"
-          alt="Hotels" class="rounded-lg mb-4 w-full h-40 object-cover">
-          <a href="#" class="border border-gray-300 px-5 py-2 rounded-md hover:bg-gray-100 transition">
-            Browse Hotels </a> </div>
+        {% endfor %}
+      </div>
 
-      <!-- Expert Guides -->
-      <div class="border rounded-xl shadow-sm p-6 flex flex-col items-center">
-        <div class="bg-green-100 p-4 rounded-full mb-4">
-          <svg xmlns="http://www.w3.org/2000/svg"
-               fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-               stroke="currentColor" class="w-8 h-8 text-green-600">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M15.75 9V5.25m0 0A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25V9m7.5-3.75h-7.5M4.5 21h15a2.25 2.25 0 0 0 2.25-2.25V11.25A2.25 2.25 0 0 0 19.5 9h-15A2.25 2.25 0 0 0 2.25 11.25v7.5A2.25 2.25 0 0 0 4.5 21z" />
-          </svg>
+      <!-- View More Button -->
+      <div class="mt-12">
+        <a href="{% url 'destination_list' %}" class="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800">View All Destinations</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hotel Section -->
+ <section class="py-16 bg-[#f9fafb]">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-bold text-gray-900 mb-3">Featured Hotels</h2>
+      <p class="text-gray-600 text-lg">Stay at the best-rated hotels with top comfort and price!</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {% for hotel in hotels %}
+      <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden transform hover:-translate-y-2 hover:shadow-2xl transition-all duration-300">
+
+        <!-- Hotel Image -->
+        {% if hotel.profile_image %}
+        <div class="h-52 overflow-hidden">
+          <img src="{{ hotel.profile_image.url }}" alt="{{ hotel.name }}"
+               class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
         </div>
-        <h3 class="text-xl font-semibold mb-2">Expert Guides</h3>
-        <p class="text-gray-600 mb-4 text-center">
-          Connect with local experts for authentic experiences
-        </p>
-        <img src="https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&w=800&q=60"
-             alt="Guides"
-             class="rounded-lg mb-4 w-full h-40 object-cover">
-        <a href="#" class="border border-gray-300 px-5 py-2 rounded-md hover:bg-gray-100 transition">
-          Find Guides
+        {% else %}
+        <div class="h-52 bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white text-5xl font-bold">
+          {{ hotel.name|first|upper }}
+        </div>
+        {% endif %}
+
+        <!-- Hotel Details -->
+        <div class="p-6">
+          <div class="flex justify-between items-start mb-3">
+            <h3 class="text-xl font-bold text-gray-900">{{ hotel.name }}</h3>
+            <div class="flex items-center bg-amber-100 px-2 py-1 rounded-full">
+              <i class="fas fa-star text-amber-500 text-sm mr-1"></i>
+              <span class="text-sm font-semibold text-amber-800">{{ hotel.average_rating|default:"0.0" }}</span>
+            </div>
+          </div>
+
+          <div class="flex items-center text-gray-600 mb-3">
+            <i class="fas fa-map-marker-alt text-orange-500 mr-2"></i>
+            <span class="text-sm">{{ hotel.city }}{% if hotel.area %}, {{ hotel.area }}{% endif %}</span>
+          </div>
+
+          <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ hotel.description|truncatewords:20 }}</p>
+
+          <!-- Amenities -->
+          <div class="flex flex-wrap gap-2 mb-4">
+            {% if hotel.has_wifi %}
+            <span class="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-medium">
+              <i class="fas fa-wifi mr-1"></i>WiFi
+            </span>
+            {% endif %}
+            {% if hotel.has_ac %}
+            <span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full font-medium">
+              <i class="fas fa-wind mr-1"></i>AC
+            </span>
+            {% endif %}
+            {% if hotel.has_pool %}
+            <span class="inline-flex items-center px-2 py-1 bg-teal-100 text-teal-800 text-xs rounded-full font-medium">
+              <i class="fas fa-swimming-pool mr-1"></i>Pool
+            </span>
+            {% endif %}
+            {% if hotel.has_breakfast %}
+            <span class="inline-flex items-center px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium">
+              <i class="fas fa-utensils mr-1"></i>Breakfast
+            </span>
+            {% endif %}
+          </div>
+
+          <div class="flex justify-between items-center pt-4 border-t border-gray-200">
+            <div>
+              <span class="text-2xl font-bold text-gray-900">৳{{ hotel.min_price }}</span>
+              <span class="text-gray-600 text-sm">/night</span>
+            </div>
+            <a href="{% url 'hotel_detail' hotel.id %}"
+               class="bg-orange-600 text-white px-6 py-2 rounded-xl font-semibold hover:bg-orange-700 transition-colors">
+              View
+            </a>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-span-full text-center py-16 bg-white rounded-2xl border-2 border-dashed border-gray-300">
+        <i class="fas fa-hotel text-gray-400 text-6xl mb-6"></i>
+        <h3 class="text-2xl font-bold text-gray-900 mb-4">No Hotels Found</h3>
+        <p class="text-gray-600 text-lg">Try adding hotels in your admin panel.</p>
+      </div>
+      {% endfor %}
+    </div>
+
+
+      <!-- View More Button -->
+      <div class="mt-12">
+        <a href="{% url 'hotels_info' %}" class="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800">View All Hotels</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Expert Local Guides -->
+  <section class="py-16 bg-[#f9fafb]">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+      <h2 class="text-3xl font-bold text-gray-900">Expert Local Guides</h2>
+      <p class="mt-2 text-gray-600">Discover hidden gems with passionate local experts</p>
+      <br><br>
+
+      <!-- Guides Section -->
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+        {% for guide in guides %}
+        <div class="card-hover guide-card group bg-white rounded-xl shadow-sm transition-all duration-300 border border-gray-100 overflow-hidden relative"
+             data-name="{{ guide.user.get_full_name|default:guide.user.username|lower }}"
+             data-location="{{ guide.address|default:''|lower }}"
+             data-bio="{{ guide.bio|default:''|lower }}"
+             data-languages="{{ guide.languages|default:''|lower }}"
+             data-experience="{{ guide.experience_years }}"
+             data-rating="{{ guide.average_rating }}"
+             data-verified="{{ guide.is_verified }}">
+
+          <!-- Badges -->
+          <div class="absolute top-3 right-3 flex flex-col space-y-2 z-10">
+            {% if guide.is_verified %}
+            <div class="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center shadow-sm">
+              <i class="fas fa-shield-check mr-1"></i> Verified
+            </div>
+            {% endif %}
+            {% if guide.experience_years >= 5 %}
+            <div class="bg-amber-500 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center shadow-sm">
+              <i class="fas fa-crown mr-1"></i> Expert
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Profile Picture -->
+          <div class="relative pt-8 px-4 text-center">
+            {% if guide.avatar %}
+              <img src="{{ guide.avatar.url }}" alt="{{ guide.user.get_full_name }}"
+                   class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg group-hover:scale-110 transition-transform duration-300 mx-auto">
+            {% else %}
+              <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center text-white font-bold text-2xl mx-auto group-hover:scale-110 transition-transform duration-300">
+                {{ guide.user.get_full_name|default:guide.user.username|first|upper }}
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Name & Location -->
+          <div class="px-4 text-center mt-2">
+            <h3 class="font-bold text-gray-900 text-lg mb-1 group-hover:text-blue-600 transition-colors duration-300">
+              {{ guide.user.get_full_name|default:guide.user.username }}
+            </h3>
+            <div class="flex items-center justify-center text-gray-600 text-sm mb-3">
+              <i class="fas fa-map-marker-alt mr-1 text-blue-500 text-xs"></i>
+              <span class="truncate">{{ guide.address|default:"Available Worldwide" }}</span>
+            </div>
+          </div>
+
+          <!-- Stats Row -->
+          <div class="px-4 pb-4">
+            <div class="flex items-center justify-between mb-4 p-3 bg-blue-50 rounded-lg border border-blue-100">
+              <!-- Experience -->
+              <div class="text-center flex-1">
+                <div class="flex items-center justify-center text-orange-500 mb-1">
+                  <i class="fas fa-briefcase text-sm"></i>
+                </div>
+                <div class="text-xs text-gray-600 font-medium">Experience</div>
+                <div class="text-sm font-bold text-gray-900">{{ guide.experience_years }}+ yrs</div>
+              </div>
+
+              <!-- Divider -->
+              <div class="w-px h-8 bg-blue-200 mx-1"></div>
+
+              <!-- Rating -->
+              <div class="text-center flex-1">
+                <div class="flex items-center justify-center text-amber-500 mb-1">
+                  {% for i in "12345" %}
+                    {% if forloop.counter <= guide.average_rating %}
+                      <i class="fas fa-star text-xs mx-0.5"></i>
+                    {% else %}
+                      <i class="far fa-star text-xs mx-0.5"></i>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+                <div class="text-xs text-gray-600 font-medium">Rating</div>
+                <div class="text-sm font-bold text-gray-900">{{ guide.average_rating }}</div>
+              </div>
+            </div>
+
+            <!-- Languages -->
+            {% if guide.languages %}
+            <div class="mb-4">
+              <div class="flex flex-wrap gap-1 justify-center">
+                {% for lang in guide.languages|split:","|slice:":2" %}
+                <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-medium border border-blue-200">
+                  {{ lang|strip }}
+                </span>
+                {% endfor %}
+                {% if guide.languages|split:","|length > 2 %}
+                <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs font-medium">
+                  +{{ guide.languages|split:","|length|add:"-2" }}
+                </span>
+                {% endif %}
+              </div>
+            </div>
+            {% endif %}
+
+            <!-- CTA -->
+            <a href="{% url 'guide_detail' guide.id %}"
+               class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-sm hover:shadow font-semibold text-sm text-center block">
+              View Profile
+            </a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- View More Button -->
+      <div class="mt-12">
+        <a href="{% url 'guide_list' %}" class="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition">
+          View All Guides
         </a>
       </div>
-
-      <!-- Travel Packages -->
-      <div class="border rounded-xl shadow-sm p-6 flex flex-col items-center">
-        <div class="bg-purple-100 p-4 rounded-full mb-4">
-          <svg xmlns="http://www.w3.org/2000/svg"
-               fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-               stroke="currentColor" class="w-8 h-8 text-purple-600">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M21 12.75V6.75A2.25 2.25 0 0 0 18.75 4.5h-13.5A2.25 2.25 0 0 0 3 6.75v6M21 12.75v4.5a2.25 2.25 0 0 1-2.25 2.25h-13.5A2.25 2.25 0 0 1 3 17.25v-4.5M21 12.75H3" />
-          </svg>
-        </div>
-        <h3 class="text-xl font-semibold mb-2">Travel Packages</h3>
-        <p class="text-gray-600 mb-4 text-center">
-          Complete travel experiences curated just for you
-        </p>
-        <img src="/travel package.jpg"
-     alt="Packages"
-     class="rounded-lg mb-4 w-full h-40 object-cover">
-        <a href="#" class="border border-gray-300 px-5 py-2 rounded-md hover:bg-gray-100 transition">
-          View Packages
-        </a>
-      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-
-<br><br>
-
-
-<!-- destination -->
-<section class="py-16 bg-white">
-  <div class="max-w-7xl mx-auto px-6 text-center">
-    <!-- Heading -->
-    <h2 class="text-3xl font-bold text-gray-900">Explore Amazing Destinations</h2>
-    <p class="mt-2 text-gray-600">
-      Discover the most beautiful places with our curated selection of top destinations
-    </p>
-
-    <!-- Grid -->
-    <div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-
-      <!-- Card 1 -->
-      <div class="bg-white rounded-2xl shadow overflow-hidden hover:shadow-lg transition">
-        <div class="relative">
-          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e" alt="Cox's Bazar" class="w-full h-56 object-cover">
-          <span class="absolute top-3 left-3 bg-red-600 text-white text-xs px-3 py-1 rounded-full">12 Tours</span>
-          <span class="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-md">4.8 ⭐</span>
-        </div>
-        <div class="p-6 text-left">
-          <h3 class="text-lg font-semibold text-gray-800">Cox’s Bazar</h3>
-          <p class="text-sm text-gray-500">Bay of Bengal, Bangladesh</p>
-          <p class="mt-2 text-gray-600 text-sm">World’s longest sea beach, a hub of activities, and natural wonders.</p>
-          <button class="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700">Explore Destination</button>
-        </div>
-      </div>
-
-      <!-- Card 2 -->
-      <div class="bg-white rounded-2xl shadow overflow-hidden hover:shadow-lg transition">
-        <div class="relative">
-          <img src="https://images.unsplash.com/photo-1589308078054-8322b34c25d9" alt="Sajek Valley" class="w-full h-56 object-cover">
-          <span class="absolute top-3 left-3 bg-red-600 text-white text-xs px-3 py-1 rounded-full">9 Tours</span>
-          <span class="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-md">4.9 ⭐</span>
-        </div>
-        <div class="p-6 text-left">
-          <h3 class="text-lg font-semibold text-gray-800">Sajek Valley, Bandarban</h3>
-          <p class="text-sm text-gray-500">Bandarban, Bangladesh</p>
-          <p class="mt-2 text-gray-600 text-sm">Mesmerizing hills wrapped in endless greenery and misty clouds.</p>
-          <button class="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700">Explore Destination</button>
-        </div>
-      </div>
-
-      <!-- Card 3 -->
-      <div class="bg-white rounded-2xl shadow overflow-hidden hover:shadow-lg transition">
-        <div class="relative">
-          <img src="https://images.unsplash.com/photo-1617196035924-5f8f86ed7a25" alt="Chottogram" class="w-full h-56 object-cover">
-          <span class="absolute top-3 left-3 bg-red-600 text-white text-xs px-3 py-1 rounded-full">8 Tours</span>
-          <span class="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-md">4.7 ⭐</span>
-        </div>
-        <div class="p-6 text-left">
-          <h3 class="text-lg font-semibold text-gray-800">Chottogram</h3>
-          <p class="text-sm text-gray-500">Bangladesh</p>
-          <p class="mt-2 text-gray-600 text-sm">A beautiful mix of beaches, hills, and endless adventures.</p>
-          <button class="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700">Explore Destination</button>
-        </div>
-      </div>
-
-      <!-- Card 4 -->
-      <div class="bg-white rounded-2xl shadow overflow-hidden hover:shadow-lg transition">
-        <div class="relative">
-          <img src="https://images.unsplash.com/photo-1602410333510-d53d6f7a3a7e" alt="Paharpur" class="w-full h-56 object-cover">
-          <span class="absolute top-3 left-3 bg-red-600 text-white text-xs px-3 py-1 rounded-full">6 Tours</span>
-          <span class="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-md">4.6 ⭐</span>
-        </div>
-        <div class="p-6 text-left">
-          <h3 class="text-lg font-semibold text-gray-800">Paharpur, Naogaon</h3>
-          <p class="text-sm text-gray-500">Naogaon, Bangladesh</p>
-          <p class="mt-2 text-gray-600 text-sm">The largest Buddhist monastery in the south of Himalayas.</p>
-          <button class="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700">Explore Destination</button>
-        </div>
-      </div>
-
-      <!-- Card 5 -->
-      <div class="bg-white rounded-2xl shadow overflow-hidden hover:shadow-lg transition">
-        <div class="relative">
-          <img src="https://images.unsplash.com/photo-1576495199011-eb94736bbfc0" alt="Ahsan Manzil" class="w-full h-56 object-cover">
-          <span class="absolute top-3 left-3 bg-red-600 text-white text-xs px-3 py-1 rounded-full">7 Tours</span>
-          <span class="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-md">4.5 ⭐</span>
-        </div>
-        <div class="p-6 text-left">
-          <h3 class="text-lg font-semibold text-gray-800">Ahsan Manzil, Dhaka</h3>
-          <p class="text-sm text-gray-500">Dhaka, Bangladesh</p>
-          <p class="mt-2 text-gray-600 text-sm">Historic landmark showcasing Mughal & colonial era heritage.</p>
-          <button class="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700">Explore Destination</button>
-        </div>
-      </div>
-
-      <!-- Card 6 -->
-      <div class="bg-white rounded-2xl shadow overflow-hidden hover:shadow-lg transition">
-        <div class="relative">
-          <img src="https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0" alt="Kuakata" class="w-full h-56 object-cover">
-          <span class="absolute top-3 left-3 bg-red-600 text-white text-xs px-3 py-1 rounded-full">5 Tours</span>
-          <span class="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-md">4.6 ⭐</span>
-        </div>
-        <div class="p-6 text-left">
-          <h3 class="text-lg font-semibold text-gray-800">Kuakata, Patuakhali</h3>
-          <p class="text-sm text-gray-500">Patuakhali, Bangladesh</p>
-          <p class="mt-2 text-gray-600 text-sm">Golden beaches where you can watch both sunrise & sunset.</p>
-          <button class="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700">Explore Destination</button>
-        </div>
-      </div>
-
+  <!-- Package Section -->
+  <section class="py-16 bg-[#f9fafb]">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+      <!-- Title -->
+      <h2 class="text-3xl font-bold text-gray-900">Top Travel Packages</h2>
+      <p class="mt-2 text-gray-600">All-inclusive adventures designed for unforgettable experiences</p>
     </div>
 
-    <!-- View More Button -->
-    <div class="mt-12">
-      <button class="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800">View All Destinations</button>
-    </div>
-  </div>
-</section>
-
-
-<br><br>
-
-
-
-<!-- Hotel -->
-<section class="py-16 bg-white">
-  <div class="max-w-7xl mx-auto px-6 text-center">
-    <!-- Featured Hotels -->
-    <h2 class="text-3xl font-bold text-gray-900">Featured Hotels</h2>
-    <p class="mt-2 text-gray-600">Handpicked accommodations for unforgettable stays</p>
-
-    <!-- Hotels Grid -->
-    <div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-
-      <!-- Hotel 1 -->
-      <div class="bg-white rounded-2xl shadow overflow-hidden hover:shadow-lg transition">
-        <div class="relative">
-          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e" alt="Ocean Paradise Resort" class="w-full h-52 object-cover">
-          <span class="absolute top-3 left-3 bg-red-600 text-white text-xs px-3 py-1 rounded-full">Featured</span>
-          <span class="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-md">5.0 ⭐</span>
-        </div>
-        <div class="p-6 text-left">
-          <h3 class="text-lg font-semibold text-gray-800">Ocean Paradise Resort</h3>
-          <p class="text-sm text-gray-500">Cox's Bazar, Bangladesh</p>
-          <div class="flex items-center justify-between mt-3">
-            <p class="text-gray-600 text-sm">1,024 reviews</p>
-          </div>
-          <button class="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700">Book Now</button>
-        </div>
-      </div>
-
-      <!-- Hotel 2 -->
-      <div class="bg-white rounded-2xl shadow overflow-hidden hover:shadow-lg transition">
-        <div class="relative">
-          <img src="https://images.unsplash.com/photo-1589308078054-8322b34c25d9" alt="Grand City Hotel" class="w-full h-52 object-cover">
-          <span class="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-md">4.8 ⭐</span>
-        </div>
-        <div class="p-6 text-left">
-          <h3 class="text-lg font-semibold text-gray-800">Grand City Hotel</h3>
-          <p class="text-sm text-gray-500">Sajek Valley, Bandarban</p>
-          <div class="flex items-center justify-between mt-3">
-            <p class="text-gray-600 text-sm">876 reviews</p>
-          </div>
-          <button class="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700">Book Now</button>
-        </div>
-      </div>
-
-      <!-- Hotel 3 -->
-      <div class="bg-white rounded-2xl shadow overflow-hidden hover:shadow-lg transition">
-        <div class="relative">
-          <img src="https://images.unsplash.com/photo-1617196035924-5f8f86ed7a25" alt="Mountain View Lodge" class="w-full h-52 object-cover">
-          <span class="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-1 rounded-md">4.7 ⭐</span>
-        </div>
-        <div class="p-6 text-left">
-          <h3 class="text-lg font-semibold text-gray-800">Mountain View Lodge</h3>
-          <p class="text-sm text-gray-500">Bandarban, Bangladesh</p>
-          <div class="flex items-center justify-between mt-3">
-            <p class="text-gray-600 text-sm">612 reviews</p>
-          </div>
-          <button class="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700">Book Now</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- View More Button -->
-    <div class="mt-12">
-      <button class="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800">View All Hotels</button>
-    </div>
-  </div>
-</section>
-
-<!-- Expert Local Guides -->
-<section class="py-16 bg-white">
-  <div class="max-w-7xl mx-auto px-6 text-center">
-    <h2 class="text-3xl font-bold text-gray-900">Expert Local Guides</h2>
-    <p class="mt-2 text-gray-600">Discover hidden gems with passionate local experts</p>
-
-    <!-- Guides Grid -->
-    <div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-
-      <!-- Guide 1 -->
-      <div class="bg-white rounded-2xl shadow p-6 text-center hover:shadow-lg transition">
-        <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-20 h-20 rounded-full mx-auto">
-        <h3 class="mt-4 text-lg font-semibold text-gray-800">Dipu Barak</h3>
-        <p class="text-sm text-gray-500">Specialist in</p>
-        <p class="text-sm text-gray-700">Hill Tracts, Bandarban</p>
-        <p class="mt-2 text-indigo-600 font-semibold">৳300 / hour</p>
-        <button class="mt-3 w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-800">Book Guide</button>
-      </div>
-
-      <!-- Guide 2 -->
-      <div class="bg-white rounded-2xl shadow p-6 text-center hover:shadow-lg transition">
-        <img src="https://randomuser.me/api/portraits/men/45.jpg" class="w-20 h-20 rounded-full mx-auto">
-        <h3 class="mt-4 text-lg font-semibold text-gray-800">Raihan Hossain</h3>
-        <p class="text-sm text-gray-500">Specialist in</p>
-        <p class="text-sm text-gray-700">Sundarban, Khulna</p>
-        <p class="mt-2 text-indigo-600 font-semibold">৳200 / hour</p>
-        <button class="mt-3 w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-800">Book Guide</button>
-      </div>
-
-      <!-- Guide 3 -->
-      <div class="bg-white rounded-2xl shadow p-6 text-center hover:shadow-lg transition">
-        <img src="https://randomuser.me/api/portraits/women/50.jpg" class="w-20 h-20 rounded-full mx-auto">
-        <h3 class="mt-4 text-lg font-semibold text-gray-800">Umma Islam</h3>
-        <p class="text-sm text-gray-500">Specialist in</p>
-        <p class="text-sm text-gray-700">Dhaka City Tour</p>
-        <p class="mt-2 text-indigo-600 font-semibold">৳400 / hour</p>
-        <button class="mt-3 w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-800">Book Guide</button>
-      </div>
-
-      <!-- Guide 4 -->
-      <div class="bg-white rounded-2xl shadow p-6 text-center hover:shadow-lg transition">
-        <img src="https://randomuser.me/api/portraits/women/65.jpg" class="w-20 h-20 rounded-full mx-auto">
-        <h3 class="mt-4 text-lg font-semibold text-gray-800">Sumi Akter</h3>
-        <p class="text-sm text-gray-500">Specialist in</p>
-        <p class="text-sm text-gray-700">Cox's Bazar Beach</p>
-        <p class="mt-2 text-indigo-600 font-semibold">৳350 / hour</p>
-        <button class="mt-3 w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800">Book Guide</button>
-      </div>
-    </div>
-
-    <!-- View More Button -->
-    <div class="mt-12">
-      <button class="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800">View All Guides</button>
-    </div>
-  </div>
-</section>
-
-
-
-
-<br><br>
-
-
-<!--Package-->
-
-<section class="py-16 bg-white">
-  <div class="max-w-7xl mx-auto px-6 text-center">
-    <!-- Title -->
-    <h2 class="text-3xl font-bold text-gray-900">Top Travel Packages</h2>
-    <p class="mt-2 text-gray-600">All-inclusive adventures designed for unforgettable experiences</p>
-
-    <!-- Packages Grid -->
-    <div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-
-      <!-- Package 1 -->
-      <div class="bg-white rounded-2xl shadow hover:shadow-lg overflow-hidden transition">
-        <div class="relative">
-          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e" class="w-full h-56 object-cover">
-          <span class="absolute top-3 left-3 bg-red-600 text-white text-xs px-3 py-1 rounded-full">Best Seller</span>
-          <span class="absolute top-3 right-3 bg-green-600 text-white text-sm px-3 py-1 rounded-lg font-bold">$2850</span>
-          <span class="absolute top-3 right-24 text-gray-400 line-through text-sm">$3200</span>
-        </div>
-        <div class="p-6 text-left">
-          <h3 class="text-lg font-semibold text-gray-900">Mediterranean Explorer</h3>
-          <p class="text-sm text-gray-600 mt-1">Experience the best of Sajek Valley in 10 unforgettable days</p>
-
-          <!-- Info -->
-          <div class="flex items-center gap-4 text-sm text-gray-500 mt-4">
-            <span>⏱️ 10 days</span>
-            <span>👥 8-12 people</span>
-            <span class="flex items-center text-yellow-500">⭐ 4.8 <span class="text-gray-500 ml-1">(124)</span></span>
-          </div>
-
-          <!-- Includes -->
-          <div class="mt-4">
-            <p class="text-sm font-medium text-gray-800">Includes</p>
-            <div class="flex flex-wrap gap-3 text-sm text-gray-600 mt-2">
-              <span>🚍 Transport</span>
-              <span>🏨 Hotels</span>
-              <span>🍽 Meals</span>
-              <span>🧑‍🤝‍🧑 Guide</span>
+    <!-- Package Cards -->
+    <div class="packages-container max-w-7xl mx-auto px-6 mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      {% for package in packages|slice:":6" %}
+        <div class="card-hover bg-white rounded-2xl shadow overflow-hidden">
+          <div class="relative h-52">
+            <img src="{{ package.image.url }}" alt="{{ package.destination_name }}" class="w-full h-full object-cover">
+            <div class="absolute bottom-0 right-0 bg-white/90 px-4 py-2 rounded-tl-lg">
+              <span class="text-lg font-bold text-gray-900">{{ package.price }} BDT</span>
             </div>
           </div>
 
-          <!-- Highlights -->
-          <div class="mt-4">
-            <p class="text-sm font-medium text-gray-800">Highlights</p>
-            <div class="flex flex-wrap gap-2 mt-2">
-              <span class="px-3 py-1 bg-gray-100 text-sm rounded-lg">Santorini Sunset</span>
-              <span class="px-3 py-1 bg-gray-100 text-sm rounded-lg">Sea of Clouds</span>
-              <span class="px-3 py-1 bg-gray-100 text-sm rounded-lg">Hill Tracks</span>
-              <span class="px-3 py-1 bg-gray-100 text-sm rounded-lg">+1 more</span>
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-2">{{ package.destination_name }}</h3>
+            <p class="text-gray-600 mb-4">{{ package.description|truncatechars:100 }}</p>
+
+            {% if package.average_rating %}
+              <div class="flex items-center mb-4">
+                <div class="flex text-amber-500 mr-2">
+                  {% for i in "12345" %}
+                    {% if forloop.counter <= package.average_rating %}
+                      <i class="fas fa-star text-sm"></i>
+                    {% else %}
+                      <i class="far fa-star text-sm"></i>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+                <span class="text-sm text-gray-600">({{ package.review_count }} reviews)</span>
+              </div>
+            {% else %}
+              <div class="text-sm text-gray-500 mb-4">No ratings yet</div>
+            {% endif %}
+
+            <div class="flex justify-between text-sm text-gray-700 mb-4">
+              <span>⏱️ {{ package.days }} days</span>
+              <span>👥 Up to {{ package.people_limit }} people</span>
             </div>
-          </div>
 
-          <!-- Button -->
-          <button class="mt-6 w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 flex justify-center items-center gap-2">
-            Book Package <span>📅</span>
-          </button>
+            <a href="{% url 'package_detail' package.pk %}" class="block w-full bg-indigo-600 text-white py-3 rounded-lg text-center hover:bg-indigo-700 transition-colors">
+              View Details
+            </a>
+          </div>
         </div>
-      </div>
-
-      <!-- Package 2 -->
-      <div class="bg-white rounded-2xl shadow hover:shadow-lg overflow-hidden transition">
-        <div class="relative">
-          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e" class="w-full h-56 object-cover">
-          <span class="absolute top-3 right-3 bg-green-600 text-white text-sm px-3 py-1 rounded-lg font-bold">$2250</span>
-          <span class="absolute top-3 right-24 text-gray-400 line-through text-sm">$2650</span>
-        </div>
-        <div class="p-6 text-left">
-          <h3 class="text-lg font-semibold text-gray-900">Ocean Adventure</h3>
-          <p class="text-sm text-gray-600 mt-1">Discover the vibrant cultures of Cox’s Bazar, Vietnam, and Cambodia</p>
-
-          <div class="flex items-center gap-4 text-sm text-gray-500 mt-4">
-            <span>⏱️ 14 days</span>
-            <span>👥 10-16 people</span>
-            <span class="flex items-center text-yellow-500">⭐ 4.9 <span class="text-gray-500 ml-1">(98)</span></span>
-          </div>
-
-          <div class="mt-4">
-            <p class="text-sm font-medium text-gray-800">Includes</p>
-            <div class="flex flex-wrap gap-3 text-sm text-gray-600 mt-2">
-              <span>🏨 Hotels</span>
-              <span>🍽 Some Meals</span>
-              <span>🧑‍🤝‍🧑 Guide</span>
-            </div>
-          </div>
-
-          <div class="mt-4">
-            <p class="text-sm font-medium text-gray-800">Highlights</p>
-            <div class="flex flex-wrap gap-2 mt-2">
-              <span class="px-3 py-1 bg-gray-100 text-sm rounded-lg">Marine Drive</span>
-              <span class="px-3 py-1 bg-gray-100 text-sm rounded-lg">Ocean Waves</span>
-              <span class="px-3 py-1 bg-gray-100 text-sm rounded-lg">Sunset Views</span>
-              <span class="px-3 py-1 bg-gray-100 text-sm rounded-lg">+1 more</span>
-            </div>
-          </div>
-
-          <button class="mt-6 w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 flex justify-center items-center gap-2">
-            Book Package <span>📅</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Package 3 -->
-      <div class="bg-white rounded-2xl shadow hover:shadow-lg overflow-hidden transition">
-        <div class="relative">
-          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e" class="w-full h-56 object-cover">
-          <span class="absolute top-3 right-3 bg-green-600 text-white text-sm px-3 py-1 rounded-lg font-bold">$1850</span>
-        </div>
-        <div class="p-6 text-left">
-          <h3 class="text-lg font-semibold text-gray-900">Alpine Adventure</h3>
-          <p class="text-sm text-gray-600 mt-1">Breathtaking mountain landscapes and charming alpine villages</p>
-
-          <div class="flex items-center gap-4 text-sm text-gray-500 mt-4">
-            <span>⏱️ 7 days</span>
-            <span>👥 6-10 people</span>
-            <span class="flex items-center text-yellow-500">⭐ 4.7 <span class="text-gray-500 ml-1">(156)</span></span>
-          </div>
-
-          <div class="mt-4">
-            <p class="text-sm font-medium text-gray-800">Includes</p>
-            <div class="flex flex-wrap gap-3 text-sm text-gray-600 mt-2">
-              <span>🏨 Hotels</span>
-              <span>🍳 Breakfast</span>
-              <span>🧑‍🤝‍🧑 Guide</span>
-              <span>🎯 Activities</span>
-            </div>
-          </div>
-
-          <div class="mt-4">
-            <p class="text-sm font-medium text-gray-800">Highlights</p>
-            <div class="flex flex-wrap gap-2 mt-2">
-              <span class="px-3 py-1 bg-gray-100 text-sm rounded-lg">Matterhorn Views</span>
-              <span class="px-3 py-1 bg-gray-100 text-sm rounded-lg">Swiss Villages</span>
-              <span class="px-3 py-1 bg-gray-100 text-sm rounded-lg">Mountain Trekking</span>
-              <span class="px-3 py-1 bg-gray-100 text-sm rounded-lg">+1 more</span>
-            </div>
-          </div>
-
-          <button class="mt-6 w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 flex justify-center items-center gap-2">
-            Book Package <span>📅</span>
-          </button>
-        </div>
-      </div>
+      {% endfor %}
     </div>
 
     <!-- View All Button -->
-    <div class="mt-12">
-      <button class="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800">View All Packages</button>
+    <div class="mt-12 text-center">
+      <a href="{% url 'package_list' %}" class="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800">
+        View All Packages
+      </a>
     </div>
-  </div>
-</section>
+  </section>
 
+  <style>
+    /* Consistent card hover effect for all sections */
+    .card-hover {
+      transition: all 0.3s ease;
+      transform: translateY(0);
+    }
 
-<br><br>
+    .card-hover:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Package section specific styles */
+    .packages-container {
+      display: grid;
+      gap: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .packages-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 
 </body>
-{%endblock%}
+{% endblock %}
